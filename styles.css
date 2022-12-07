@@ -1,0 +1,1372 @@
+/*Import the fonts used*/
+@import url('https://fonts.googleapis.com/css?family=Courgette|Open+Sans:400,800&display=swap');
+/*Basic reset*/
+*,
+*::before,
+*::after {
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+}
+/*Custom properties*/
+:root {
+    --dark-color: #2d2c2c;
+    --purple-solid: #350a4f;
+    --purple-transparent: rgba(53, 10, 79, .7);
+    --purple-transparent-alt: rgba(53, 10, 79, .5);
+    --purple-light: #8f50fb;
+    --yellow-solid: #fa9e2c;
+    --gradient-color: linear-gradient(to right, var(--yellow-solid), var(--purple-light));
+    --gradient-color-alt: linear-gradient(to right, var(--purple-light), var(--yellow-solid));
+}
+
+.cl{
+    outline: 1px solid blue;
+}
+
+.welcome{
+    font-size: 50px;
+    font-weight: bold;
+    height: 120px;
+}
+
+.villa{
+    font-size: 50px;
+}
+
+.pernight{
+    font-size: 20px;
+    color: black;
+}
+
+.bg-gray{
+    background-color: rgb(233, 230, 230);
+}
+
+.room-price i{
+    color: black;
+}
+
+/*======================================================
+                    others
+======================================================*/
+
+/* Dropdown Button */
+.dropbtn {
+    background-color: #04AA6D;
+    color: white;
+    padding: 16px;
+    font-size: 16px;
+    border: none;
+  }
+  
+  /* The container <div> - needed to position the dropdown content */
+  .dropdown {
+    position: relative;
+    display: inline-block;
+  }
+  
+  /* Dropdown Content (Hidden by Default) */
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f1f1f1;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+  }
+  
+  /* Links inside the dropdown */
+  .dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+  }
+  
+  /* Change color of dropdown links on hover */
+  .dropdown-content a:hover {background-color: #ddd;}
+  
+  /* Show the dropdown menu on hover */
+  .dropdown:hover .dropdown-content {display: block;}
+  
+  /* Change the background color of the dropdown button when the dropdown content is shown */
+  .dropdown:hover .dropbtn {background-color: #3e8e41;}
+
+/*======================================================
+                    Global Styles
+======================================================*/
+html{
+    font-size: 10px;
+}
+
+body{
+    font-family: 'Open Sans', sans-serif;
+    font-size:  1,6rem;
+    color: var(--dark-color);
+}
+
+a{
+    text-decoration: none;
+    color: inherit; 
+}
+
+ul{
+    list-style: none;
+}
+
+section{
+    padding: 5rem 0;
+}
+
+
+
+/*======================================================
+                    Reusable Style
+======================================================*/
+
+.container{
+    width: 100%;
+    max-width: 120rem;
+    padding: 0 1.5rem;
+    margin: auto;
+    text-align: center;
+}
+
+.btn{
+    color: white;
+    font-size: 1.3rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    padding: .5rem 3.5rem;
+    border: none;
+    border-radius: 10rem;
+    display: inline-flex;
+    align-items: center;
+}
+
+.form-btn{
+    margin-top: 2.5rem;
+    cursor: pointer;
+}
+
+.btn-gradient{
+    background-image: var(--gradient-color);
+}
+
+.btn-gradient:hover{
+    background-image: var(--gradient-color-alt);
+}
+
+.btn-purple{
+    background-color: var(--purple-solid);
+}
+
+.btn-purple:hover{
+    background-color: #56247f;
+}
+
+.dots{
+    font-size: 2.4rem;
+    margin-left: .5rem;
+    opacity: .75;
+}
+
+
+/*======================================================
+                    Header Styles
+======================================================*/
+.header{
+    width: 100%;
+    height: 4rem;
+    display: flex;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: var(--purple-solid);
+    transition: background-color 1s ease;
+    z-index: 999;
+}
+
+
+.header.active{
+    background-color: var(--purple-solid);
+    transition: background-color 1s ease;
+}
+
+
+
+
+
+/*
+.header{
+    width: 100%;
+    height: 4rem;
+    display: flex;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: var(--purple-solid);
+    z-index: 999;
+}
+
+.header.active{
+    background-color: var(--purple-solid);
+}*/
+
+
+
+/*======================================================
+                    Header styles-nav
+======================================================*/
+
+.nav{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+}
+
+.logo img{
+    max-width: 80%;
+}
+
+.hamburger-menu{
+    font-size: 2.6rem;
+    color: white;
+    cursor: pointer;
+    position: relative;
+    z-index: 1500;
+    
+}
+
+.hamburger-menu .fa-times{
+    display: none;
+}
+
+.menu-open .hamburger-menu .fa-times{
+    display: block;
+}
+
+.menu-open .hamburger-menu .fa-bars{
+    display: none;
+}
+
+.nav-list{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: var(--purple-solid);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 1400;
+    opacity: 0;
+    transform: scale(0);
+    transition: opacity .5s;
+}
+
+.menu-open .nav-list{
+    opacity: 1;
+    transform: scale(1);
+}
+.nav-item:not(:last-child){
+    margin-bottom: .5rem;
+}
+
+.nav-link{
+    display: block;
+    color: white;
+    font-size: 3rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    padding: 1rem;
+}
+
+.loginbtn{
+   height: 15px;
+}
+
+/*======================================================
+                    Hero Section Styles
+======================================================*/
+
+
+.hero{
+    width: 100%;
+    height: 100vh;
+    background: url(./images/backgroundpage0.jpg) center no-repeat;
+    background-size: cover;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    z-index: 0;
+}
+
+.hero::before{
+    content:'';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: inherit;
+    height: inherit;
+    background-color: var(--purple-transparent-alt);
+    z-index: -1;
+}
+
+.main-heading{
+
+    color: white;
+    line-height: 1;
+    text-shadow: 1px 1px 1rem rgba(0,0,0,.5);
+    margin-bottom: 2.5rem;
+}
+
+.title{
+
+    font-size: 4.8rem;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+}
+
+.subtitle{
+    font-size: 3.6rem;
+    font-weight: 300;
+    font-family: 'Courgette', cursive;
+}
+
+.welcome1{
+    font-size: 3.6rem;
+    font-weight: 300;
+    font-family: 'Courgette', cursive;
+    opacity: .5;
+}
+
+
+/*======================================================
+                Booking Section Styles
+======================================================*/
+
+.booking{
+    background-image: var(--gradient-color);
+}
+
+.input-group{
+    margin-bottom: 1.5rem;
+}
+
+.input-label{
+    display: block;
+    font-size: 1.3rem;
+    text-transform: uppercase;
+    color: white;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+.input,
+.options{
+    outline: none; 
+    border: none;
+    width: 100%;
+    min-height: 3rem;
+    padding: 1rem;
+    font-weight: bold;
+    color: gray;
+    letter-spacing: 2px;
+    font-family: 'Open Sans' sans-serif;
+    /*resize: none;*/
+}
+
+#check-in{
+    border-radius: 10px;
+}
+#check-out{
+    border-radius: 10px;
+}
+#adults{
+    border-radius: 10px;
+}
+#children{
+    border-radius: 10px;
+}
+
+/*======================================================
+                    Intro Home Section 
+======================================================*/
+
+.intro{
+    text-align:center;
+    margin-top: 10px;
+    margin-bottom: 50px; 
+   
+}
+
+.welcome{
+    font-size: 15rem;
+    opacity: .2;
+
+}
+
+.intro-paragraph{
+    font-size: 15px;
+    text-align: center;
+    width: 70%;
+    margin: auto;
+
+}
+
+/*======================================================
+                    Intro About Section 
+======================================================*/
+.row-about{
+    width: 80%;
+    margin: auto;
+    margin-top: 50px;
+}
+.column {
+    float: left;
+    width: 50%;
+    padding: 10px;
+    height: 300px; /* Should be removed. Only for demonstration */
+    
+  }
+
+  .column img{
+    width: 100%;
+    height: 100%;
+  }
+  
+  /* Clear floats after the columns */
+  .row-about:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+  
+  /* Responsive layout - makes the two columns stack on top of each other instead of next to each other */
+  @media screen and (max-width: 1200px) {
+    .column {
+      width: 100%;
+    }
+  }
+/*======================================================
+                    Slider 
+======================================================*/
+
+.carousell{
+    display: flex;
+    justify-content: center;
+  align-items: center;
+  margin-bottom: 50px;
+}
+.slider{
+    width: 1200px;
+    height: 500px;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  
+  .slides{
+    width: 500%;
+    height: 500px;
+    display: flex;
+  }
+  
+  .slides input{
+    display: none;
+  }
+  
+  .slide{
+    width: 20%;
+    transition: 2s;
+  }
+  
+  .slide img{
+    width: 1200px;
+    height: 500px;
+  }
+  
+  /*css for manual slide navigation*/
+  
+  .navigation-manual{
+    position: absolute;
+    width: 1200px;
+    margin-top: -40px;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .manual-btn{
+    border: 2px solid #40D3DC;
+    padding: 5px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 1s;
+  }
+  
+  .manual-btn:not(:last-child){
+    margin-right: 40px;
+  }
+  
+  .manual-btn:hover{
+    background: #40D3DC;
+  }
+  
+  #radio1:checked ~ .first{
+    margin-left: 0;
+  }
+  
+  #radio2:checked ~ .first{
+    margin-left: -20%;
+  }
+  
+  #radio3:checked ~ .first{
+    margin-left: -40%;
+  }
+  
+  #radio4:checked ~ .first{
+    margin-left: -60%;
+  }
+  
+  /*css for automatic navigation*/
+  
+  .navigation-auto{
+    position: absolute;
+    display: flex;
+    width: 1200px;
+    justify-content: center;
+    margin-top: 460px;
+  }
+  
+  .navigation-auto div{
+    border: 2px solid #40D3DC;
+    padding: 5px;
+    border-radius: 10px;
+    transition: 1s;
+  }
+  
+  .navigation-auto div:not(:last-child){
+    margin-right: 40px;
+  }
+  
+  #radio1:checked ~ .navigation-auto .auto-btn1{
+    background: #40D3DC;
+  }
+  
+  #radio2:checked ~ .navigation-auto .auto-btn2{
+    background: #40D3DC;
+  }
+  
+  #radio3:checked ~ .navigation-auto .auto-btn3{
+    background: #40D3DC;
+  }
+  
+  #radio4:checked ~ .navigation-auto .auto-btn4{
+    background: #40D3DC;
+  }
+/*======================================================
+                Hall Booking style section
+======================================================*/
+
+.hall-booking{
+    background-image: var(--gradient-color);
+}
+
+
+/*======================================================
+            Featured Hotels section-styles
+======================================================*/
+
+.section-head{
+    text-align: center;
+    margin-bottom: 5rem;
+}
+
+.heading{
+    display: block;
+    font-size: 4rem;
+    text-transform: uppercase;
+}
+
+.sub-heading{
+    font-size: 1.7rem;
+    font-family: 'Courgette', cursive;
+    font-weight: 300;
+    color: #a5a5a5;
+}
+
+.grid{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(30rem, 1fr));
+    grid-gap: 2.5rem;
+}
+
+.grid-item{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.featured-hotels{
+    height: 35rem;
+    color: white;
+    padding: 1rem;
+    position: relative;
+    z-index: 0;
+}
+
+.featured-hotels::before{
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--purple-transparent-alt);
+    z-index: -1;
+}
+
+.hotel-image{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -2;
+}
+
+.hotel-name{
+    font-size: 2.6rem;
+}
+
+.hotel-price{
+    font-size: 1.8rem;
+}
+
+.hotel-rating{
+    margin: 1rem 0 2.5rem;
+
+}
+
+.rating{
+    color: var(--yellow-solid);
+}
+
+/*======================================================
+                 Special section styles
+======================================================*/
+
+.offer{
+    background: linear-gradient(to right, rgba(250,158,44,.8), rgba(143,80,251,.8)),
+    url("./images/backgroundpage0.jpg") bottom center no-repeat;
+    background-size: cover;
+}
+
+.offer-content{
+    background-color: white;
+    text-align: center;
+    padding: 5rem 1rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.discount{
+    background-color: var(--yellow-solid);
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 1rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    outline: 2px solid var(--yellow-solid);
+    outline-offset: .5rem;
+}
+
+.paragraph{
+    font-size: 1.8rem;
+    color: #a5a5a5;
+    margin-bottom: 2.5rem;
+    
+}
+
+/*======================================================
+                    Rooms section-styles
+======================================================*/
+
+.rooms{
+   background-color: #f2f6f9; 
+}
+
+.image-wrap{
+    position: relative;
+    height: 25rem;
+    width: 100%;
+    
+}
+
+.image-wrap::after{
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height :100%;
+    background-color: var(--purple-transparent-alt);
+}
+
+.room-image{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.room-name{
+    font-size: 2.6rem;
+    background-color: var(--yellow-solid);
+    color:  white;
+    padding: .5rem 2rem;
+    position: absolute;
+    left: 0;
+    bottom: 2.5rem;
+    z-index: 10;
+}
+
+.room-price{
+    display: block;
+    font-size: 3.6rem;
+    font-weight: bold;
+    color: var(--yellow-solid);
+}
+
+.per-night{
+    color: var(--dark-color);
+    font-size: 1.4rem;
+    font-weight: 100;
+}
+
+.rooms-btn{
+    color: var(--dark-color);
+    padding: 0;
+    transition: color .5s;
+}
+
+.rooms-btn:hover{
+color: var(--yellow-solid);
+}
+
+
+/*======================================================
+                    Owl Slider
+====================================================== */
+.owl-img{
+    border-radius: 10px;
+}
+
+.owl-carousel h5{
+    text-align: center;
+}
+/*======================================================
+                    Hall section styles
+======================================================*/
+
+.hall-name{
+    font-size: 2.4rem;
+    background-color: var(--yellow-solid);
+    color:  white;
+    padding: .5rem 2rem;
+    position: absolute;
+    left: 0;
+    bottom: 2.5rem;
+    z-index: 10;
+}
+.hall-price{
+    display: block;
+    font-size: 3rem;
+    font-weight: bold;
+    color: var(--yellow-solid);
+}
+
+.per-hour{
+    color: var(--dark-color);
+    font-size: 1.5rem;
+    font-weight: 100;
+}
+
+
+/*======================================================
+                Contact Section styles
+======================================================*/
+
+.contact-content{
+    display: flex;
+    justify-content: center;
+}
+
+.traveler-wrap{
+    display: none;
+}
+
+.contact-form{
+    width: 100%;
+    background-image: var(--gradient-color);
+    padding: 2.5rem;
+}
+
+.contact-form .input{
+    display: block;
+    background-color: transparent;
+    color: white;
+    font-weight: normal;
+    border-bottom:  2px solid white;
+    padding-left: 0;
+}
+
+.bar{
+    display: block;
+    position: relative;
+}
+
+
+/* debug */
+.bar::after{
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 3px;
+    background-color: var(--purple-light);
+    transform: scaleX(0);
+    transition: transform .5s;
+}
+
+.contact-form .input:focus + bar::after{
+    transform: scaleX(1);
+}
+
+
+/*======================================================
+                Footer section styles
+======================================================*/
+
+.footer{
+    padding: 5rem 0;
+    background-color: var(--purple-solid);
+    color: white;
+}
+
+.footer-content-brand{
+    margin-bottom: 5rem;
+}
+
+.footer .paragraph{
+    color: inherit;
+}
+
+.footer-heading{
+    text-transform: uppercase;
+    margin-bottom: 2.5rem;
+}
+
+.social-media{
+    display: flex;
+    width: 250px;
+    margin: 0 auto;
+    padding: 10px;
+    position: relative;
+}
+
+.sm-link{
+    width: 4rem;
+    height: 4rem;
+    font-size: 2rem;
+    border: 2px solid var(--yellow-solid);
+    border-radius: 50%;
+    display: flex;
+    margin-right: 1rem;
+    transition:  background-color .5s;
+
+}
+
+.sm-link:hover{
+    background-color: var(--yellow-solid);
+    color: var(--dark-color);
+}
+
+.sm-link i{
+    margin: auto;
+}
+
+
+/*======================================================
+                    Room style section
+======================================================*/
+
+
+
+/*======================================================
+                    Hall Table
+======================================================*/
+table {
+    
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+
+
+  }
+  th{
+    font-size: 2rem;
+    font-family: 'Open Sans', sans-serif;
+  }
+  td{
+    font-size: 1.7rem;
+    font-family: 'Courgette', cursive;
+    font-weight: 300;
+    color: black;
+  }
+
+  td, th {
+    
+    border: 2px solid var(--purple-solid);
+    text-align: le;
+    padding: 8px;
+  }
+  
+  tr:nth-child(even) {
+    background-color: rgb(250, 249, 183);
+    
+  }
+
+/*======================================================
+                Additional Rentals
+ ======================================================*/
+
+/*======================================================
+            Featured Hotels section-styles
+======================================================*/
+
+.section-head{
+    text-align: center;
+    margin-bottom: 5rem;
+}
+
+.heading{
+    display: block;
+    font-size: 4rem;
+    text-transform: uppercase;
+}
+
+.sub-heading{
+    font-size: 1.7rem;
+    font-family: 'Courgette', cursive;
+    font-weight: 300;
+    color: #a5a5a5;
+}
+
+.grid{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(35rem, 1fr));
+    grid-gap: 2.5rem;
+}
+
+.grid-item{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.featured-add{
+    height: 30rem;
+    color: white;
+    padding: 1rem;
+    position: relative;
+    z-index: 0;
+}
+
+.featured-add::before{
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+.add-image{
+    border: 3px solid var(--purple-solid);
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -2;
+}
+
+.add-name{
+    font-size: 2.6rem;
+    text-align: center;
+}
+
+.add-price{
+    font-size: 1.8rem;
+}
+
+.add-rating{
+    margin: 1rem 0 2.5rem;
+
+}
+
+.rating{
+    color: var(--yellow-solid);
+}
+
+
+/*======================================================
+                    Food Packages
+======================================================*/
+
+.featured-hotels{
+    height: 35rem;
+    color: white;
+    padding: 1rem;
+    position: relative;
+    z-index: 0;
+}
+
+.featured-hotels::before{
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--purple-transparent-alt);
+    z-index: -1;
+}
+
+
+.featured-food{
+    background-color: var();
+}
+
+
+/*======================================================
+                    Login Prompt
+======================================================*/
+
+.test{
+    background-image: url(./images/backgroundpage0.jpg);
+    background-repeat: no-repeat;
+    
+    }
+    .center{
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+    
+    .center button{
+        padding:  10px 20px;
+        font-size: 15px;
+        font-weight: 600;
+        color: #222;
+        background-color: #f5f5f5;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+    
+    .form-login{
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(1.25);
+        width: 380px;
+        padding: 20px 30px;
+        background: white;
+        box-shadow: 2px 2px 5px 5px rgba(0,0,0,.15);
+        border-radius: 10px;
+    }
+    
+    .modal .close-btn{
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: 15px;
+        height: 15px;
+        background-color: red;
+        text-align: center;
+        line-height: 15px;
+        border-radius: 15px;
+        cursor: pointer;
+    }
+    
+    .modal .form-login h2{
+        text-align: center;
+        color: #222;
+        margin: 10px 0px 20px;
+        font-size: 25px;
+    }
+    
+    .modal .form-login .form-element{
+        margin: 15px 0px;
+    }
+    
+    .modal .form-login .form-element label{
+        font-size: 14px;
+        color: #222;
+    }
+    
+    .modal .form-login .form-element input[type="text"],
+    .modal .form-login .form-element input[type="password"] {
+        margin-top: 5px;
+        border-radius: 10px;
+        display: block;
+        width: 100%;
+        padding: 10px;
+        outline: none;
+        border: 1px solid #aaa;
+    }
+    
+
+    .modal .form-login .form-element input[type="checkbox"] {
+        margin-right: 5px;
+    }
+    
+    .modal .form-login .form-element button {
+        width: 100%;
+        height: 40px;
+        border: none;
+        outline: none;
+        font-size: 15px;
+        background-color: #222;
+        color: white;
+        border-radius: 10px;
+        cursor: pointer;
+    }
+    
+    .form-login .form-element a{
+        display: block;
+        text-align: right;
+        font-size: 10px;
+        color: blue;
+        font-weight: 600;
+    }
+
+    #back{
+        display: inline;
+
+    }
+
+    
+
+
+
+
+    
+/*======================================================
+                    Media Queries
+======================================================*/
+
+/*Media Queries*/
+
+@media screen and (min-width: 768px) {
+    /*Header Section Styles*/
+     .header1{
+         height: 10rem;
+     }
+     .header{
+        height: 10rem;
+    }
+     .header.active{
+         height: 6rem;
+     }
+     /*Hero Section Styles*/
+     .title{
+         font-size: 4rem;
+     }
+ 
+     .subtitle{
+         font-size: 2rem;
+     }
+     /*Contact Section Styles*/
+     .contact-content{
+         justify-content: space-between;
+     }
+     .traveler-wrap{
+         display: block;
+         flex: 0 0 45%;
+     }
+     .traveler-wrap img{
+         width: 100%;
+     }
+ 
+     .contact-form{
+         flex: 0 0 50%;
+         align-self: flex-start;
+     }
+ 
+     .input-group-wrap{
+         display: flex;
+     }
+ 
+     .input-group-wrap .input-group{
+         width: 50%;
+         margin-right: 2rem;
+     }
+ 
+     .input-group-wrap .input-group:last-child{
+         margin-right: 0;
+     }
+ 
+     /*Footer Section Styles*/
+     .footer{
+         overflow-x: hidden;
+     }
+     .footer-content{
+         display: flex;
+         
+     }
+ 
+ .footer-content-brand{
+     margin-bottom: 0;
+     flex: 0 0 60%;
+ }
+ 
+ .footer ,.paragraph{
+     margin-top: 2.5rem;
+ }
+ 
+ .footer-heading{
+     margin-bottom: 5rem;
+ }
+ 
+ .social-media-wrap{
+     /*flex:  0 0 40%;
+     margin-left: 2.5rem;
+     position: relative;
+     width: 100%;*/
+     width:100%;
+    height: auto;
+   
+    position: relative;
+
+ }
+ }
+ 
+ @media screen and (min-width: 1000px){
+     section:not(.booking){
+         padding: 10rem 0;
+     }
+ 
+     /*Header Section Styles*/
+ 
+     .hamburger-menu{
+         display: none;
+     }
+     
+     .nav-list{
+         position: initial;
+         height: initial;
+         background-color: transparent;
+         flex-direction: row;
+         justify-content: right;
+         opacity: 1;
+         transform: scale(1);
+     }
+ 
+     .nav-item:not(:last-child){
+         margin-right: 3rem;
+         margin-bottom: 0;
+     }
+ 
+     .nav-link{
+         font-size: 1.3rem;
+         font-weight: normal;
+         transition: color .5s;
+     }
+ 
+     .nav-link:hover{
+         color: var(--yellow-solid);
+     }
+ 
+     /*hero section styles*/
+ 
+     .title{
+         font-size: 6rem;
+     }
+ 
+     .subtitle{
+         font-size: 2rem;
+     }
+ 
+     /*bookin section styles*/
+ 
+     .book-form{
+         display: flex;
+         justify-content: space-between;
+     }
+ 
+     .book-form .input-group{
+         margin-bottom: 0;
+     }
+ 
+ 
+     .input-group
+     .options{
+         min-width: 20rem;
+     }
+ 
+     /*room selection styles*/
+ 
+     .room-grid{
+         grid-template-columns: repeat(auto-fit, minmax(50rem, 1fr));
+     }
+ 
+     .featured-rooms{
+         flex-direction: row;
+         align-items: flex-start;
+     }
+ 
+     .room-info-wrap{
+         text-align: bottom;
+
+         margin-left: 1.rem;
+     }
+ }
+ 
+     @media screen and (min-width: 1300px){
+ 
+     /*hero section styles*/
+ 
+     .title{
+         font-size: 7rem;
+     }
+ 
+     .subtitle{
+         font-size: 3rem;
+     }
+ 
+     .room-grid{
+         grid-template-columns: repeat(auto-fit, minmax(50rem, 1fr));
+     }
+ }
+
