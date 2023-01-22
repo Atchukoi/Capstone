@@ -8,14 +8,14 @@ if (isset($_POST['submit'])) {
   $email = $_POST['email'];
   $password = md5($_POST['password']);
 
-  $sql = "SELECT * FROM tblguest WHERE Email='$email' AND Password='$password'";
+  $sql = "SELECT * FROM user WHERE Email='$email' AND Password='$password'";
   $result = mysqli_query($conn, $sql);
 
   if ($result->num_rows > 0) {
     echo "<script>alert('Welcome! Succesfuly Logged In.')</script>";
     $row = mysqli_fetch_assoc($result);
     $Id = $row['Id'];
-      $_SESSION['Verify'] = $row['Verify'];
+      $_SESSION['Verify'] = $row['IsVerified'];
       
       
 
@@ -104,7 +104,7 @@ if (isset($_POST['submit'])) {
                 </div>
                 <div class="card-body  mx-md-4">
                   <div class="text-center">
-                    <img src="./images/Logo1.png" style="width: 300px" alt="logo" />
+                    <img src="./images/Logo.jpeg" style="width: 300px" alt="logo" />
                   </div>
 
                   <form action="" method="POST" class="form-login">

@@ -25,7 +25,7 @@ include 'config.php';
 
   ?>
 
-  <div class="card-body">
+  <div class="card-body ">
     <table id="datatablesSimple" >
       <thead class="bg-info ">
         <tr>
@@ -35,15 +35,17 @@ include 'config.php';
           <th scope="col">Arrival</th>
           <th scope="col">Contact</th>
           <th scope="col">Status</th>
+          <th scope="col">Code</th>
           <th scope="col">Action</th>
         </tr>
       </thead>
       <tbody>
         <?php
-        $sql = "SELECT tblhallreservation.Id AS ReservationId, tblhallreservation.GuestId, CONCAT(tblguest.FirstName,' ', tblguest.LastName) AS GuestName, tblhall.Name, tblhallreservation.Arrival, tblguest.Phone, tblhallreservation.Status
-        FROM tblhallreservation
-        JOIN tblhall ON tblhallreservation.HallId = tblhall.Id
-        JOIN tblguest ON tblhallreservation.GuestId = tblguest.id";
+        $sql = "SELECT CONCAT(u.FirstName,' ',u.LastName) AS GuestName, roomrate.Title, rr.Arrival, u.Contact, rr.Status, rr.Code  
+        FROM roomreservation rr
+        LEFT JOIN roomrate ON roomrate.Id = rr.RoomRateId
+        LEFT JOIN user u ON u.Id = rr.GuestId
+        WHERE  roomrate.RoomCategoryId = 2";
         $result = mysqli_query($conn, $sql);
         $number = 1;
 
@@ -52,10 +54,11 @@ include 'config.php';
           <tr class="text-center">
             <th><?php echo $number ?></th>
             <td><?php echo $row['GuestName'] ?></td>
-            <td><?php echo $row['Name'] ?></td>
+            <td><?php echo $row['Title'] ?></td>
             <td><?php echo $row['Arrival'] ?></td>
-            <td><?php echo $row['Phone'] ?></td>
+            <td><?php echo $row['Contact'] ?></td>
             <td><?php echo $row['Status'] ?></td>
+            <td><?php echo $row['Code'] ?></td>
             <td class="text-center ">
               <?php if ($row['Status'] == "Pending") {
               ?>

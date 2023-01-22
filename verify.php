@@ -7,13 +7,13 @@ $Id = $_GET['Id'];
 if (isset($_POST['submit'])) {
     $OTP = $_POST['OTP'];
 
-    $sql = "SELECT OTP From tblguest WHERE  Id = $Id AND OTP = $OTP Limit 1";
+    $sql = "SELECT OneTimePassword From user WHERE  Id = $Id AND OneTimePassword = $OTP Limit 1";
     $result = mysqli_query($conn,$sql);
-    $usql = mysqli_query($conn,"SELECT * FROM tblguest WHERE Id=$Id");
+    $usql = mysqli_query($conn,"SELECT * FROM user WHERE Id=$Id");
     $urow = mysqli_fetch_assoc($usql);
 
     if ($result->num_rows > 0) {
-        $gsql= "UPDATE tblguest SET `OTP`= '0', `Verify`= '1' ";
+        $gsql= "UPDATE user SET `OneTimePassword`= '0', `IsVerified`= '1' ";
         $gresult = mysqli_query($conn,$gsql);
         $_SESSION['Guest'] = $urow['FirstName'];
         $_SESSION['GuestId'] = $urow['Id'];

@@ -38,19 +38,20 @@ $Id = $_GET['Id'];
                         <div class="container">
                             <div class="row">
                                 <?php
-                                $sql ="SELECT *, CONCAT(tblguest.FirstName,' ',tblguest.LastName) as GuestName
-                                FROM tblreservation 
-                                LEFT JOIN tblguest ON tblreservation.GuestId = tblguest.Id
-                                WHERE tblreservation.Id = $Id";
+                                $sql ="SELECT *, CONCAT(u.FirstName,' ',u.LastName) as GuestName, u.Email
+                                FROM roomreservation rr 
+                                LEFT JOIN user u ON rr.GuestId = u.Id
+                                WHERE rr.Id = $Id";
                                 $result = mysqli_query($conn, $sql);
                                 $row = mysqli_fetch_assoc($result);
                                 $Arrival = $row['Arrival'];
                                 $Departure = $row['Departure'];
+                                $Email = $row['Email'];
                                 $Code = $row['Code'];
                                 $text = 
 "This message is to confirm that the reservation you have made for the following dates'.$Arrival.' to '.$Departure.' with a reservation code of ($Code) at La Perfecta Convention Center, Villas and Resort in Daramuangan Norte, San Mateo, Isabela. 
 
-We like to inform you that the reservation you made is confirmed. A reminder that the reservation have not been paid in 50% down payment but this time be canceled without any further correspondence from La Perfecta.
+We like to inform you that the reservation you made is not yet confirmed. A reminder that the reservation have not been paid in 50% down payment but this time be canceled without any further correspondence from La Perfecta.
 
 Deposit can be paid or transfered online via this link provided below :
 

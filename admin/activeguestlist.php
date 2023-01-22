@@ -19,18 +19,18 @@ include 'config.php';
             </thead>
             <tbody>
                 <?php
-                $sql = "SELECT CONCAT(tblguest.FirstName,' ', tblguest.LastName) AS Name, tblroom.Number, tblguest.Phone
-                FROM tblguest 
-                JOIN tblhotel ON tblhotel.GuestId = tblguest.Id
-                JOIN tblroom ON tblhotel.RoomId = tblroom.Id";
+                $sql = "SELECT CONCAT(u.FirstName,' ', u.LastName) AS Name, u.Contact,  r.Title
+                FROM transaction t
+                JOIN user u ON t.UserId = u.Id
+                JOIN room r ON r.Id = t.RoomId";
                 $result = mysqli_query($conn,$sql);
                 while ($row = mysqli_fetch_assoc($result)) {
                 ?>
                 <tr>
                     <td style="width:600px"><?php echo $row['Name'] ?></td>
-                    <td style="width:200px"><?php echo $row['Number'] ?></td>
+                    <td style="width:200px"><?php echo $row['Title'] ?></td>
                     <td style="width:200px">
-                    <?php echo $row['Phone'] ?>
+                    <?php echo $row['Contact'] ?>
                     </td>
                 </tr>
                 <?php } ?>

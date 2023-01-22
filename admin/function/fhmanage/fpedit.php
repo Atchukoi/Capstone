@@ -13,14 +13,14 @@ if (isset($_POST['submit'])) {
     $Pax100 = $_POST['Pax100'];
 
 
-    $sql = "UPDATE `tblfoodpackage` SET 
+    $sql = "UPDATE `foodpackage` SET 
     
-    `Name`='$Name',
+    `Title`='$Name',
     `Description`='$Description',
     `Menu`='$Menu',
-    `Pax50`='$Pax50',
-    `Pax80`='$Pax80',
-    `Pax100`='$Pax100' 
+    `Minimum`='$Pax50',
+    `Maximum`='$Pax80',
+    `Cost`='$Pax100' 
     
     WHERE Id= $id";
 
@@ -53,7 +53,7 @@ if (isset($_POST['submit'])) {
 <body style="background-color: rgba(237, 195, 238, 0.8);">
     <?php
 
-    $sql = "SELECT * FROM `tblfoodpackage` WHERE Id= $id LIMIT 1";
+    $sql = "SELECT * FROM `foodpackage` WHERE Id= $id LIMIT 1";
     $result = mysqli_query($conn, $sql);
     $row = mysqli_fetch_assoc($result);
 
@@ -74,8 +74,10 @@ if (isset($_POST['submit'])) {
             <div class="row mb-3">
                 <div class="col">
                     <label for="Name" class="form-label">Name :</label>
-                    <input type="text" name="Name" class="form-control" value="<?php echo $row['Name'] ?>">
+                    <input type="text" name="Name" class="form-control" value="<?php echo $row['Title'] ?>">
                 </div>
+            </div>
+            <div class="row mb-3">
 
                 <div class="col">
                     <label for="Description" class="form-label">Description :</label>
@@ -83,26 +85,24 @@ if (isset($_POST['submit'])) {
                 </div>
                 
                 <div class="col">
-                    <label for="Pax50" class="form-label">50 Pax :</label>
+                    <label for="Pax50" class="form-label">Minimum :</label>
                     <div class="input-group">
-                        <div class="input-group-text">₱</div>
-                    <input type="number" name="Pax50" class="form-control" value="<?php echo $row['Pax50'] ?>">
-                    <div class="input-group-text">per pax</div>
+                    <input type="number" name="Pax50" class="form-control" value="<?php echo $row['Minimum'] ?>">
+                    <div class="input-group-text"> pax</div>
                     </div>
                 </div>
                 <div class="col">
-                    <label for="Pax80" class="form-label">80 Pax :</label>
+                    <label for="Pax80" class="form-label">Maximum :</label>
                     <div class="input-group">
-                        <div class="input-group-text">₱</div>
-                    <input type="number" name="Pax80" class="form-control" value="<?php echo $row['Pax80'] ?>">
-                    <div class="input-group-text">per pax</div>
+                    <input type="number" name="Pax80" class="form-control" value="<?php echo $row['Maximum'] ?>">
+                    <div class="input-group-text">pax</div>
                     </div>
                 </div>
                 <div class="col">
-                    <label for="Pax100" class="form-label">100 Pax :</label>
+                    <label for="Pax100" class="form-label">Cost :</label>
                     <div class="input-group">
                         <div class="input-group-text">₱</div>
-                    <input type="number" name="Pax100" class="form-control" value="<?php echo $row['Pax100'] ?>">
+                    <input type="number" name="Pax100" class="form-control" value="<?php echo $row['Cost'] ?>">
                     <div class="input-group-text">per pax</div>
                     </div>
                 </div>

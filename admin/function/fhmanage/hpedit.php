@@ -57,7 +57,12 @@ if (isset($_POST['submit'])) {
 <body style="background-color: rgba(237, 195, 238, 0.8);">
     <?php
 
-    $sql = "SELECT * FROM `tblhallpackage` WHERE Id= $id LIMIT 1";
+    $sql = "SELECT rr.Title, rr.Description AS Inclusion, rrpt.InitialTime,rrpt.Rate,rrpt.ExceedingRatePerHour, rc.Description
+    FROM roomrate rr
+    LEFT JOIN roomratepricetrail rrpt ON rrpt.Id = rr.RoomPriceTrailId
+    LEFT JOIN room r ON r.RoomTypeId = rr.RoomTypeID
+    LEFT JOIN roomcategory rc ON rc.Id = r.RoomCategoryId
+    WHERE rr.Id = $id";
     $result = mysqli_query($conn, $sql);
     $row = mysqli_fetch_assoc($result);
 
@@ -78,7 +83,7 @@ if (isset($_POST['submit'])) {
             <div class="row mb-3">
                 <div class="col-md-6">
                     <label for="Name" class="form-label">Name :</label>
-                    <input type="text" name="Name" class="form-control" value="<?php echo $row['Name'] ?>">
+                    <input type="text" name="Name" class="form-control" value="<?php echo $row['Title'] ?>">
                 </div>
                 <div class="col-md-6">
                     <label for="Description" class="form-label">Description :</label>
@@ -86,21 +91,18 @@ if (isset($_POST['submit'])) {
                 </div>
             </div>
             <div class="row mb-3">
-                <div class="col-md-3">
-                    <label for="Pax" class="form-label">Pax :</label>
-                    <input type="text" name="Pax" class="form-control" value="<?php echo $row['Pax'] ?>">
-                </div>
+                
                 <div class="col-md-3">
                     <label for="Time" class="form-label">Time :</label>
-                    <input type="text" name="Time" class="form-control" value="<?php echo $row['Time'] ?>">
+                    <input type="text" name="Time" class="form-control" value="<?php echo $row['InitialTime'] ?>">
                 </div>
                 <div class="col-md-3">
                     <label for="Cost" class="form-label">Cost :</label>
-                    <input type="text" name="Cost" class="form-control" value="<?php echo $row['Cost'] ?>">
+                    <input type="text" name="Cost" class="form-control" value="<?php echo $row['Rate'] ?>">
                 </div>
                 <div class="col-md-3">
                     <label for="Exceeding" class="form-label">Exceeding :</label>
-                    <input type="text" name="Exceeding" class="form-control" value="<?php echo $row['Exceeding'] ?>">
+                    <input type="text" name="Exceeding" class="form-control" value="<?php echo $row['ExceedingRatePerHour'] ?>">
                 </div>
             </div>
             <div class="row mb-3">

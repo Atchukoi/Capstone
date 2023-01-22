@@ -5,7 +5,7 @@ $id = $_GET['id'];
 if (isset($_GET['id'])) {
     
     
-    $sql = "UPDATE `tblroom` SET  `Status`='Maintenance' WHERE Id = $id";
+    $sql = "UPDATE `room` SET  `RoomStatusId`='3' WHERE Id = $id";
     $result = mysqli_query($conn, $sql);
 
     if ($result) {

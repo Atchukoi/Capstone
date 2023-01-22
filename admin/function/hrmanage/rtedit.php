@@ -7,19 +7,15 @@ if (isset($_POST['submit'])) {
     $Type = $_POST['Type'];
     $Description = $_POST['Description'];
     $Person = $_POST['Person'];
-    $Rate = $_POST['Rate'];
-
-
-    $sql = "UPDATE `tblroomtype` SET 
     
-    `Type`='$Type',
+
+
+    $sql = "UPDATE `roomcategory` SET 
+    
+    `Title`='$Type',
     `Description`='$Description',
-    `Person`='$Person',
-    `Rate`='$Rate' 
-    
+    `PersonCount`='$Person'
     WHERE Id= $id";
-
-
     $result = mysqli_query($conn, $sql);
 
     if ($result) {
@@ -50,7 +46,7 @@ if (isset($_POST['submit'])) {
 <body style="background-color: rgba(237, 195, 238, 0.8);">
     <?php
 
-    $sql = "SELECT * FROM `tblroomtype` WHERE Id= $id LIMIT 1";
+    $sql = "SELECT * FROM `roomcategory` WHERE Id= $id LIMIT 1";
     $result = mysqli_query($conn, $sql);
     $row = mysqli_fetch_assoc($result);
 
@@ -70,18 +66,12 @@ if (isset($_POST['submit'])) {
             <div class="row mb-3">
                 <div class="col-lg-4">
                     <label for="Type" class="form-label">Room Type :</label>
-                    <input type="text" name="Type" class="form-control" value="<?php echo $row['Type'] ?>">
+                    <input type="text" name="Type" class="form-control" value="<?php echo $row['Title'] ?>">
                 </div>
-                <div class="col-lg-4">
-                    <label for="Rate" class="form-label">Rate per night :</label>
-                    <div class="input-group">
-                                <div class="input-group-text">₱</div>
-                    <input type="number" name="Rate" class="form-control" value="<?php echo $row['Rate'] ?>">
-                    </div>
-                </div>
+                
                 <div class="col-lg-4">
                     <label for="Person" class="form-label">Number of Person :</label>
-                    <input type="text" name="Person" class="form-control" value="<?php echo $row['Person'] ?>">
+                    <input type="text" name="Person" class="form-control" value="<?php echo $row['PersonCount'] ?>">
                 </div>
             </div>
 

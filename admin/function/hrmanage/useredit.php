@@ -1,7 +1,6 @@
 <?php
 include 'config.php';
 $id = $_GET['id'];
-$role = $_GET['role'];
 
 if (isset($_POST['submit'])) {
     $Role = $_POST['Role'];
@@ -14,9 +13,9 @@ if (isset($_POST['submit'])) {
     $Password = ($_POST['Password']);
 
 
-    $sql = "UPDATE `tbluser` SET 
+    $sql = "UPDATE `user` SET 
     
-    `Role`='$Role',
+    `RoleId`='$Role',
     `FirstName`='$FirstName',
     `LastName`='$LastName',
     `Email`='$Email',
@@ -64,7 +63,7 @@ if (isset($_POST['submit'])) {
 
         <?php
 
-        $sql = "SELECT * FROM `tbluser` WHERE Id= $id LIMIT 1";
+        $sql = "SELECT * FROM `user` WHERE Id= $id LIMIT 1";
         $result = mysqli_query($conn, $sql);
         $row = mysqli_fetch_assoc($result);
     
@@ -83,8 +82,8 @@ if (isset($_POST['submit'])) {
                                 <?php
                                 echo "<option value=" . $role. "> " . $role . "</option>";
                                 ?>
-                                <option value="Receptionist">Receptionist</option>
-                                <option value="Administrator">Administrator</option>
+                                <option value="2">Receptionist</option>
+                                <option value="1">Administrator</option>
                             </select>
                         </div>
                         <div class="col-md-3">

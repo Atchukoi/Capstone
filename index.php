@@ -8,10 +8,11 @@ if(isset($_POST['submit'])) {
     $Subject = $_POST['subject'];
     $Message = $_POST['message'];
 
-    $sql= "INSERT INTO `tblcontact`(`Name`, `Email`, `Subject`, `Message`) VALUES ('$Name','$Email',' $Subject','$Message')";
+    $sql= "INSERT INTO `contact`(`Name`, `Email`, `Subject`, `Message`) VALUES ('$Name','$Email',' $Subject','$Message')";
     $result = mysqli_query($conn,$sql);
-    echo '<script>Alert("Thank you for reaching us with your concern, you will hear from us soon. Have a great day!")</script>';
-
+    if ($result) {
+    echo '<script>alert("Thank you for reaching us with your concern, you will hear from us soon. Have a great day!:");</script>';
+    }
 }
 
 
@@ -116,71 +117,12 @@ if(isset($_POST['submit'])) {
                 <span class="heading">Luxurious</span>
                 <span class="sub-heading">Affordable Rooms</span>
             </h5>
-            <div class="grid room-grid">
-                <div class="grid-item featured-room">
-                    <div class="image-wrap">
-                        <img class="room-image" src="./images/press2.png" alt="">
-                        <h5 class="room-name">Presidential Villa </h5>
-                    </div>
-                    <div class="room-info-wrap">
-                        <span class="room-price">
-                            P 3,500 <span class="pernight">Per Night</span>
-                            <i class="fa-sharp fa-solid fa-person" style="color:red;"></i>
-                            <i class="fa-sharp fa-solid fa-person" style="color:red;"></i></span>
-                        <p class="paragraph">Fully Airconditioned room with a Queen Size Bed</p>
-                        <p class="paragraph">Breakfast Meal Included</p>
-                        <a href="bookroom.php?Id=1&rId=1" class="btn rooms-btn">Book now &rrarr;</a>
-
-                    </div>
-                </div>
-
-                <div class="grid-item featured-room">
-                    <div class="image-wrap">
-                        <img class="room-image" src="./images/suite.jpg" alt="">
-                        <h5 class="room-name">Suite Villa</h5>
-                    </div>
-                    <div class="room-info-wrap">
-                        <span class="room-price">P 3,200 <span class="pernight">Per Night</span>
-                            <i class="fa-sharp fa-solid fa-person" style="color:red;"></i>
-                            <i class="fa-sharp fa-solid fa-person" style="color:red;"></i></span>
-                        <p class="paragraph">Fully Airconditioned room with a King Size Bed</p>
-                        <p class="paragraph">Breakfast Meal Included</p>
-                        <a href="bookroom.php?Id=2&rId=4" class="btn rooms-btn">Book now &rrarr;</a>
-                    </div>
-                </div>
-
-                <div class="grid-item featured-room">
-                    <div class="image-wrap">
-                        <img class="room-image" src="./images/mini dorm.jpg" alt="">
-                        <h5 class="room-name">Mini Dorm</h5>
-                    </div>
-                    <div class="room-info-wrap">
-                        <span class="room-price">P 3,000 <span class="pernight">Per Night</span>
-                            <i class="fa-sharp fa-solid fa-person" style="color:red;"></i>
-                            <i class="fa-sharp fa-solid fa-person" style="color:red;"></i>
-                            <i class="fa-sharp fa-solid fa-person" style="color:red;"></i>
-                            <i class="fa-sharp fa-solid fa-person" style="color:red;"></i></span>
-                        <p class="paragraph">Fully Airconditioned room with 2 Bunk Beds</p>
-                        <p class="paragraph">Breakfast Meal Included</p>
-                        <a href="bookroom.php?Id=3&rId=7" class="btn rooms-btn">Book now &rrarr;</a>
-                    </div>
-                </div>
-
-                <div class="grid-item featured-room">
-                    <div class="image-wrap">
-                        <img class="room-image" src="./images/room_8.jpg" alt="">
-                        <h5 class="room-name">Standard</h5>
-                    </div>
-                    <div class="room-info-wrap">
-                        <span class="room-price">P 2,500 <span class="pernight">Per Night</span>
-                            <i class="fa-sharp fa-solid fa-person" style="color:red;"></i>
-                            <i class="fa-sharp fa-solid fa-person" style="color:red;"></i></span>
-                        <p class="paragraph">Fully Airconditioned room with 2 Single Beds</p>
-                        <p class="paragraph">Breakfast Meal Included</p>
-                        <a href="bookroom.php?Id=4&rId=10" class="btn rooms-btn">Book now &rrarr;</a>
-                    </div>
-                </div>
-            </div>
+            
+                
+                <div id="displayrooms"></div>
+                
+                
+            
         </div>
     </section>
 
@@ -279,11 +221,6 @@ if(isset($_POST['submit'])) {
                     <div class="room-info-wrap">
                         <span class="room-price">3 Main Courses </span>
                         <p class="paragraph">
-                        <ul style="font-size: 1.5rem;">
-                          <li><span>&#9989;</span> ₱ 320 / pax (50 pax minimum)</li>
-                          <li><span>&#9989;</span> ₱ 300 / pax (80 pax)</li>
-                          <li><span>&#9989;</span> ₱ 280 / pax (100 pax or more)</li>
-                        </ul><p style="font-size: 1.5rem;">
                         Pork or Beef, Chicken, Vegetables, Rice, Dessert (Buko Pandan salad) & Iced Tea
                         </p> 
                         
@@ -297,11 +234,7 @@ if(isset($_POST['submit'])) {
                   </div>
                   <div class="room-info-wrap">
                       <span class="room-price">4 Main Courses</span>
-                      <p class="paragraph" ><ul style="font-size: 1.5rem;">
-                        <li><span>&#9989;</span> ₱ 340 / pax (50 pax minimum)</li>
-                        <li><span>&#9989;</span> ₱ 320 / pax (80 pax)</li>
-                        <li><span>&#9989;</span> ₱ 300 / pax (100 pax or more)</li>
-                      </ul><p style="font-size: 1.5rem;">
+                      <p class="paragraph">
                       Pork, Beef, Chicken, Vegetables, Rice, Dessert (Buko Pandan salad) & Iced Tea
                        </p>
                       
@@ -315,12 +248,9 @@ if(isset($_POST['submit'])) {
                 </div>
                 <div class="room-info-wrap">
                     <span class="room-price">5 Main Courses</span>
-                    <p class="paragraph"><ul style="font-size: 1.5rem;">
-                      <li><span>&#9989;</span> ₱ 320 / pax (50 pax minimum)</li>
-                      <li><span>&#9989;</span> ₱ 300 / pax (80 pax)</li>
-                      <li><span>&#9989;</span> ₱ 280 / pax (100 pax or more)</li>
-                    </ul>
-                    <p style="font-size: 1.5rem;">
+                    
+                      
+                    <p class="paragraph">
                     Seafood, Pork, Beef, Chicken, Vegetables, Rice, Dessert (Buko Pandan salad) & Iced Tea
                      </p>
                     
@@ -373,5 +303,7 @@ if(isset($_POST['submit'])) {
 
 
 </main>
+
+
 
 <?php include 'themes/footer.php'; ?>

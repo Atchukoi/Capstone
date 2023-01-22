@@ -1,51 +1,46 @@
 <?php
 include 'config.php';
 $Id = $_GET['Id'];
-$GuestId = $_GET['GuestId'];
-
-$result = mysqli_query($conn, "SELECT *,tblroom.Number FROM tblhotel JOIN tblroom ON tblroom.Id = $Id WHERE tblhotel.Id = $Id ");
-$row = mysqli_fetch_assoc($result);
-
-?>
+$Days = $_GET['d'];
 
 
+if (isset($_POST['submit'])) {
 
-<?php
-$dresult = mysqli_query($conn, "SELECT * FROM tblhotel WHERE Id = $Id");
-$drow = mysqli_fetch_assoc($dresult);
+    $jresult = mysqli_query($conn, "SELECT * FROM transaction WHERE Id = $Id ");
+    $jrow = mysqli_fetch_assoc($jresult);
 
-$RoomId = $drow['RoomId'];
-$Arrival = $drow['Arrival'];
-$Departure = $drow['Departure'];
-$GuestId = $drow['GuestId'];
-$Days = $drow['Days'];
-$Remarks = $drow['Remarks'];
-$Deposit = $drow['Deposit'];
-$RoomCharges = $drow['RoomCharges'];
-$ExtraCharges = $drow['ExtraCharges'];
-$Discount = $drow['Discount'];
-$Total = $drow['Total'];
-$TotalDues = $drow['TotalDues'];
-$TotalDuesDiscount = $drow['TotalDuesDiscount'];
-$PaymentType = $drow['PaymentType'];
-$Tender = $drow['Tender'];
-$TransactionCode = $drow['TransactionCode'];
-$Changes = $drow['Changes'];
+    $Id = $jrow['Id'];
+    $RoomId = $jrow['RoomId'];
+    $ArrivalDateTime = $jrow['ArrivalDateTime'];
+    $DepartureDateTime = $jrow['DepartureDateTime'];
+    $UserId = $jrow['UserId'];
+    $Notes = $jrow['Notes'];
+    $RoomPriceTrailId = $jrow['RoomPriceTrailId'];
+    $RoomChargesTotal = $jrow['RoomChargesTotal'];
+    $ExtraChargesTotal = $jrow['ExtraChargesTotal'];
+    $SubTotal = $jrow['SubTotal'];
+    $Deposit = $jrow['Deposit'];
+    $Discount = $jrow['Discount'];
+    $Total = $jrow['Total'];
 
-if (isset($_POST['next'])) {
 
-    $esql = "INSERT INTO `tblhoteltransaction`
-                                (`RoomId`, `Arrival`, `Departure`, `GuestId`, `Days`, `Remarks`, `Deposit`, `RoomCharges`, `ExtraCharges`, `Discount`, `Total`, `TotalDues`, `TotalDuesDiscount`, `PaymentType`, `Tender`, `TransactionCode`, `Changes`) 
-                                VALUES 
-                                ('$RoomId','$Arrival','$Departure','$GuestId','$Days','$Remarks','$Deposit','$RoomCharges','$ExtraCharges','$Discount','$Total','$TotalDues','$TotalDuesDiscount','$PaymentType','$Tender','$TransactionCode','$Changes')";
+    $esql = "INSERT INTO `transactionhistory`
+    (`TransactionId`, `RoomId`, `ArrivalDateTime`, `DepartureDateTime`, `UserId`, `Notes`, `RoomPriceTrailId`, `RoomChargesTotal`, `ExtraChargesTotal`, `SubTotal`, `Deposit`, `Discount`, `Total`) 
+    VALUES 
+    ('$Id','$RoomId','$ArrivalDateTime','$DepartureDateTime','$UserId','$Notes','$RoomPriceTrailId','$RoomChargesTotal','$ExtraChargesTotal','$SubTotal','$Deposit','$Discount','$Total')";
     $eresult = mysqli_query($conn, $esql);
 
-    $fsql = "UPDATE `tblhotel` SET `Arrival`='0',`Departure`='0',`GuestId`='0',`Days`='0',`Remarks`='0',`Deposit`='0',`RoomCharges`='0',`ExtraCharges`='0',`Discount`='0',`Total`='0',`TotalDues`='0',`TotalDuesDiscount`='0',`PaymentType`='0',`Tender`='0',`TransactionCode`='0',`Changes`='0' WHERE Id = $Id";
-    $fresult = mysqli_query($conn,$fsql);
+    $last_id = mysqli_insert_id($conn);
 
-    $hsql = "UPDATE `tblroom` SET `Status`='Cleaning',`GuestId`='0' WHERE Id = $Id";
-    $hresult = mysqli_query($conn,$hsql);
-    header("Location: dashboard.php?msg=Successfully Checked-Out");
+    $fsql = "UPDATE `transaction` SET `ArrivalDateTime`='0',`DepartureDateTime`='0',`UserId`='0',`Notes`='0',`RoomPriceTrailId`='0',`RoomChargesTotal`='0',`ExtraChargesTotal`='0',`SubTotal`='0',`Deposit`='0',`Discount`='0',`Total`='0' WHERE Id = $Id";
+    $fresult = mysqli_query($conn, $fsql);
+
+    $hsql = "UPDATE `room` SET `RoomStatusId`='4' WHERE Id = $RoomId";
+    $hresult = mysqli_query($conn, $hsql);
+
+    $ksql = "UPDATE `transactionextra` SET `IsActive`='0' WHERE TransactionId = $Id AND UserId = $UserId";
+    $kresult = mysqli_query($conn,$ksql);
+    header("Location: print.php?Id=$last_id");
 }
 ?>
 <!DOCTYPE html>
@@ -150,42 +145,53 @@ if (isset($_POST['next'])) {
 
             $PaymentType = $_POST['PaymentType'];
             $Tender = $_POST['Tender'];
-            $TransactionCode = $_POST['TransactionCode'];
             $Discount = $_POST['Discount'];
             $TotalDues = $_POST['TotalDues'];
             $TotalDuesDiscount = $_POST['TotalDuesDiscount'];
             $Change = $_POST['Change'];
 
-            $usql = "UPDATE `tblhotel` SET 
-            `Discount`='$Discount',
-            `TotalDues`='$TotalDues',
-            `TotalDuesDiscount`='$TotalDuesDiscount',
-            `PaymentType`='$PaymentType',
-            `Tender`='$Tender',
-            `TransactionCode`='$TransactionCode',
-            `Changes`='$Change' 
-            WHERE Id = $Id";
+            $usql = "INSERT INTO `payments`
+    (`TransactionId`, `PaymentTerms`, `AmountTender`, `AmountChange`) 
+    VALUES 
+    ('$Id','$PaymentType','$Tender','$Change')";
             $uresult = mysqli_query($conn, $usql);
+            if ($uresult) {
+                $LastId = mysqli_insert_id($conn);
+            }
+
+            $tsql = "UPDATE `transaction` SET `Discount`='$Discount' WHERE Id = $Id ";
+            $tresult = mysqli_query($conn, $tsql);
 
         ?>
+
+            
             <div class="container ">
                 <div class="col-lg-6 my-4" style="margin: auto;">
                     <div class="card text-center">
+
                         <?php
-                        $cresult = mysqli_query($conn, "SELECT * FROM tblhotel WHERE Id = $Id");
+                        $cresult = mysqli_query($conn, "SELECT * FROM payments WHERE Id = $LastId");
                         $crow = mysqli_fetch_assoc($cresult);
+
+                        $dresult = mysqli_query($conn, "SELECT t.Total, p.AmountTender, t.Discount , p.AmountChange
+                        FROM transaction t
+                        LEFT JOIN payments p ON p.TransactionId = t.Id
+                        WHERE t.Id = $Id");
+                        $drow = mysqli_fetch_assoc($dresult);
+
                         ?>
+
                         <div class="card-header">
-                            Total Due : <b>₱ <?php echo $crow['TotalDues'] ?></b> | Tendered <b>₱ <?php echo $crow['Tender'] ?></b> | Discount <b>₱ <?php echo $crow['Discount'] ?></b>
+                            Total Due : <b>₱ <?php echo $drow['Total'] ?></b> | Tendered <b>₱ <?php echo $drow['AmountTender'] ?></b> | Discount <b>₱ <?php echo $drow['Discount'] ?></b>
                         </div>
                         <div class="card-body">
-                            <h5 class="card-title"><i class="fa-regular fa-money-bill-1"></i> Change Due</h5>
-                            <p class="card-text fs-2">₱ <?php echo $crow['Changes'] ?></p>
+                            <h5 class="card-title"><i class="fa-regular fa-money-bill-1"></i> Change Due / Payment Reference ID</h5>
+                            <p class="card-text fs-2"> <?php echo $drow['AmountChange'] ?></p>
 
 
 
                             <form method="POST">
-                                <button type="submit" class="btn btn-primary mb-2" name="next">Done</button>
+                                <button name="submit" type="submit" class="btn btn-primary mb-2" >Done</button>
                             </form>
                             <p>Click to back to Hotel Dashboard</p>
                         </div>
@@ -193,11 +199,28 @@ if (isset($_POST['next'])) {
                 </div>
             </div>
         <?php } else { ?>
+
+            <?php
+            $asql = "SELECT r.Title AS RoomNumber, rc.Title AS RoomType, rrpt.Rate, CONCAT(u.FirstName,' ',u.LastName) AS GuestName, u.Contact, u.Address, t.DepartureDateTime, t.RoomChargesTotal, t.ExtraChargesTotal, t.Deposit, t.SubTotal, t.Total
+                FROM transaction t
+                LEFT JOIN room r ON r.Id = t.RoomId
+                LEFT JOIN roomcategory rc ON rc.Id = r.RoomCategoryId
+                LEFT JOIN roomrate rr ON rr.Id = r.RoomCategoryId
+                LEFT JOIN roomratepricetrail rrpt ON rrpt.Id = rr.RoomPriceTrailId
+                LEFT JOIN user u ON u.Id = t.UserId
+                
+                
+                WHERE t.Id = $Id";
+            $aresult = mysqli_query($conn, $asql);
+            $arow = mysqli_fetch_assoc($aresult);
+            ?>
+
+
             <div class="row">
                 <div class="col">
                     <div class="card">
                         <div class="card-header text-center fs-4">
-                            Room <i class="fa-solid fa-hashtag"></i> <?php echo $row['Number'] ?> charges
+                            <i class="fa-solid fa-hashtag"></i> <?php echo $arow['RoomNumber'] ?> charges
                         </div>
                         <div class="card-body">
                             <div class="container">
@@ -210,18 +233,18 @@ if (isset($_POST['next'])) {
                                             </div>
 
                                             <div class="card-body">
-                                                No. of Days : <?php echo number_format($row['Days'], 2, '.', ','); ?>
-                                                <br /> Room Charges : <?php echo number_format($row['RoomCharges'], 2, '.', ','); ?>
-                                                <br /> Extra Charges : <?php echo number_format($row['ExtraCharges'], 2, '.', ','); ?>
+                                                No. of Days : <?php echo number_format($Days, 2, '.', ','); ?>
+                                                <br /> Room Charges : <?php echo number_format($arow['RoomChargesTotal'], 2, '.', ','); ?>
+                                                <br /> Extra Charges : <?php echo number_format($arow['ExtraChargesTotal'], 2, '.', ','); ?>
                                                 <br /> Discount : ₱ <label id="labeldiscount"></label>
 
 
 
                                                 <br />
-                                                <br /> Total : <?php echo number_format($row['Total'], 2, '.', ','); ?>
-                                                <br /> Deposit : <?php echo number_format($row['Deposit'], 2, '.', ','); ?>
+                                                <br /> Total : <?php echo number_format($arow['SubTotal'], 2, '.', ','); ?>
+                                                <br /> Deposit : <?php echo number_format($arow['Deposit'], 2, '.', ','); ?>
                                                 <br />
-                                                <br /> Total Dues : ₱ <?php echo number_format($row['TotalDues'], 2, '.', ','); ?>
+                                                <br /> Total Dues : ₱ <?php echo number_format($arow['Total'], 2, '.', ','); ?>
 
                                                 <br /> Total Dues with Discount : ₱ <label id="tdd"></label>
                                                 <br />
@@ -233,16 +256,16 @@ if (isset($_POST['next'])) {
                                                             <option selected>-- Select Payment Method -- </option>
                                                             <option value="Cash">Cash</option>
                                                             <option value="Paymongo">Paymongo</option>
+                                                            <option value="Gcash">Gcash</option>
+                                                            <option value="PayMaya">PayMaya</option>
+                                                            <option value="PayPal">PayPal</option>
                                                         </select>
                                                 </div>
-                                                <div id="showCash" class="myDiv">
-                                                    <label for="" class="form-label">Tender :</label>
-                                                    <input type="number" name="Tender" id="Tender" class="form-control fs-3">
+                                                <div class="mt-2">
+                                                    <label for="" class="form-label"> Cash Amount or Transaction ID :</label>
+                                                    <input type="text" name="Tender" id="Tender" class="form-control fs-3">
                                                 </div>
-                                                <div id="showPaymongo" class="myDiv">
-                                                    <label for="" class="form-label">PayMongo Link :</label>
-                                                    <input type="text" name="TransactionCode" class="form-control fs-3">
-                                                </div>
+
 
                                                 <div class="row mt-4">
                                                     <div class="col">
@@ -268,22 +291,25 @@ if (isset($_POST['next'])) {
                                                         <thead style="border-bottom: solid black 4px;">
                                                             <tr>
                                                                 <th>Extra</th>
+                                                                <th>Quantity</th>
                                                                 <th>Total</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
                                                             <?php
-                                                            $eresult = mysqli_query($conn, "SELECT tblextra.Name, tblextra.Quantity, tblextra.Cost, tblroomextra.Id
-                                            FROM tblroomextra 
-                                            LEFT JOIN tblextra ON tblroomextra.ExtraId = tblextra.Id
-                                            LEFT JOIN tblguest ON tblroomextra.GuestId = tblguest.Id
-                                            WHERE tblguest.Id = $GuestId AND tblroomextra.HotelId = $Id  AND tblroomextra.IsActive = 1");
+                                                            $eresult = mysqli_query($conn, "SELECT re.Title ,te.Id, te.Quantity, re.Cost, te.TotalAmount
+                                                            FROM transactionextra te
+                                                            LEFT JOIN roomextra re ON re.Id = te.RoomExtraId
+                                                            WHERE te.TransactionId = $Id AND IsActive = 1");
 
                                                             while ($erow = mysqli_fetch_assoc($eresult)) {;
                                                             ?>
                                                                 <tr>
                                                                     <td>
-                                                                        <?php echo $erow['Name'] ?>
+                                                                        <?php echo $erow['Title'] ?>
+                                                                    </td>
+                                                                    <td>
+                                                                        <?php echo $erow['Quantity'] ?>
                                                                     </td>
                                                                     <td>
                                                                         <?php echo $erow['Cost'] ?>
@@ -303,37 +329,26 @@ if (isset($_POST['next'])) {
                                                 <i class="fa-solid fa-circle-info"></i> Details
                                             </div>
                                             <div class="card-body fs-5">
-                                                <?php
-                                                $rsql = "SELECT tblroom.Number, tblroomtype.Type, tblroomtype.Rate, tblroom.Status, tblroom.GuestId
-                                            FROM tblroom
-                                            INNER JOIN tblroomtype ON tblroom.RoomTypeId = tblroomtype.id
-                                            WHERE tblroom.Id = $Id";
-                                                $rresult = mysqli_query($conn, $rsql);
-                                                $room = mysqli_fetch_assoc($rresult);
-                                                ?>
+
                                                 <b><i>Room Information :</i></b>
-                                                <br />This is a bill charges for <b>Room # <?php echo $room['Number'] ?> </b> with a category of <b><?php echo $room['Type'] ?></b>, and Rate per Night is <b>₱ <?php echo $room['Rate'] ?></b>
+                                                <br />This is a bill charges for <b> <?php echo $arow['RoomNumber'] ?> </b> with a category of <b><?php echo $arow['RoomType'] ?></b>, and Rate per Night is <b>₱ <?php echo $arow['Rate'] ?></b>
                                                 <br />
                                                 <br />
-                                                <?php
-                                                $GuestId = $_GET['GuestId'];
-                                                $gresult = mysqli_query($conn, "SELECT * FROM tblguest WHERE Id = $GuestId");
-                                                $guest = mysqli_fetch_assoc($gresult);
-                                                ?>
+
                                                 <b><i>Customer Information :</i></b>
-                                                <br />Name : <?php echo $guest['FirstName'] . ' ' . $guest['LastName']  ?>
-                                                <br />Phone : <?php echo $guest['Phone'] ?>
-                                                <br />Address : <?php echo $guest['Address'] ?>
+                                                <br />Name : <?php echo $arow['GuestName'] ?>
+                                                <br />Phone : <?php echo $arow['Contact'] ?>
+                                                <br />Address : <?php echo $arow['Address'] ?>
                                                 <br />
                                                 <br />
                                                 <b><i>Check-out Date:</i></b>
-                                                <br /> And you're guest checkout date <b><?php echo $row['Departure'] ?></b>
+                                                <br /> And you're guest checkout date <b><?php echo $arow['DepartureDateTime'] ?></b>
 
                                             </div>
                                         </div>
 
                                         <input type="hidden" class="form-control" id="ADiscount" name="Discount">
-                                        <input type="hidden" class="form-control" id="TotalDues" name="TotalDues" value="<?php echo $row['TotalDues'] ?>">
+                                        <input type="hidden" class="form-control" id="TotalDues" name="TotalDues" value="<?php echo $arow['Total'] ?>">
                                         <input type="hidden" class="form-control" id="TotalDuesDiscount" name="TotalDuesDiscount">
                                         <input type="hidden" class="form-control" id="Change" name="Change">
                                         <div class="row mt-3 ">
@@ -383,18 +398,6 @@ if (isset($_POST['next'])) {
 </body>
 
 <script>
-    $(document).ready(function() {
-
-        
-
-
-        $('#myselection').on('change', function() {
-            var demovalue = $(this).val();
-            $("div.myDiv").hide();
-            $("#show" + demovalue).show();
-        });
-    });
-
     function discount() {
 
         var discount = Number($("#Discount").val());

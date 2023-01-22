@@ -1,10 +1,9 @@
 <?php
 include 'config.php';
 $id = $_GET['Id'];
-$guestid = $_GET['GuestId'];
 
 $sql = "SELECT *, CONCAT(tblguest.FirstName, ' ' , tblguest.LastName) AS Name , tblroom.Number
-FROM tblreservation
+FROM roomreservation
 LEFT JOIN tblguest ON tblreservation.GuestId = tblguest.Id
 LEFT JOIN tblroom ON tblreservation.RoomId = tblroom.Id
 Where tblreservation.Id = $id";

@@ -19,15 +19,15 @@ if (isset($_POST['submit'])) {
     $Contact = $_POST['Contact'];
     $Address = $_POST['Address'];
     $Username = $_POST['Username'];
-    $Password = $_POST['Password'];
+    $Password = md5($_POST['Password']);
 
 
-    $sql = "SELECT * FROM tbluser WHERE Email='$Email'";
+    $sql = "SELECT * FROM user WHERE Email='$Email'";
     $result = mysqli_query($conn, $sql);
 
     if (!$result->num_rows > 0) {
-        $sql = "INSERT INTO tbluser
-        (Role, FirstName, LastName, Email, Contact, Address, Username, Password)
+        $sql = "INSERT INTO user
+        (RoleId, FirstName, LastName, Email, Contact, Address, Username, Password)
         VALUES
         ('$Role', '$FirstName', '$LastName', '$Email', '$Contact', '$Address', '$Username', '$Password')";
         $result = mysqli_query($conn, $sql);
@@ -75,8 +75,8 @@ if (isset($_POST['submit'])) {
                     <label for="Role" class="form-label">Role :</label>
                     <select class="custom-select" name="Role" style="width: 100%;" required>
                         <option selected value="">Select User Role</option>
-                        <option value="Receptionist">Receptionist</option>
-                        <option value="Administrator">Administrator</option>
+                        <option value="2">Receptionist</option>
+                        <option value="2">Administrator</option>
                     </select>
                 </div>
                 <div class="col-md-3">
@@ -144,14 +144,17 @@ if (isset($_POST['submit'])) {
                     <tbody>
                         <?php
                         $sql =
-                            "SELECT *, CONCAT(FirstName,' ' , LastName) AS Name FROM tbluser ";
+                            "SELECT u.Id, CONCAT(FirstName,' ' , LastName) AS Name, u.Email, u.Address, u.Contact, u.Username, u.Password, r.Title
+                            FROM user u
+                            LEFT JOIN role r ON r.Id = u.RoleId
+                            WHERE IsVerified = 1  ";
                         $number = 1;
                         $result = mysqli_query($conn, $sql);
                         while ($row = mysqli_fetch_assoc($result)) {
                         ?>
                             <tr>
                                 <th><?php echo $number ?></th>
-                                <td><?php echo $row['Role'] ?></td>
+                                <td><?php echo $row['Title'] ?></td>
                                 <td><?php echo $row['Name'] ?></td>
                                 <td><?php echo $row['Email'] ?></td>
                                 <td><?php echo $row['Address'] ?></td>
@@ -159,8 +162,8 @@ if (isset($_POST['submit'])) {
                                 <td><?php echo $row['Username'] ?></td>
                                 <td><?php echo $row['Password'] ?></td>
                                 <td>
-                                    <a href="function/hrmanage/useredit.php?id=<?php echo $row['Id'] ?>& role=<?php echo $row['Role'] ?>" class="btn btn-secondary mb-1"><i class="fa-solid fa-pen-to-square" style="font-size:large"></i> Edit</a>
-                                    <a href="function/hrmanage/userdelete.php?id=<?php echo $row['Id'] ?> & name=<?php echo $row['Name'] ?>" class="btn btn-danger mb-1"><i class="fa-solid fa-trash-can" style="font-size:large"></i> Delete</a>
+                                    <a href="function/hrmanage/useredit.php?id=<?php echo $row['Id'] ?>" class="btn btn-secondary mb-1"><i class="fa-solid fa-pen-to-square" ></i> Edit</a>
+                                    <a href="function/hrmanage/userdelete.php?id=<?php echo $row['Id'] ?>" class="btn btn-danger mb-1"><i class="fa-solid fa-trash-can" ></i> Delete</a>
                                 </td>
                             </tr>
 

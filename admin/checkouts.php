@@ -1,4 +1,7 @@
-<?php include 'themes/navbar.php'; ?>
+<?php 
+include 'themes/navbar.php';
+include 'config.php'; ?>
+
 
 
 <div class="card mb-4">
@@ -17,20 +20,22 @@
                 </tr>
             </thead>
             <tbody>
+            <?php 
+            $sql = "SELECT CONCAT(u.FirstName, ' ', u.LastName) AS Name, r.Title, t.ArrivalDateTime, t.DepartureDateTime
+            FROM transaction t
+            JOIN user u ON u.Id = t.UserId
+            JOIN room r ON r.Id = t.RoomId;";
+            $result = mysqli_query($conn,$sql);
+            while ($row = mysqli_fetch_assoc($result)) {
+            ?>
                 <tr>
-                    <td style="width:250px">John Doe</td>
-                    <td style="width:250px">101</td>
-                    <td style="width:250px">January 1, 2023</td>
-                    <td style="width:250px">January 5, 2023</td>
+                    <td style="width:250px"><?php echo $row['Name'] ?></td>
+                    <td style="width:250px"><?php echo $row['Title'] ?></td>
+                    <td style="width:250px"><?php echo $row['ArrivalDateTime'] ?></td>
+                    <td style="width:250px"><?php echo $row['DepartureDateTime'] ?></td>
 
                 </tr>
-                <tr>
-                    <td style="width:250px">John Doe</td>
-                    <td style="width:250px">101</td>
-                    <td style="width:250px">January 1, 2023</td>
-                    <td style="width:250px">January 5, 2023</td>
-                </tr>
-
+                <?php } ?>
             </tbody>
         </table>
 

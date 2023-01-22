@@ -1,8 +1,6 @@
 <?php
 include 'themes/navbar.php';
 include 'config.php';
-
-
 ?>
 
 
@@ -25,12 +23,12 @@ include 'config.php';
     ?>
 
     <div class="card-body">
-        <table id="datatablesSimple" class="table-striped">
-            <thead class="bg-info">
+    <table id="datatablesSimple" class="table table-striped">
+            <thead class="bg-info text-center">
                 <tr>
+                <th>No.</th>
                     <th>Room No.</th>
                     <th>Room Type</th>
-                    <th>Rate Per/Night</th>
                     <th>Status</th>
                     <th>Action</th>
                 </tr>
@@ -40,20 +38,22 @@ include 'config.php';
                     <?php
 
                     $sql = 
-                    "SELECT tblroom.Id,tblroom.Number, tblroomtype.Type, tblroomtype.Rate, tblroom.Status
-                    FROM tblroom 
-                    LEFT JOIN tblroomtype ON tblroom.RoomTypeId = tblroomtype.Id;";
+                    "SELECT r.Id, r.Title AS RoomNumber, rs.Title AS RoomStatus, rc.Title AS RoomDescription
+                    FROM `room` r
+                    JOIN roomcategory rc ON rc.Id = r.RoomCategoryId 
+                    JOIN roomstatus rs ON rs.Id = r.RoomStatusId
+                    WHERE r.RoomTypeId = 1 ";
 
 
                     $result = $conn->query($sql);
-
+                    $number = 1;
                     while ($row = mysqli_fetch_assoc($result)) {
                     ?>
                 <tr>
-                    <td><?php echo $row['Number'] ?></td>
-                    <td><?php echo $row['Type'] ?></td>
-                    <td><?php echo $row['Rate'] ?></td>
-                    <td><?php echo $row['Status'] ?></td>
+                <td><?php echo $number ?></td>
+                    <td><?php echo $row['RoomNumber'] ?></td>
+                    <td><?php echo $row['RoomDescription'] ?></td>
+                    <td><?php echo $row['RoomStatus'] ?></td>
                     <td class="text-center ">
                         
                         <a  href="function/roommanage/vacant.php?id=<?php echo $row['Id'] ?>" class="btn btn-success my-1"><i class="fa-solid fa-square-check"></i> Vacant</a>
@@ -64,6 +64,7 @@ include 'config.php';
                 </tr>
 
             <?php
+            $number++;
             }
             ?>
             </tbody>

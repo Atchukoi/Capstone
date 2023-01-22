@@ -8,14 +8,14 @@ if(isset($_POST['submit'])) {
     $guestId = $_POST['LastId'];
     
 
-    $sql= "UPDATE `tblhotel` SET 
-    `Arrival`='$arrival',
-    `Departure`='$departure',
-    `GuestId`='$guestId'
-    WHERE Id = $Id";
+    $sql= "UPDATE `transaction` SET 
+    `ArrivalDateTime`='$arrival',
+    `DepartureDateTime`='$departure',
+    `UserId`='$guestId'
+    WHERE RoomId = $Id";
     $result = mysqli_query($conn,$sql);
 
-    $rsql = "UPDATE `tblroom` SET `GuestId`='$guestId',`Status`='Occupied' WHERE Id = $Id";
+    $rsql = "UPDATE `room` SET `RoomStatusId`='1' WHERE Id = $Id";
     $rresult = mysqli_query($conn,$rsql);
 
     header("Location: dashboard.php?msg=Checked-In Successful!");
@@ -25,7 +25,7 @@ if(isset($_POST['submit'])) {
 
 if (isset($_POST['cancel'])) {
     $GuestId = $_POST['LastId'];
-    $sql = "DELETE FROM `tblguest` WHERE Id= $GuestId";
+    $sql = "DELETE FROM `user` WHERE Id= $GuestId";
     $result = mysqli_query($conn, $sql);
 }
 
@@ -50,13 +50,17 @@ if (isset($_POST['cancel'])) {
 
 </head>
 <?php
-$sql = "SELECT tblroom.Number,tblroomtype.Type, tblroomtype.Rate
- FROM tblroom 
- JOIN tblroomtype ON tblroom.RoomTypeId = tblroomtype.Id
- WHERE tblroom.Id = $Id";
+$sql = "SELECT r.Title, rc.Title AS RoomType, rrpt.Rate 
+FROM room r
+LEFT JOIN roomcategory rc ON rc.Id = r.RoomCategoryId
+LEFT JOIN roomrate rr ON rr.RoomCategoryId = rc.Id
+LEFT JOIN roomratepricetrail rrpt ON rrpt.Id = rr.RoomPriceTrailId
+WHERE r.Id = $Id";
 $result = mysqli_query($conn, $sql);
 $row = mysqli_fetch_assoc($result);
-$RoomNumber = $row['Number'];
+$Title = $row['Title'];
+$RoomType = $row['RoomType'];
+$Rate = $row['Rate'];
 ?>
 
 <body style="background-color: rgba(237, 195, 238, 0.8);">
@@ -64,7 +68,7 @@ $RoomNumber = $row['Number'];
   border-style: solid;
   border-image: linear-gradient(to right, darkblue, darkorchid) 1">
         <div class="row text-center my-5">
-            <?php echo '<h1><i class="fa-solid fa-bed"></i> Room <i class="fa-solid fa-hashtag"></i> ' . $row['Number'] . ' - ' . $row['Type'] . ' ₱ ' . $row['Rate'] . ' / Night</h1>' ?>
+            <?php echo '<h1><i class="fa-solid fa-bed"></i> Room <i class="fa-solid fa-hashtag"></i> ' . $Title . ' - ' . $RoomType . ' ₱ ' . $Rate . ' / Night</h1>' ?>
         </div>
 
         <div class="container">
@@ -77,8 +81,8 @@ $RoomNumber = $row['Number'];
                 $Address = $_POST['Address'];
                 $Phone = $_POST['Phone'];
 
-                $sql = "INSERT INTO `tblguest`
-            (`FirstName`, `LastName`, `Address`, `Phone`)
+                $sql = "INSERT INTO `user`
+            (`FirstName`, `LastName`, `Address`, `Contact`)
              VALUES 
             ('$FirstName','$LastName','$Address','$Phone')";
 

@@ -2,10 +2,10 @@
 include 'config.php';
 $Id = $_GET['Id'];
 
-$sql = "SELECT OTP, Email FROM tblguest WHERE ID = $Id";
+$sql = "SELECT OneTimePassword, Email FROM user WHERE ID = $Id";
 $result =mysqli_query($conn,$sql);
 $row = mysqli_fetch_assoc($result);
-$message = $row['OTP'];
+$message = $row['OneTimePassword'];
 $email = $row['Email'];
 
 //Import PHPMailer classes into the global namespace

@@ -5,9 +5,9 @@ include 'config.php';
 
 <div class="card mb-4">
     <div class="card-header text-primary">
-      <h4>  <i class="fa-solid fa-cubes"></i>
-        Extras </h4>
-        
+        <h4> <i class="fa-solid fa-cubes"></i>
+            Extras </h4>
+
     </div>
 
     <?php
@@ -18,11 +18,10 @@ include 'config.php';
         $Cost = $_POST['Cost'];
 
 
-        $sql = "INSERT INTO `tblextra`
-(`Name`,`Quantity`, `Cost`) 
-VALUES 
-('$Name','$Quantity','$Cost')";
-
+        $sql = "INSERT INTO `roomextra`
+        (`Title`, `Description`, `Cost`, `ExtraCategoryId`, `RoomTypeID`) 
+        VALUES
+         ('$Name','$Quantity',' $Cost','1','1')";
         $result = mysqli_query($conn, $sql);
 
 
@@ -55,8 +54,9 @@ VALUES
                 <table id="datatablesSimple" class="table-striped">
                     <thead class="bg-info">
                         <tr>
+                            <th>No.</th>
                             <th>Name</th>
-                            <th>Quantity</th>
+                            <th>Description</th>
                             <th>Cost</th>
                             <th>Action</th>
                         </tr>
@@ -64,21 +64,24 @@ VALUES
                     <tbody>
                         <?php
 
-                        $sql = "SELECT * FROM `tblextra`";
+                        $sql = "SELECT * FROM `roomextra` WHERE ExtraCategoryId = 1";
                         $result = mysqli_query($conn, $sql);
+                        $number = 1;
 
                         while ($row = mysqli_fetch_assoc($result)) {
                         ?>
                             <tr>
-                                <td><strong><?php echo $row['Name'] ?></td>
-                                <td><?php echo $row['Quantity'] ?> pc</td>
+                                <th><?php echo $number ?></th>
+                                <td><strong><?php echo $row['Title'] ?></td>
+                                <td><?php echo $row['Description'] ?></td>
                                 <td>₱ <?php echo $row['Cost'] ?></td>
                                 <td style="width:210px">
                                     <a href="function/hrmanage/extraedit.php?id=<?php echo $row['Id'] ?>" class="btn btn-secondary"><i class="fa-solid fa-pen-to-square"></i> Update</a>
-                                    <a href="function/hrmanage/extradelete.php?id=<?php echo $row['Id'] ?> & name=<?php echo $row['Name'] ?>" class="btn btn-danger"><i class="far fa-trash-alt"></i> Delete</a>
+                                    <a href="function/hrmanage/extradelete.php?id=<?php echo $row['Id'] ?>" class="btn btn-danger"><i class="far fa-trash-alt"></i> Delete</a>
                                 </td>
                             </tr>
                         <?php
+                            $number++;
                         }
                         ?>
                     </tbody>
@@ -94,28 +97,35 @@ VALUES
 
                         </div>
                     </div>
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="Quantity" class="form-label">Quantity :</label>
-                            <div class="input-group">
-                                <div class="input-group-text">Pc</div>
-                            <input type="number" name="Quantity" class="form-control" placeholder="e.g. 1">
-                        </div>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="Cost" class="form-label">Cost :</label>
-                            <div class="input-group">
-                                <div class="input-group-text">₱</div>
-                            <input type="number" name="Cost" class="form-control" placeholder="e.g. 100">
-                            </div>
+
+                    <div class="col mb-3">
+                        <label for="Quantity" class="form-label">Description :</label>
+                        <div class="input-group">
+                           
+                            <input type="text" name="Quantity" class="form-control" placeholder="e.g. 1">
                         </div>
                     </div>
+                    <div class="col mb-3">
+                        <label for="Cost" class="form-label">Cost :</label>
+                        <div class="input-group">
+                            <div class="input-group-text">₱</div>
+                            <input type="number" name="Cost" class="form-control" placeholder="e.g. 100">
+                        </div>
+                    </div>
+                    <div class="col">
+                    <button class="btn btn-success mb-3" name="submit" type="submit" style="width:100%"><i class="fa-sharp fa-solid fa-floppy-disk"></i> Submit</button>
+                    </div>
                     
-                    <button class="btn btn-success mb-3" name="submit" type="submit" style="float: right;"><i class="fa-sharp fa-solid fa-floppy-disk"></i> Submit</button>
-                </form>
             </div>
+
+
+
+
+
+            </form>
         </div>
     </div>
+</div>
 
 
-    <?php include 'themes/footer.php'; ?>
+<?php include 'themes/footer.php'; ?>

@@ -10,35 +10,23 @@ if (isset($_POST['submit'])) {
   $address = $_POST['address'];
   $bday = $_POST['bday'];
   $phone = $_POST['phone'];
-  $company = $_POST['company'];
-  $caddress = $_POST['caddress'];
   $email = $_POST['email'];
   $password = md5($_POST['password']);
   $cpassword = md5($_POST['cpassword']);
   $zip = $_POST['zip'];
 
   if ($password == $cpassword) {
-    $sql = "SELECT * FROM tblguest WHERE Email='$email'";
+    $sql = "SELECT * FROM user WHERE Email='$email'";
     $result = mysqli_query($conn, $sql);
     if (!$result->num_rows > 0) {
-      $sql = "INSERT INTO tblguest 
-            (FirstName, LastName, Address, BirthDay, Phone, Company, CompanyAddress, Email, Password, OTP, Verify) 
+      $sql = "INSERT INTO user 
+            (FirstName, LastName, Address, BirthDate, Contact, Email, Password,RoleId, OneTimePassword, IsVerified) 
             VALUES 
-            ('$fname',' $lname','$address','$bday','$phone','$company','$caddress','$email','$password','$otp','0')";
+            ('$fname',' $lname','$address','$bday','$phone','$email','$password','3','$otp',0)";
       $result = mysqli_query($conn, $sql);
       if ($result) {
 
-        $fname = "";
-        $lname = "";
-
-        $address = "";
-        $bday = "";
-        $phone = "";
-        $company = "";
-        $caddress = "";
-        $email = "";
-        $_POST['password'] = "";
-        $_POST['cpassword'] = "";
+        
 
         header("Location: login.php?msg=Account Created Succesfuly, You May now Login");
       } else {
@@ -49,6 +37,14 @@ if (isset($_POST['submit'])) {
     }
   } else {
     echo "<script>alert('Ooops! Password does not matched.')</script>";
+    $fname = "";
+        $lname = "";
+        $address = "";
+        $bday = "";
+        $phone = "";
+        $email = "";
+        $_POST['password'] = "";
+        $_POST['cpassword'] = "";
   }
 }
 
@@ -113,127 +109,105 @@ if (isset($_POST['submit'])) {
                 <a href="index.php" class="btn-close btn-close-black p-2"></a>
               </div>
               <h3 class="mb-2 pb-2 pb-md-0 mb-md-5">Registration Form</h3>
-              <form action="" method="POST" class="form-login">
 
-                <div class="row">
-                  <div class="col-md-6 mb-2">
+              <form method="POST" class="row g-3 needs-validation" novalidate>
 
-                    <div class="form-floating mb-2">
-                      <input type="text" name="fname" class="form-control" placeholder="First Name" value="<?php echo $fname; ?>" required>
-                      <label>First Name</label>
+                <div class="row mb-3">
+
+                  <div class="col-md-6">
+                    <label for="validationCustom01" class="form-label">First Name</label>
+                    <input type="text" class="form-control" name="fname" id="fname" onkeydown="return /[a-z]/i.test(event.key)" placeholder="" required>
+                    <div class="valid-feedback">
+                      Looks good!
                     </div>
-
                   </div>
-                  <div class="col-md-6 mb-2">
-
-                    <div class="form-floating mb-2">
-                      <input type="text" name="lname" class="form-control" placeholder="Last Name" value="<?php echo $lname; ?>" required>
-                      <label>Last Name</label>
+                  <div class="col-md-6">
+                    <label for="validationCustom02" class="form-label">Last Name</label>
+                    <input type="text" class="form-control" name="lname" id="lname" onkeydown="return /[a-z]/i.test(event.key)" required>
+                    <div class="valid-feedback">
+                      Looks good!
                     </div>
-
-                  </div>
-                </div>
-
-                <div class="row">
-
-                  <div class="col-md-6 mb-2">
-
-                    <div class="form-floating mb-2">
-                      <input type="text" name="address" class="form-control" placeholder="Address" value="<?php echo $address; ?>" required>
-                      <label>Address</label>
-                    </div>
-
-                  </div>
-                  <div class="col-md-6 mb-2">
-
-                    <div class="form-floating mb-2">
-                      <input type="number" name="phone" class="form-control" placeholder="Phone Number" value="<?php echo $phone; ?>" required>
-                      <label>Phone Number</label>
-                    </div>
-
-                  </div>
-                </div>
-
-                <div class="row">
-                  <div class="col-md-6 mb-2 d-flex align-items-center">
-
-                    <div class="form-floating mb-2">
-                      <input type="date" name="bday" class="form-control" placeholder="Birthdate" value="<?php echo $bday; ?>" required>
-                      <label>Birthdate</label>
-                    </div>
-
                   </div>
 
                 </div>
 
-                <div class="row">
-                  <!-- <div class="col-md-6 mb-2 pb-2">
-                    <div class="row">
-                      <label style="margin-left: 5px; color: red;">Optional</label>
+                <div class="row mb-3">
+                  <div class="col-md-6">
+                    <label for="validationCustom03" class="form-label">Contact</label>
+                    <input type="tel" class="form-control" name="phone" id="contact" minlength="11" maxlength="11"  placeholder="09123456789" required>
+                    <div class="invalid-feedback">
+                      Contact Number is too short.
                     </div>
-                    <div class="row">
-                      <div class="form-floating mb-2">
-                        <input type="text" name="company" class="form-control" placeholder="Company" value="<?php echo $company; ?>">
-                        <label style="margin-left: 10px;">Company </label>
+                  </div>
+
+                  <div class="col-md-6">
+                    <label for="validationCustom03" class="form-label">Birth Date</label>
+                    <input type="date" class="form-control" name="bday" id="bday" required>
+                    <div class="invalid-feedback">
+                      Please select your Birth Date.
+                    </div>
+                  </div>
+
+
+                </div>
+
+                <div class="row mb-3">
+                  <div class="col">
+                    <label for="validationCustom03" class="form-label">Address</label>
+                    <input type="text" class="form-control" name="address" id="address" placeholder="Street Name or Purok #, Brgy, Municipality or City, Province" required>
+                    <div class="invalid-feedback">
+                      Please input your address.
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row mb-3">
+                  <div class="col-md-4">
+                    <label for="validationCustomUsername" class="form-label">Email</label>
+                    <div class="input-group has-validation">
+                      <span class="input-group-text" id="inputGroupPrepend">@</span>
+                      <input type="email" class="form-control" name="email" id="email" aria-describedby="inputGroupPrepend" required>
+                      <div class="invalid-feedback">
+                        Please enter a valid email.
                       </div>
                     </div>
-
                   </div>
-                  <div class="col-md-6 mb-2 pb-2">
-                    <div class="row">
-                      <label style="margin-left: 5px; color: red;">Optional</label>
+
+                  <div class="col-md-4">
+                    <label for="validationCustom05" class="form-label">Password</label>
+                    <input type="password" class="form-control" name="password" id="password" required pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$">
+                    <div class="invalid-feedback">
+                      Minimum of eight characters, at least one letter, one number and one special character:.
                     </div>
-                    <div class="row">
-                      <div class="form-floating mb-2">
-                        <input type="text" name="caddress" class="form-control" placeholder="Company" value="<?php echo $caddress; ?>">
-                        <label style="margin-left: 10px;">Company Address </label>
-                      </div>
-                    </div>
-
-                  </div> -->
-
-
-
-
-
-
-
-                </div>
-                <div class="row">
-
-                  <div class="col-md-4 mb-2">
-
-                    <div class="form-floating mb-2">
-                      <input type="email" name="email" class="form-control" placeholder="Email Adress" value="<?php echo $email; ?>" required>
-                      <label>Email Adress</label>
-                    </div>
-
                   </div>
-                  <div class="col-md-4 mb-2">
 
-                    <div class="form-floating mb-2">
-                      <input type="password" name="password" class="form-control" placeholder="Password" value="<?php echo $_POST['password']; ?>" required>
-                      <label>Password</label>
-                    </div>
-
-                  </div>
-                  <div class="col-md-4 mb-2">
-
-                    <div class="form-floating mb-2">
-                      <input type="password" name="cpassword" class="form-control" placeholder="Confirm Password" value="<?php echo $_POST['cpassword']; ?>" required>
-                      <label>Confirm Password</label>
-                    </div>
-
+                  <div class="col-md-4">
+                  <label for="validationCustom05" class="form-label">Confirm Password</label>
+                  <input type="password" class="form-control" name="cpassword" id="cpassword" required pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$">
+                  <div class="invalid-feedback">
+                  Minimum of eight characters, at least one letter, one number and one special character:.
                   </div>
                 </div>
 
-                <!-- <div class="form-check d-flex justify-content-start mb-4 pb-3">
-                    <input class="form-check-input me-3" type="checkbox" value="" />
-                    <label class="form-check-label text-black">
-                      I do accept the <a href="#!" class="text-blue"><u>Terms and Conditions</u></a> of your
-                      site.
+                </div>
+
+
+
+               
+
+                <div class="col-12">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="invalidCheck" required>
+                    <label class="form-check-label" for="invalidCheck">
+                      Agree to <a href="#">Terms and Conditions</a>
                     </label>
-                  </div> -->
+                    <div class="invalid-feedback">
+                      You must agree before submitting.
+                    </div>
+                  </div>
+                </div>
+
+
 
 
 
@@ -248,6 +222,27 @@ if (isset($_POST['submit'])) {
         </div>
       </div>
   </section>
+  <script>
+    // Example starter JavaScript for disabling form submissions if there are invalid fields
+(() => {
+  'use strict'
+
+  // Fetch all the forms we want to apply custom Bootstrap validation styles to
+  const forms = document.querySelectorAll('.needs-validation')
+
+  // Loop over them and prevent submission
+  Array.from(forms).forEach(form => {
+    form.addEventListener('submit', event => {
+      if (!form.checkValidity()) {
+        event.preventDefault()
+        event.stopPropagation()
+      }
+
+      form.classList.add('was-validated')
+    }, false)
+  })
+})()
+  </script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.min.js" integrity="sha384-IDwe1+LCz02ROU9k972gdyvl+AESN10+x7tBKgc9I5HFtuNz0wWnPclzo6p9vxnk" crossorigin="anonymous"></script>
 </body>

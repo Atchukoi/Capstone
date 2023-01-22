@@ -120,7 +120,6 @@ if (isset($_POST['submit'])) {
                     <tr>
                         <th>Name</th>
                         <th>Description</th>
-                        <th>Pax</th>
                         <th>Time</th>
                         <th>Cost</th>
                         <th>Exceeding</th>
@@ -130,22 +129,25 @@ if (isset($_POST['submit'])) {
                 </thead>
                 <tbody>
                     <?php
-                    $sql = "SELECT * FROM tblhallpackage";
+                    $sql = "SELECT rr.Id, rr.Title, rc.Description,rrpt.InitialTime, rrpt.Rate, rrpt.ExceedingRatePerHour, rr.Description AS Inclusion
+                    FROM roomrate rr
+                    LEFT JOIN roomcategory rc ON rc.Id = rr.RoomCategoryId
+                    LEFT JOIN roomratepricetrail rrpt ON rrpt.Id = rr.RoomPriceTrailId
+                    WHERE rr.RoomTypeID = 2; 
+                    ";
 
                     $result = mysqli_query($conn, $sql);
 
                     while ($row = mysqli_fetch_assoc($result)) {
                     ?>
                         <tr>
-                            <th><?php echo $row['Name'] ?></th>
+                            <th><?php echo $row['Title'] ?></th>
                             <td><?php echo $row['Description'] ?></td>
-                            <td><?php echo $row['Pax'] ?> pax</td>
-                            <td><?php echo $row['Time'] ?> hours</td>
-                            <td>₱ <?php echo $row['Cost'] ?></td>
-                            <td>₱ <?php echo $row['Exceeding'] ?> / hour</td>
-                            <td style="width:500px"><?php echo $row['Inclusion'] ?></td>
-
-                            <td>
+                            <td><?php echo $row['InitialTime'] ?> hours</td>
+                            <td>₱ <?php echo $row['Rate'] ?></td>
+                            <td>₱ <?php echo $row['ExceedingRatePerHour'] ?> / hour</td>
+                            <td><?php echo $row['Inclusion'] ?></td>
+                            <td style="width:500px">
                                 <div class="row mb-2">
                                     <a href="function/fhmanage/hpedit.php?id=<?php echo $row['Id'] ?>" class="btn btn-secondary ">
                                         <i class="fa-solid fa-pen-to-square"></i>
@@ -153,7 +155,7 @@ if (isset($_POST['submit'])) {
                                     </a>
                                 </div>
                                 <div class="row">
-                                    <a href="function/fhmanage/hpdelete.php?id=<?php echo $row['Id'] ?>&name=<?php echo $row['Name'] ?>" class="btn btn-danger">
+                                    <a href="function/fhmanage/hpdelete.php?id=<?php echo $row['Id'] ?>" class="btn btn-danger">
                                         <i class="fa-solid fa-pen-to-square"></i>
                                         Delete
                                     </a>

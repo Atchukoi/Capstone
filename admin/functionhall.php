@@ -1,76 +1,18 @@
 <?php
 include 'config.php';
-$id = $_GET['Id'];
-error_reporting(0);
+$Id = $_GET['Id'];
+error_reporting(1);
 
-if (isset($_POST['submit'])) {
-
-    $Exceeding = $_POST['Exceeding'];
-    $HallTotal = $_POST['HallTotal'];
-
-    $SoundSystem = $_POST['SoundSystem'];
-    $EveningEvent = $_POST['EveningEvent'];
-    $Projector = $_POST['Projector'];
-    $VenueBasic = $_POST['VenueBasic'];
-    $VenueDecoration = $_POST['VenueDecoration'];
-    $VenueFull = $_POST['VenueFull'];
-    $StageBasic = $_POST['StageBasic'];
-    $StageTheme = $_POST['StageTheme'];
-
-    $MovingLights = $_POST['MovingLights'];
-    $FullyRoundTable = $_POST['FullyRoundTable'];
-    $RoundTable = $_POST['RoundTable'];
-    $RectangularTable = $_POST['RectangularTable'];
-    $TiffanyChair = $_POST['TiffanyChair'];
-    $RentTotal = $_POST['RentTotal'];
-
-    $Lechon = $_POST['Lechon'];
-    $Wine = $_POST['Wine'];
-    $OtherFood = $_POST['OtherFood'];
-    $CorkageTotal = $_POST['CorkageTotal'];
-   $GrandTotalDues = $_POST['TotalDues'];
-    $GrandTotal = $_POST['GrandTotal'];
-
-    $sql = "UPDATE `tblfunctionhall` SET 
-   
-    `ExtraHours`='$Exceeding',
-    `HallTotal`='$HallTotal',
-    
-    `SoundSytem`='$SoundSystem',
-    `FullLights`='$EveningEvent',
-    `Projector`='$Projector',
-    `VenueBasic`='$VenueBasic',
-    `VenueDecoration`='$VenueDecoration',
-    `VenueFull`='$VenueFull',
-    `StageBasic`='$StageBasic',
-    `StageTheme`='$StageTheme',
-    `MovingLights`='$MovingLights',
-    `FurnishedRoundTable`='$FullyRoundTable',
-    `RoundTable`='$RoundTable',
-    `RectangularTable`='$RectangularTable',
-    `TiffanyChair`='$TiffanyChair',
-    `RentTotal`='$RentTotal',
-
-    `Lechon`='$Lechon',
-    `Wine`='$Wine',
-    `OtherFood`='$OtherFood',
-    `CorkageTotal`='$CorkageTotal',
-    `GrandTotalDues` = '$GrandTotalDues',
-    `GrandTotal`='$GrandTotal'
-     WHERE Id = $id";
-     $result = mysqli_query($conn,$sql);
-
-     if ($result) {
-        echo '<div class="alert alert-warning alert-dismissible fade show" role="alert">
-
-Record has been updated Successfully!
-
-<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>';
-    } else {
-        echo "Failed: " . mysqli_connect_error($conn);
-    }
-}
+$asql = "SELECT CONCAT(u.FirstName,' ', u.LastName) AS GuestName, t.ArrivalDateTime, r.Title AS RoomNumber, t.Deposit ,t.Total, rr.Title AS Package 
+FROM  transaction t
+LEFT JOIN user u ON u.Id = t.UserId
+LEFT JOIN room r ON r.Id = t.RoomId
+LEFT JOIN roomcategory rc ON rc.Id = r.RoomCategoryId
+LEFT JOIN roomrate rr ON rr.Id = rc.Id
+LEFT JOIN roomratepricetrail rrpt ON rrpt.Id = rr.Id
+WHERE t.Id = $Id";
+$aresult= mysqli_query($conn,$asql);
+$arow = mysqli_fetch_assoc($aresult);
 
 
 
@@ -96,24 +38,14 @@ Record has been updated Successfully!
 </head>
 
 <body>
-    <?php
-    $aresult = mysqli_query($conn, "SELECT *, tblhall.Name, CONCAT(tblguest.FirstName,' ',tblguest.LastName) AS GuestName, tblhallpackage.Name AS HallPackageName, tblfoodpackage.Name AS FoodName, tblfoodpackage.Description AS FoodDesc
-    FROM `tblfunctionhall`
-    LEFT JOIN tblguest ON tblfunctionhall.GuestId = tblguest.Id
-    LEFT JOIN tblhall ON tblfunctionhall.HallId = tblhall.Id
-    LEFT JOIN tblhallpackage ON tblfunctionhall.HalllPackageId = tblhallpackage.Id
-    LEFT JOIN tblfoodpackage ON tblfunctionhall.FoodPackageId = tblfoodpackage.Id
     
-    WHERE tblfunctionhall.Id = $id");
-    $arow = mysqli_fetch_assoc($aresult);
-    ?>
     <div class="container-fluid">
         <div class="card  my-2" style="height: 98vh;">
             <div class="card-header text-center  bg-primary text-white fs-4">
                 <div class="row">
                     <div class="col"></div>
                     <div class="col align-self-start">
-                        <?php echo $arow['Name'] ?>
+                        <?php echo $arow['RoomNumber'] ?>
                     </div>
                     
                     <div class="col align-self-end " style="text-align-last: right;">
@@ -151,12 +83,12 @@ Record has been updated Successfully!
 
                                             <div class="col-md-3">
                                                 <label for="" class="form-label">Arrival : </label>
-                                                <input type="datetime-local" class="form-control" value="<?php echo $arow['Arrival'] ?>" disabled>
+                                                <input type="datetime-local" class="form-control" value="<?php echo $arow['ArrivalDateTime'] ?>" disabled>
                                             </div>
 
                                             <div class="col-md-3">
                                                 <label for="" class="form-label">Hall Package: </label>
-                                                <input type="text" class="form-control" value="<?php echo $arow['HallPackageName'] ?>" disabled>
+                                                <input type="text" class="form-control" value="<?php echo $arow['Package'] ?>" disabled>
                                             </div>
 
                                             <div class="col-md-3">
@@ -186,15 +118,13 @@ Record has been updated Successfully!
 
                                         <div class="col-md-4 mb-3">
                                             <div class="form-check form-switch">
-                                                <input class="form-check-input rentals" type="checkbox" role="switch" value="1" name="SoundSystem" <?php echo ($arow['SoundSytem'] == '1') ? "checked" : ""; ?> onchange="computedata()">
+                                                <input class="form-check-input rentals" type="checkbox" role="switch" value="1" name="SoundSystem" onchange="computedata()">
                                                 <label class="form-check-label" for="flexSwitchCheckDefault">High Quality Sound System</label>
                                             </div>
                                             <div class="col-md-4 mt-2">
                                                 <div class="input-group">
                                                     <div class="input-group-text">₱</div>
-                                                    <input type="text" id="SoundSystem" class="form-control" placeholder="Price" value="<?php $result = mysqli_query($conn, "SELECT Price FROM tblrentals WHERE Id = 1;");
-                                                                                                                                        $row = mysqli_fetch_assoc($result);
-                                                                                                                                        echo $row['Price']; ?>" style="background-color: rgb(235,235,228)" readonly>
+                                                    <input type="text" id="SoundSystem" class="form-control" placeholder="Price" value="" style="background-color: rgb(235,235,228)" readonly>
                                                 </div>
                                             </div>
 
@@ -203,16 +133,14 @@ Record has been updated Successfully!
 
                                         <div class="col-md-4 mb-3">
                                             <div class="form-check form-switch">
-                                                <input class="form-check-input rentals" type="checkbox" role="switch" value="1" name="EveningEvent" <?php echo ($arow['FullLights'] == '1') ? "checked" : ""; ?> onchange="computedata()">
+                                                <input class="form-check-input rentals" type="checkbox" role="switch" value="1" name="EveningEvent"  onchange="computedata()">
                                                 <label class="form-check-label" for="flexSwitchCheckDefault">Evening or Full Lights</label>
                                             </div>
 
                                             <div class="col-md-4 mt-2">
                                                 <div class="input-group">
                                                     <div class="input-group-text">₱</div>
-                                                    <input type="text" id="EveningEvent" class="form-control" placeholder="Price" value="<?php $result = mysqli_query($conn, "SELECT Price FROM tblrentals WHERE Id = 2;");
-                                                                                                                                            $row = mysqli_fetch_assoc($result);
-                                                                                                                                            echo $row['Price']; ?>" style="background-color: rgb(235,235,228)" readonly>
+                                                    <input type="text" id="EveningEvent" class="form-control" placeholder="Price" value="" style="background-color: rgb(235,235,228)" readonly>
                                                 </div>
                                             </div>
 
@@ -220,15 +148,13 @@ Record has been updated Successfully!
 
                                         <div class="col-md-4 mb-3">
                                             <div class="form-check form-switch">
-                                                <input class="form-check-input rentals" type="checkbox" role="switch" value="1" name="Projector" <?php echo ($arow['Projector'] == '1') ? "checked" : ""; ?> onchange="computedata()">
+                                                <input class="form-check-input rentals" type="checkbox" role="switch" value="1" name="Projector"  onchange="computedata()">
                                                 <label class="form-check-label" for="flexSwitchCheckDefault">Projector</label>
                                             </div>
                                             <div class="col-md-4 mt-2">
                                                 <div class="input-group">
                                                     <div class="input-group-text">₱</div>
-                                                    <input type="text" id="Projector" class="form-control" placeholder="Price" value="<?php $result = mysqli_query($conn, "SELECT Price FROM tblrentals WHERE Id = 4;");
-                                                                                                                                        $row = mysqli_fetch_assoc($result);
-                                                                                                                                        echo $row['Price']; ?>" style="background-color: rgb(235,235,228)" readonly>
+                                                    <input type="text" id="Projector" class="form-control" placeholder="Price" value="" style="background-color: rgb(235,235,228)" readonly>
                                                 </div>
                                             </div>
 
@@ -236,15 +162,13 @@ Record has been updated Successfully!
 
                                         <div class="col-md-4 mb-3">
                                             <div class="form-check form-switch">
-                                                <input class="form-check-input rentals" type="checkbox" role="switch" value="1" name="StageBasic" <?php echo ($arow['StageBasic'] == '1') ? "checked" : ""; ?> onchange="computedata()">
+                                                <input class="form-check-input rentals" type="checkbox" role="switch" value="1" name="StageBasic"  onchange="computedata()">
                                                 <label class="form-check-label" for="flexSwitchCheckDefault">Stage Basic Decorations</label>
                                             </div>
                                             <div class="col-md-4 mt-2">
                                                 <div class="input-group">
                                                     <div class="input-group-text">₱</div>
-                                                    <input type="text" id="StageBasic" class="form-control" placeholder="Price" value="<?php $result = mysqli_query($conn, "SELECT Price FROM tblrentals WHERE Id = 5;");
-                                                                                                                                        $row = mysqli_fetch_assoc($result);
-                                                                                                                                        echo $row['Price']; ?>" style="background-color: rgb(235,235,228)" readonly>
+                                                    <input type="text" id="StageBasic" class="form-control" placeholder="Price" value="" style="background-color: rgb(235,235,228)" readonly>
                                                 </div>
                                             </div>
 
@@ -252,16 +176,14 @@ Record has been updated Successfully!
 
                                         <div class="col-md-4 mb-3">
                                             <div class="form-check form-switch">
-                                                <input class="form-check-input rentals" type="checkbox" role="switch" value="1" name="StageTheme" <?php echo ($arow['StageTheme'] == '1') ? "checked" : ""; ?> onchange="computedata()">
+                                                <input class="form-check-input rentals" type="checkbox" role="switch" value="1" name="StageTheme"  onchange="computedata()">
                                                 <label class="form-check-label" for="flexSwitchCheckDefault">Stage Decorations with Motif / Theme</label>
                                             </div>
 
                                             <div class="col-md-4 mt-2">
                                                 <div class="input-group">
                                                     <div class="input-group-text">₱</div>
-                                                    <input type="text" id="StageTheme" class="form-control" placeholder="Price" value="<?php $result = mysqli_query($conn, "SELECT Price FROM tblrentals WHERE Id = 6;");
-                                                                                                                                        $row = mysqli_fetch_assoc($result);
-                                                                                                                                        echo $row['Price']; ?>" style="background-color: rgb(235,235,228)" readonly>
+                                                    <input type="text" id="StageTheme" class="form-control" placeholder="Price" value="" style="background-color: rgb(235,235,228)" readonly>
                                                 </div>
                                             </div>
 
@@ -269,16 +191,14 @@ Record has been updated Successfully!
 
                                         <div class="col-md-4 mb-3">
                                             <div class="form-check form-switch">
-                                                <input class="form-check-input rentals" type="checkbox" role="switch" value="1" name="VenueBasic" <?php echo ($arow['VenueBasic'] == '1') ? "checked" : ""; ?> onchange="computedata()">
+                                                <input class="form-check-input rentals" type="checkbox" role="switch" value="1" name="VenueBasic"  onchange="computedata()">
                                                 <label class="form-check-label" for="flexSwitchCheckDefault">Venue Basic Decorations</label>
                                             </div>
 
                                             <div class="col-md-4 mt-2">
                                                 <div class="input-group">
                                                     <div class="input-group-text">₱</div>
-                                                    <input type="text" id="VenueBasic" class="form-control" placeholder="Price" value="<?php $result = mysqli_query($conn, "SELECT Price FROM tblrentals WHERE Id = 7;");
-                                                                                                                                        $row = mysqli_fetch_assoc($result);
-                                                                                                                                        echo $row['Price']; ?>" style="background-color: rgb(235,235,228)" readonly>
+                                                    <input type="text" id="VenueBasic" class="form-control" placeholder="Price" value="" style="background-color: rgb(235,235,228)" readonly>
                                                 </div>
                                             </div>
 
@@ -286,16 +206,14 @@ Record has been updated Successfully!
 
                                         <div class="col-md-4 mb-3">
                                             <div class="form-check form-switch">
-                                                <input class="form-check-input rentals" type="checkbox" role="switch" value="1" name="VenueDecoration" <?php echo ($arow['VenueDecoration'] == '1') ? "checked" : ""; ?> onchange="computedata()">
+                                                <input class="form-check-input rentals" type="checkbox" role="switch" value="1" name="VenueDecoration"  onchange="computedata()">
                                                 <label class="form-check-label" for="flexSwitchCheckDefault">Venue Decorations</label>
                                             </div>
 
                                             <div class="col-md-4 mt-2">
                                                 <div class="input-group">
                                                     <div class="input-group-text">₱</div>
-                                                    <input type="text" id="VenueDecoration" class="form-control" placeholder="Price" value="<?php $result = mysqli_query($conn, "SELECT Price FROM tblrentals WHERE Id = 8;");
-                                                                                                                                            $row = mysqli_fetch_assoc($result);
-                                                                                                                                            echo $row['Price']; ?>" style="background-color: rgb(235,235,228)" readonly>
+                                                    <input type="text" id="VenueDecoration" class="form-control" placeholder="Price" value="" style="background-color: rgb(235,235,228)" readonly>
                                                 </div>
                                             </div>
 
@@ -303,16 +221,14 @@ Record has been updated Successfully!
 
                                         <div class="col-md-4 mb-3">
                                             <div class="form-check form-switch">
-                                                <input class="form-check-input rentals" type="checkbox" role="switch" value="1" name="VenueFull" <?php echo ($arow['VenueFull'] == '1') ? "checked" : ""; ?> onchange="computedata()">
+                                                <input class="form-check-input rentals" type="checkbox" role="switch" value="1" name="VenueFull"  onchange="computedata()">
                                                 <label class="form-check-label" for="flexSwitchCheckDefault">Venue Full Decorations</label>
                                             </div>
 
                                             <div class="col-md-4 mt-2">
                                                 <div class="input-group">
                                                     <div class="input-group-text">₱</div>
-                                                    <input type="text" id="VenueFull" class="form-control" placeholder="Price" value="<?php $result = mysqli_query($conn, "SELECT Price FROM tblrentals WHERE Id = 9;");
-                                                                                                                                        $row = mysqli_fetch_assoc($result);
-                                                                                                                                        echo $row['Price']; ?>" style="background-color: rgb(235,235,228)" readonly>
+                                                    <input type="text" id="VenueFull" class="form-control" placeholder="Price" value="" style="background-color: rgb(235,235,228)" readonly>
                                                 </div>
                                             </div>
 
@@ -323,15 +239,13 @@ Record has been updated Successfully!
                                         <div class="col-md-4 mb-3">
                                             <div class="input-group">
                                                 <div class="input-group-text" style="width: 250px;">Moving Lights</div>
-                                                <input type="text" name="MovingLights" class="form-control rentals-input" value="<?php echo $arow['MovingLights'] ?>" onkeyup="computedata()">
+                                                <input type="text" name="MovingLights" class="form-control rentals-input" value="" onkeyup="computedata()">
                                                 <div class="input-group-text "> pc</div>
                                             </div>
                                             <div class="col-md-4 mt-2">
                                                 <div class="input-group">
                                                     <div class="input-group-text">₱</div>
-                                                    <input type="number" id="MovingLights" class="form-control" placeholder="Price" value="<?php $result = mysqli_query($conn, "SELECT Price FROM tblrentals WHERE Id = 3;");
-                                                                                                                                            $row = mysqli_fetch_assoc($result);
-                                                                                                                                            echo $row['Price']; ?>" style="background-color: rgb(235,235,228)" readonly>
+                                                    <input type="number" id="MovingLights" class="form-control" placeholder="Price" value="" style="background-color: rgb(235,235,228)" readonly>
                                                 </div>
                                             </div>
 
@@ -340,16 +254,14 @@ Record has been updated Successfully!
                                         <div class="col-md-4 mb-3">
                                             <div class="input-group">
                                                 <div class="input-group-text" style="width: 250px;">Fully Furnished Round Table</div>
-                                                <input type="text" name="FullyRoundTable" class="form-control rentals-input" value="<?php echo $arow['FurnishedRoundTable'] ?>" onkeyup="computedata()">
+                                                <input type="text" name="FullyRoundTable" class="form-control rentals-input" value="" onkeyup="computedata()">
                                                 <div class="input-group-text "> pc</div>
                                             </div>
 
                                             <div class="col-md-4 mt-2">
                                                 <div class="input-group">
                                                     <div class="input-group-text">₱</div>
-                                                    <input type="number" id="FullyRoundTable" class="form-control" placeholder="Price" value="<?php $result = mysqli_query($conn, "SELECT Price FROM tblrentals WHERE Id = 10;");
-                                                                                                                                                $row = mysqli_fetch_assoc($result);
-                                                                                                                                                echo $row['Price']; ?>" style="background-color: rgb(235,235,228)" readonly>
+                                                    <input type="number" id="FullyRoundTable" class="form-control" placeholder="Price" value="" style="background-color: rgb(235,235,228)" readonly>
                                                 </div>
                                             </div>
 
@@ -358,15 +270,13 @@ Record has been updated Successfully!
                                         <div class="col-md-4 mb-3">
                                             <div class="input-group">
                                                 <div class="input-group-text" style="width: 250px;">Round Table With Cloth</div>
-                                                <input type="text" name="RoundTable" class="form-control rentals-input" value="<?php echo $arow['RoundTable'] ?>" onkeyup="computedata()">
+                                                <input type="text" name="RoundTable" class="form-control rentals-input" value="" onkeyup="computedata()">
                                                 <div class="input-group-text "> pc</div>
                                             </div>
                                             <div class="col-md-4 mt-2">
                                                 <div class="input-group">
                                                     <div class="input-group-text">₱</div>
-                                                    <input type="number" id="RoundTable" class="form-control" placeholder="Price" value="<?php $result = mysqli_query($conn, "SELECT Price FROM tblrentals WHERE Id = 11;");
-                                                                                                                                            $row = mysqli_fetch_assoc($result);
-                                                                                                                                            echo $row['Price']; ?>" style="background-color: rgb(235,235,228)" readonly>
+                                                    <input type="number" id="RoundTable" class="form-control" placeholder="Price" value="" style="background-color: rgb(235,235,228)" readonly>
                                                 </div>
                                             </div>
 
@@ -378,15 +288,13 @@ Record has been updated Successfully!
                                             <div class="col-md-4 mb-3">
                                                 <div class="input-group">
                                                     <div class="input-group-text" style="width: 250px;">Rectangular Table With Cloth</div>
-                                                    <input type="text" name="RectangularTable" class="form-control rentals-input" value="<?php echo $arow['RectangularTable'] ?>" onkeyup="computedata()">
+                                                    <input type="text" name="RectangularTable" class="form-control rentals-input" value="" onkeyup="computedata()">
                                                     <div class="input-group-text "> pc</div>
                                                 </div>
                                                 <div class="col-md-4 mt-2">
                                                     <div class="input-group">
                                                         <div class="input-group-text">₱</div>
-                                                        <input type="number" id="RectangularTable" class="form-control" placeholder="Price" value="<?php $result = mysqli_query($conn, "SELECT Price FROM tblrentals WHERE Id = 12;");
-                                                                                                                                                    $row = mysqli_fetch_assoc($result);
-                                                                                                                                                    echo $row['Price']; ?>" style="background-color: rgb(235,235,228)" readonly>
+                                                        <input type="number" id="RectangularTable" class="form-control" placeholder="Price" value="" style="background-color: rgb(235,235,228)" readonly>
                                                     </div>
                                                 </div>
 
@@ -395,15 +303,13 @@ Record has been updated Successfully!
                                             <div class="col-md-4 mb-3">
                                                 <div class="input-group">
                                                     <div class="input-group-text" style="width: 300px;">Tiffany Chair (Gold / Silver) with Foam</div>
-                                                    <input type="text" name="TiffanyChair" class="form-control rentals-input" value="<?php echo $arow['TiffanyChair'] ?>" onkeyup="computedata()">
+                                                    <input type="text" name="TiffanyChair" class="form-control rentals-input" value="" onkeyup="computedata()">
                                                     <div class="input-group-text "> pc</div>
                                                 </div>
                                                 <div class="col-md-4 mt-2">
                                                     <div class="input-group">
                                                         <div class="input-group-text">₱</div>
-                                                        <input type="number" id="TiffanyChair" class="form-control" placeholder="Price" value="<?php $result = mysqli_query($conn, "SELECT Price FROM tblrentals WHERE Id = 13;");
-                                                                                                                                                $row = mysqli_fetch_assoc($result);
-                                                                                                                                                echo $row['Price']; ?>" style="background-color: rgb(235,235,228)" readonly>
+                                                        <input type="number" id="TiffanyChair" class="form-control" placeholder="Price" value="" style="background-color: rgb(235,235,228)" readonly>
                                                     </div>
                                                 </div>
 
@@ -416,7 +322,7 @@ Record has been updated Successfully!
                                                 <label for="" class="form-label">Rent Total :</label>
                                                 <div class="input-group">
                                                     <div class="input-group-text">₱</div>
-                                                    <input type="number" class="form-control" name="RentTotal" value="<?php echo $arow['RentTotal'] ?>" id="RentTotal" style="background-color: rgb(235,235,228)" readonly>
+                                                    <input type="number" class="form-control" name="RentTotal" value="" id="RentTotal" style="background-color: rgb(235,235,228)" readonly>
                                                 </div>
                                             </div>
                                         </div>
@@ -451,15 +357,13 @@ Record has been updated Successfully!
                                             <div class="col-md-3">
                                                 <label for="" class="form-label">Lechon :</label>
                                                 <div class="input-group">
-                                                    <input type="number" name="Lechon" class="form-control corkage-input" value="<?php echo $arow['Lechon'] ?>" onkeyup="corckage()">
+                                                    <input type="number" name="Lechon" class="form-control corkage-input" value="" onkeyup="corckage()">
                                                     <div class="input-group-text ">pc</div>
                                                 </div>
                                                 <div class="col-md-6 mt-2">
                                                     <div class="input-group">
                                                         <div class="input-group-text">₱</div>
-                                                        <input type="text" id="Lechon" class="form-control" value="<?php $result = mysqli_query($conn, "SELECT Price FROM tbladditional WHERE Id = 5;");
-                                                                                                                    $row = mysqli_fetch_assoc($result);
-                                                                                                                    echo $row['Price']; ?>" style="background-color: rgb(235,235,228)" readonly>
+                                                        <input type="text" id="Lechon" class="form-control" value=" style="background-color: rgb(235,235,228)" readonly>
                                                     </div>
                                                 </div>
 
@@ -468,16 +372,14 @@ Record has been updated Successfully!
                                             <div class="col-md-3">
                                                 <label for="" class="form-label">Wine / Brandy :</label>
                                                 <div class="input-group">
-                                                    <input type="number" name="Wine" class="form-control corkage-input" value="<?php echo $arow['Wine'] ?>" onkeyup="corckage()">
+                                                    <input type="number" name="Wine" class="form-control corkage-input" value="" onkeyup="corckage()">
                                                     <div class="input-group-text ">pc</div>
 
                                                 </div>
                                                 <div class="col-md-6 mt-2">
                                                     <div class="input-group">
                                                         <div class="input-group-text">₱</div>
-                                                        <input type="text" id="Wine" class="form-control" value="<?php $result = mysqli_query($conn, "SELECT Price FROM tbladditional WHERE Id = 6;");
-                                                                                                                    $row = mysqli_fetch_assoc($result);
-                                                                                                                    echo $row['Price']; ?>" style="background-color: rgb(235,235,228)" readonly>
+                                                        <input type="text" id="Wine" class="form-control" value="" style="background-color: rgb(235,235,228)" readonly>
                                                     </div>
                                                 </div>
                                             </div>
@@ -485,15 +387,13 @@ Record has been updated Successfully!
                                             <div class="col-md-3">
                                                 <label for="" class="form-label">Food and Others :</label>
                                                 <div class="input-group">
-                                                    <input type="number" name="OtherFood" class="form-control corkage-input" value="<?php echo $arow['OtherFood'] ?>" onkeyup="corckage()">
+                                                    <input type="number" name="OtherFood" class="form-control corkage-input" value="" onkeyup="corckage()">
                                                     <div class="input-group-text ">pc</div>
                                                 </div>
                                                 <div class="col-md-6 mt-2">
                                                     <div class="input-group">
                                                         <div class="input-group-text">₱</div>
-                                                        <input type="text" id="OtherFood" class="form-control" name="" value="<?php $result = mysqli_query($conn, "SELECT Price FROM tbladditional WHERE Id = 7;");
-                                                                                                                                $row = mysqli_fetch_assoc($result);
-                                                                                                                                echo $row['Price']; ?>" style="background-color: rgb(235,235,228)" readonly>
+                                                        <input type="text" id="OtherFood" class="form-control" name="" value="" style="background-color: rgb(235,235,228)" readonly>
                                                     </div>
                                                 </div>
 
@@ -503,7 +403,7 @@ Record has been updated Successfully!
                                                 <label for="" class="form-label">Corkage Total :</label>
                                                 <div class="input-group">
                                                     <div class="input-group-text">₱</div>
-                                                    <input type="text" class="form-control" name="CorkageTotal" id="CorkageTotal" value="<?php echo $arow['CorkageTotal'] ?>" style="background-color: rgb(235,235,228)" readonly>
+                                                    <input type="text" class="form-control" name="CorkageTotal" id="CorkageTotal" value="" style="background-color: rgb(235,235,228)" readonly>
                                                 </div>
 
                                             </div>
@@ -523,16 +423,10 @@ Record has been updated Successfully!
 
 
 
-                <input type="hidden" class="form-control fs-5" name="HallTotal" id="HallTotal" value="<?php echo $arow['HallTotal'] ?>">
-            <input type="hidden" class="form-control fs-5" id="FoodTotal" value="<?php echo $arow['FoodTotal'] ?>">
-            <input type="hidden" class="form-control fs-5" id="AdditionalTotal" value="<?php echo $arow['AddTotal'] ?>">
-            <input type="hidden" class="form-control" id="HallPrice" value="<?php $bresult = mysqli_query($conn, "SELECT tblhall.Exceeding 
-FROM tblhall
-LEFT JOIN tblfunctionhall ON tblfunctionhall.HallId = tblhall.Id
-WHERE tblfunctionhall.HallId = $id;
-");
-                                                                            $brow = mysqli_fetch_assoc($bresult);
-                                                                            echo $brow['Exceeding'] ?>">
+                <input type="hidden" class="form-control fs-5" name="HallTotal" id="HallTotal" value="">
+            <input type="hidden" class="form-control fs-5" id="FoodTotal" value="">
+            <input type="hidden" class="form-control fs-5" id="AdditionalTotal" value="">
+            <input type="hidden" class="form-control" id="HallPrice" value="">
 
 
 <input type="hidden" class="form-control" name="TotalDues" id="TotalDues">
@@ -567,7 +461,7 @@ WHERE tblfunctionhall.HallId = $id;
                         <div class="col-md-3 offset-md-1">
                             <div class="input-group ">
                                 <div class="input-group-text">Grand Total</div>
-                                <input type="number" class="form-control fs-5" name="GrandTotal" id="GrandTotal" value="<?php echo $arow['GrandTotal'] ?>">
+                                <input type="number" class="form-control fs-5" name="GrandTotal" id="GrandTotal" value="">
                                 <button type="button" class="btn btn-warning" onclick="grandtotal()"><i class="fa-solid fa-arrows-rotate"></i></button>
                             </div>
                         </div>

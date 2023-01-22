@@ -1,37 +1,73 @@
 <?php
+
 include 'config.php';
 $Id = $_GET['Id'];
-$hsql = "SELECT * FROM tblhotel WHERE Id = $Id";
-$hresult = mysqli_query($conn, $hsql);
-$hrow = mysqli_fetch_assoc($hresult);
-$GuestId = $hrow['GuestId'];
-$RoomId = $hrow['RoomId'];
+
+
+
+
+$asql = "SELECT r.Title AS RoomNumber, rc.Title AS RoomType, u.Id AS UserId, CONCAT(u.FirstName,' ',u.LastName) AS GuestName, rrpt.Rate, t.ArrivalDateTime, t.DepartureDateTime, t.RoomChargesTotal, t.Deposit, t.Total  
+FROM transaction t
+LEFT JOIN room r ON r.Id = t.RoomId
+LEFT JOIN user u ON u.Id = t.UserId
+LEFT JOIN roomcategory rc ON rc.Id = r.RoomCategoryId
+LEFT JOIN roomrate rr ON rr.RoomCategoryId = rc.Id
+LEFT JOIN roomratepricetrail rrpt ON rrpt.Id = rr.RoomPriceTrailId
+WHERE t.RoomId = $Id";
+$aresult = mysqli_query($conn, $asql);
+$arow = mysqli_fetch_assoc($aresult);
+$UserId = $arow['UserId'];
+
+
+if (isset($_POST['addextra'])) {
+    $ExtraID = $_POST['ExtraId'];
+    $ExtraQuantity = $_POST['ExtraQuantity'];
+    $Id = $_GET['Id'];
+
+    $dresult = mysqli_query($conn, "SELECT Cost
+    FROM  roomextra
+    WHERE Id = $ExtraID");
+    $drow = mysqli_fetch_assoc($dresult);
+
+    $Cost = $ExtraQuantity * $drow['Cost'];
+
+    $fsql = "INSERT INTO `transactionextra`
+    (`TransactionId`, `RoomExtraId`,`UserId`, `Quantity`, `TotalAmount`, `IsActive`) 
+    VALUES 
+    ('$Id','$ExtraID','$UserId','$ExtraQuantity',' $Cost','1')";
+    $fresult = mysqli_query($conn, $fsql);
+}
+
 
 if (isset($_POST['date'])) {
     $Departure = $_POST['Departure'];
 
-    $sql = "UPDATE `tblhotel` SET `Departure`='$Departure' WHERE Id = $Id";
-    $result = mysqli_query($conn, $sql);
-    echo "<meta http-equiv='refresh' content='0'>";
+    $gresult = mysqli_query($conn, "UPDATE `transaction` SET `DepartureDateTime`='$Departure' WHERE Id = $Id");
+    header("refresh: 0;");
 }
 
-if (isset($_POST['submit'])) {
+
+if (isset($_POST['checkout'])) {
+
     $Days = $_POST['Days'];
     $RoomCharges  = $_POST['RoomCharges'];
     $ExtraCharges = $_POST['ExtraCharges'];
     $Total = $_POST['Total'];
     $TotalDues  = $_POST['TotalDues'];
 
-    $csql = " UPDATE `tblhotel` SET 
-   `Days`='$Days',
-   `RoomCharges`=' $RoomCharges',
-   `ExtraCharges`='$ExtraCharges',
-   `Total`=' $Total',
-   `TotalDues`='$TotalDues'
-   WHERE Id = $Id";
-    $result = mysqli_query($conn, $csql);
-    header("Location: payment.php?Id=$Id & GuestId=$GuestId");
+    $jsql = "UPDATE `transaction` SET 
+    
+    `RoomChargesTotal`='$RoomCharges',
+    `ExtraChargesTotal`='$ExtraCharges',
+    `SubTotal`='$Total',
+    `Total`='$TotalDues'
+     WHERE Id = $Id";
+    $jresult = mysqli_query($conn, $jsql);
+    header("Location: payment.php?Id=$Id&d=$Days");
 }
+
+
+
 ?>
 
 
@@ -121,21 +157,13 @@ if (isset($_POST['submit'])) {
 
 <body>
 
-    <?php
-    $sql = "SELECT tblroom.Number,tblroomtype.Type, tblroomtype.Rate
-    FROM tblroom 
-    JOIN tblroomtype ON tblroom.RoomTypeId = tblroomtype.Id
-    WHERE tblroom.Id = $Id";
-    $result = mysqli_query($conn, $sql);
-    $row = mysqli_fetch_assoc($result);
-    ?>
 
 
 
 
     <div class="card">
 
-        <div class="card-body" style="background-color:#acbfa3; height:100vh">
+        <div class="card-body" style="background-color:rgba(237, 195, 238, 0.8); height:maxcontent;">
             <div class="container-fluid ">
                 <div class="row mb-5">
 
@@ -143,40 +171,31 @@ if (isset($_POST['submit'])) {
                         <div class="container " style="height: 500px; ">
                             <div class="row text-center ">
                                 <div class="col fs-3 mb-2">
-                                    Room <i class="fa-solid fa-hashtag"></i> <?php echo $row['Number'] . ' - ' . $row['Type'] ?> - <i class="fa-solid fa-user"></i>
-                                    <?php
-                                    $nsql = "SELECT CONCAT(tblguest.FirstName, ' ' , tblguest.LastName) AS Name, tblguest.Id as GuestId 
-                                    FROM tblroom 
-                                    LEFT JOIN tblguest ON tblroom.GuestId = tblguest.Id
-                                     WHERE tblroom.Id = $Id";
-                                    $nresult = mysqli_query($conn, $nsql);
-                                    $nrow = mysqli_fetch_assoc($nresult);
-                                    $GuestId = $nrow['GuestId'];
-                                    echo $nrow['Name'];
-                                    ?>
+                                    <?php echo $arow['RoomNumber'] . ' - ' . $arow['RoomType'] ?> - <i class="fa-solid fa-user"></i> <?php echo $arow['GuestName'];   ?> 
+
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-lg-4">
-                                    <input type="hidden" class="form-control" id="PerNight" value="<?php echo $row['Rate'] ?>">
+                                    <input type="hidden" class="form-control" id="PerNight" value="<?php echo $arow['Rate'] ?>">
                                 </div>
                                 <div class="col-lg-4">
-                                    <input type="hidden" class="form-control" id="Arrival" value="<?php echo $hrow['Arrival'] ?>">
+                                    <input type="hidden" class="form-control" id="Arrival" value="<?php echo $arow['ArrivalDateTime'] ?>">
                                 </div>
                                 <div class="col-lg-4">
-                                    <input type="hidden" class="form-control" id="Departure" value="<?php echo $hrow['Departure'] ?>">
+                                    <input type="hidden" class="form-control" id="Departure" value="<?php echo $arow['DepartureDateTime'] ?>">
                                 </div>
                             </div>
                             <div class="row text-center mb-4">
-                                <label for="" class="form-label"><i class="fa-solid fa-bed"></i> ₱ <?php echo $row['Rate'] ?> / Night</label>
+                                <label for="" class="form-label"><i class="fa-solid fa-bed"></i> ₱ <?php echo $arow['Rate'] ?> / Night</label>
 
                             </div>
                             <div class="row">
                                 <div class="col">
-                                    <label for="" class="form-label "><i class="fa-regular fa-calendar-days"></i><strong>Check-in : </strong> <?php echo $hrow['Arrival'] ?> </label>
+                                    <label for="" class="form-label "><i class="fa-regular fa-calendar-days"></i><strong>Check-in : </strong> <?php echo $arow['ArrivalDateTime'] ?> </label>
                                 </div>
                                 <div class="col">
-                                    <label for="" class="form-label"><i class="fa-regular fa-calendar-days"></i><strong>Check-Out : </strong><?php echo $hrow['Departure'] ?> </label>
+                                    <label for="" class="form-label"><i class="fa-regular fa-calendar-days"></i><strong>Check-Out : </strong><?php echo $arow['DepartureDateTime'] ?> </label>
                                 </div>
                             </div>
                             <div class="row">
@@ -185,32 +204,37 @@ if (isset($_POST['submit'])) {
                                     <table>
                                         <thead>
                                             <tr>
-                                                <th><span>Extra</span></th>
+                                                <th><span>No.</span></th>
+                                                <th><span>Name</span></th>
                                                 <th><span>Quantity</span></th>
                                                 <th><span>Price</span></th>
+                                                <th><span>Total</span></th>
                                                 <th><span>Action</span></th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <?php
-                                            $eresult = mysqli_query($conn, "SELECT tblextra.Name, tblextra.Quantity, tblextra.Cost, tblroomextra.Id
-                                            FROM tblroomextra 
-                                            LEFT JOIN tblextra ON tblroomextra.ExtraId = tblextra.Id
-                                            LEFT JOIN tblguest ON tblroomextra.GuestId = tblguest.Id
-                                            WHERE tblguest.Id = $GuestId AND tblroomextra.HotelId = $Id  AND tblroomextra.IsActive = 1");
+                                            $bresult = mysqli_query($conn, "SELECT re.Title ,te.Id, te.Quantity, re.Cost, te.TotalAmount
+                                            FROM transactionextra te
+                                            LEFT JOIN roomextra re ON re.Id = te.RoomExtraId
+                                            WHERE te.TransactionId = $Id AND IsActive = 1");
+                                            $number = 1;
 
-                                            while ($erow = mysqli_fetch_assoc($eresult)) {;
+                                            while ($brow = mysqli_fetch_assoc($bresult)) {;
                                             ?>
                                                 <tr>
-                                                    <td><?php echo $erow['Name'] ?></td>
-                                                    <td><?php echo $erow['Quantity'] ?></td>
-                                                    <td><?php echo $erow['Cost'] ?><span></span></td>
+                                                    <td><?php echo $number ?></td>
+                                                    <td><?php echo $brow['Title'] ?></td>
+                                                    <td><?php echo $brow['Quantity'] ?></td>
+                                                    <td><?php echo $brow['Cost'] ?></td>
+                                                    <td><?php echo $brow['TotalAmount'] ?></td>
                                                     <td class="text-center">
-                                                        <a class="btn btn-danger" href="function/hotel/deleteextra.php?Id=<?php echo $erow['Id'] ?>">
+                                                        <a class="btn btn-danger" href="function/hotel/deleteextra.php?Id=<?php echo $brow['Id'] ?>">
                                                             <i class="fa-solid fa-trash-can fa-xl"></i></a>
                                                     </td>
                                                 </tr>
-                                            <?php } ?>
+                                            <?php $number++;
+                                            } ?>
                                         </tbody>
                                     </table>
                                 </div>
@@ -222,7 +246,7 @@ if (isset($_POST['submit'])) {
                             <div class="col">
                                 <div class="card">
                                     <div class="card-header fs-4 bg-info">
-                                        <strong>Bill</strong>
+                                        <strong>Bill Details</strong>
                                     </div>
                                     <form method="POST">
                                         <div class="card-body">
@@ -236,32 +260,29 @@ if (isset($_POST['submit'])) {
                                                     <label for="" class="form-label">Room Charges : </label>
                                                     <div class="input-group">
                                                         <div class="input-group-text">₱</div>
-                                                        <input type="number" class="form-control" name="RoomCharges" id="RoomCharges" step=".01" style="background-color: rgb(235,235,228)" readonly>
+                                                        <input type="number" class="form-control" name="RoomCharges" id="RoomCharges" step=".01" style="background-color: rgb(235,235,228)" readonly value="<?php echo $arow['RoomChargesTotal'] ?>">
                                                     </div>
                                                 </div>
                                                 <div class="col-lg-2">
 
-                                                    <?php
-                                                    $xresult = mysqli_query($conn, "SELECT SUM(tblextra.Cost) AS ExtraCharges, tblguest.Id AS GuestId
-                                                 FROM tblroomextra 
-                                                 LEFT JOIN tblextra ON tblroomextra.ExtraId = tblextra.Id
-                                                 LEFT JOIN tblguest ON tblroomextra.GuestId = tblguest.Id
-                                                 WHERE tblguest.Id = $GuestId AND tblroomextra.HotelId = $Id  AND tblroomextra.IsActive = 1");
-                                                    $xrow = mysqli_fetch_assoc($xresult);
-                                                    $xtotal = $xrow['ExtraCharges'];
-                                                    ?>
+
 
                                                     <label for="" class="form-label">Extras Charges: </label>
                                                     <div class="input-group">
                                                         <div class="input-group-text">₱</div>
-                                                        <input type="number" class="form-control" name="ExtraCharges" id="ExtraCharges" step=".01" style="background-color: rgb(235,235,228)" readonly value="<?php echo $xtotal ?>">
+                                                        <input type="number" class="form-control" name="ExtraCharges" id="ExtraCharges" step=".01" style="background-color: rgb(235,235,228)" readonly value="<?php $iresult = mysqli_query($conn, " SELECT SUM(te.TotalAmount) AS ExtraChargesTotal
+                                            FROM transactionextra te
+                                            LEFT JOIN roomextra re ON re.Id = te.RoomExtraId
+                                            WHERE te.TransactionId = $Id AND IsActive = 1");
+                                                                                                                                                                                                                $irow = mysqli_fetch_assoc($iresult);
+                                                                                                                                                                                                                echo $irow['ExtraChargesTotal']; ?>">
                                                     </div>
                                                 </div>
                                                 <div class="col-lg-2">
                                                     <label for="" class="form-label">Deposit: </label>
                                                     <div class="input-group">
                                                         <div class="input-group-text">₱</div>
-                                                        <input type="number" class="form-control" id="Deposit" value="<?php echo $hrow['Deposit'] ?>" style="background-color: rgb(235,235,228)" readonly>
+                                                        <input type="number" class="form-control" id="Deposit" value="<?php echo $arow['Deposit'] ?>" style="background-color: rgb(235,235,228)" readonly>
                                                     </div>
                                                 </div>
                                                 <div class="col-lg-2">
@@ -276,16 +297,24 @@ if (isset($_POST['submit'])) {
                                                     <label for="" class="form-label">Total Dues: </label>
                                                     <div class="input-group">
                                                         <div class="input-group-text">₱</div>
-                                                        <input type="number" class="form-control" name="TotalDues" id="TotalDues" step=".01" value="<?php echo $hrow['Total'] ?>" style="background-color: rgb(235,235,228)" readonly>
+                                                        <input type="number" class="form-control" name="TotalDues" id="TotalDues" step=".01" value="<?php echo $arow['Total'] ?>" style="background-color: rgb(235,235,228)" readonly>
                                                     </div>
                                                 </div>
 
 
                                             </div>
                                         </div>
-                                    
+                                        <div class="row text-end">
+
+
+                                        </div>
+
+                                </div>
+                                <div class="col mb-5 mt-5">
+                                    <button type="submit" name="checkout" class="btn btn-warning fs-4" style="width:100%"><i class="fa-solid fa-right-from-bracket"></i> Proceed Check-Out </button>
                                 </div>
                             </div>
+                            </form>
                         </div>
 
 
@@ -309,112 +338,124 @@ if (isset($_POST['submit'])) {
                                             <i class="fa-solid fa-cubes"></i>
                                             <strong>Extras</strong>
                                         </div>
-                                        <div class="card-body">
-                                            <div class="tableWrap2">
-                                                <table class="table ">
-                                                    <thead>
-                                                        <tr>
-                                                            <th class="bg-success">Name</th>
-                                                            <th class="text-center bg-success">Qty</th>
-                                                            <th class="text-center bg-success">Price</th>
-                                                            <th class="text-center bg-success">Action</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <?php
-                                                        $sql = "SELECT * FROM tblextra";
-                                                        $result = mysqli_query($conn, $sql);
-                                                        while ($row = mysqli_fetch_assoc($result)) {
-                                                        ?>
-                                                            <tr>
-                                                                <td><?php echo $row['Name'] ?></td>
-                                                                <td class="text-center"><?php echo $row['Quantity'] ?></td>
-                                                                <td class="text-center"><?php echo $row['Cost'] ?></td>
-                                                                <td class="text-center"><a href="function/hotel/addextra.php?ExtraId=<?php echo $row['Id'] ?>&HotelId=<?php echo $Id ?>&GuestId=<?php echo $GuestId ?> "><i class="fa-solid fa-square-plus fa-2xl"></i></a></td>
-                                                            </tr>
 
-                                                        <?php } ?>
-                                                    </tbody>
-
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                
-                                    <div class="col">
-                                        <label for="" class="form-label"><i class="fa-regular fa-calendar-check"></i> <strong>CHECKOUT DATE </strong> </label>
-
-                                    </div>
-                            </div>
-                            <div class="row mb-3">
-                                <div class="col-md-8">
-                                    <input type="datetime-local" name="Departure" class="form-control mb-2" >
-
-                                </div>
-                                <div class="col-md-4">
-                                    <button class="btn btn-success mb-3" name="date" type="submit" style="float: right; width:100%"><i class="fa-sharp fa-solid fa-floppy-disk"></i> Save</button>
-                                </div>
-                                
-                            </div>
+                                        <?php
+                                        $csql = "SELECT * FROM roomextra WHERE ExtraCategoryId = 1";
+                                        $cresult = mysqli_query($conn, $csql);
+                                        ?>
+                                        <form method="post">
+                                            <div class="card-body">
+                                                <div class="row mb-3">
+                                                    <div class="col">
 
 
-                            <!-- <div class="card">
-                                <div class="card-header bg-info">
-                                    <i class="fa-solid fa-utensils"></i> <strong> MISCELLANEOUS
-                                </div>
-                                <div class="card-body">
-                                    <div class="container">
-                                        <form method="POST">
-                                            <div class="row">
-                                                <div class="col">
-                                                    <label class="form-label mt-2"><strong>Misc :</strong></label>
-                                                    <input type="text" class="form-control text-center" name="name" placeholder="e.g. Sphagetti">
-                                                </div>
-                                            </div>
+                                                        <label for="" class="form-label"> Extra :</label>
+                                                        <select class="form-select" name="ExtraId" aria-label="Default select example" required>
+                                                            <option selected>Open this select menu</option>
+                                                            <?php
+                                                            while ($crow = mysqli_fetch_assoc($cresult)) {
+                                                                $eid = $crow['Id'];
+                                                                $etitle = $crow['Title'];
+                                                                $Cost = $crow['Cost'];
 
-                                            <div class="row">
-                                                <div class="col-sm-6">
-                                                    <label class="form-label mt-2">Quantity :</label>
-                                                    <div class="input-group">
-                                                        <div class="input-group-text">Pc</div>
-                                                        <input type="text" class="form-control text-center" name="quantity" placeholder="e.g. 2">
+
+                                                                echo ' <option value= "' . $eid . '">' . $etitle . ' @ ' . $Cost . '</option> ';
+                                                            }
+                                                            ?>
+                                                        </select>
                                                     </div>
                                                 </div>
-
-                                                <div class="col-sm-6">
-                                                    <label class="form-label mt-2">Cost :</label>
-                                                    <div class="input-group">
-                                                        <div class="input-group-text">₱</div>
-                                                        <input type="text" class="form-control text-center" name="cost" placeholder="e.g. 250">
+                                                <div class="row mb-3">
+                                                    <div class="col">
+                                                        <label for="" class="form-label"> Quantity :</label>
+                                                        <input type="number" name="ExtraQuantity" class="form-control" min="1" required>
                                                     </div>
                                                 </div>
-                                                <button class="btn btn-success mt-4 " type="submit" name="submit" style="width:50%; margin:auto;"><i class="fa-sharp fa-solid fa-floppy-disk"></i> Submit</button>
-                                            </div>
+                                                <div class="row mb-3">
+                                                    <div class="col text-center">
+                                                        <button type="submit" class="btn btn-success" name="addextra" style="width: 100%;"><i class="fa-solid fa-square-plus"></i> Add Extra </button>
+                                                    </div>
+                                                </div>
                                         </form>
 
-
                                     </div>
                                 </div>
-                            </div> -->
-                            
-                                <div class="row text-end">
-                                    <div class="col mb-5 mt-5">
-                                        <button type="submit" name="submit" class="btn btn-warning fs-4" style="width:100%"><i class="fa-solid fa-right-from-bracket"></i> Check-Out </button>
-                                    </div>
-                                </div>
-                            </form>
+                            </div>
+                        </div>
+                    </div>
+<?php
+if (isset($_POST['upgrade'])) {
 
+    $roomselect = $_POST['roomselect'];
+
+    $jresult = mysqli_query($conn, "SELECT * FROM transaction WHERE Id = $Id");
+    $jrow = mysqli_fetch_assoc($jresult);
+
+    
+  
+    $UserId = $jrow['UserId'];
+   
+
+    $ksql = "UPDATE `transaction` SET `RoomId`='$roomselect' WHERE Id = $Id ";
+    $kresult = mysqli_query($conn,$ksql);
+
+    $isql = "UPDATE `transaction` SET `RoomId`='$Id' WHERE Id = $roomselect";
+    $iresult = mysqli_query($conn, $isql);
+
+    $hsql = "UPDATE `room` SET `RoomStatusId`='4' WHERE Id = $Id";
+    $hresult = mysqli_query($conn, $hsql);
+
+    $ysql = "UPDATE `room` SET `RoomStatusId`='1' WHERE Id = $roomselect";
+    $yresult = mysqli_query($conn, $ysql);
+
+    $lsql = "UPDATE `transactionextra` SET `TransactionId`='$roomselect',`UserId`='$UserId' WHERE TransactionId = $Id  ";
+    $lresult = mysqli_query($conn,$lsql);
+
+
+  
+    
+
+
+
+}
+?>
+
+                    <form method="post">
+                        <div class="row">
+
+                            <div class="col">
+                                <label for="" class="form-label"><i class="fa-regular fa-calendar-check"></i> <strong>CHECKOUT DATE </strong> </label>
+
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-8">
+                                <input type="datetime-local" name="Departure" class="form-control mb-2">
+
+                            </div>
+                            <div class="col-md-4">
+                                <button class="btn btn-success mb-3" name="date" type="submit" style="float: right; width:100%"><i class="fa-sharp fa-solid fa-floppy-disk"></i> Save</button>
+                            </div>
 
                         </div>
 
-                    </div>
+                        
+
+                    </form>
+
+
+
+
+
+
+
                 </div>
 
             </div>
         </div>
+
+    </div>
+    </div>
     </div>
 
 
@@ -426,6 +467,8 @@ if (isset($_POST['submit'])) {
 
 <script>
     $(document).ready(function() {
+
+
 
 
         var start_date = new Date(document.getElementById('Arrival').value);
@@ -458,6 +501,11 @@ if (isset($_POST['submit'])) {
 
 
     });
+
+    // Date Limitation
+    var Departure = new Date(document.getElementById('Departure').value);
+    Departure = new Date(Departure.setDate(Departure.getDate() + 2)).toISOString().split('T')[0];
+    document.getElementsByName("Departure")[0].setAttribute('min', Departure);
 </script>
 
 

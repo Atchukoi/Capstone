@@ -9,8 +9,8 @@ include 'config.php';
     </div>
 </div>
 <div class="card-body">
-    <table id="datatablesSimple" class="table-striped ">
-        <thead class="bg-info ">
+    <table id="datatablesSimple" class="table-striped">
+        <thead class="bg-info">
             <tr>
                 <th style="width:90px">Number</th>
                 <th style="width:200px">Room Type</th>
@@ -22,11 +22,15 @@ include 'config.php';
         </thead>
         <tbody>
             <?php
-
-            $sql = "SELECT tblroom.Number, tblroomtype.Type, tblroomtype.Rate, tblroom.Status, tblroom.GuestId,  IFNULL(CONCAT(tblguest.FirstName,' ',tblguest.LastName), 'No Occupant') AS Name, tblroom.Id AS RoomId
-            FROM tblroom
-            LEFT JOIN tblroomtype ON tblroom.RoomTypeId = tblroomtype.id
-            LEFT JOIN tblguest ON tblroom.GuestId = tblguest.Id;";
+            $sql = "SELECT  r.Id, r.Title AS RoomNumber, rc.Title AS RoomType, rrpt.Rate, rs.Title AS RoomStatus, u.FirstName
+            FROM room r
+            LEFT JOIN roomcategory rc ON rc.Id = r.RoomCategoryId
+            LEFT JOIN roomrate rr ON rr.RoomCategoryId  = rc.Id
+            LEFT JOIN roomratepricetrail rrpt ON rrpt.id = rr.RoomPriceTrailId
+            LEFT JOIN roomstatus rs ON rs.Id = r.RoomStatusId
+            LEFT JOIN transaction t ON t.Id = r.Id
+            LEFT JOIN user u ON u.Id = t.UserId
+            WHERE r.RoomTypeId = 1;";
             
 
             $result = $conn->query($sql);
@@ -34,11 +38,11 @@ include 'config.php';
             while ($row = mysqli_fetch_assoc($result)) {
                ?>
                 <tr>
-                <th><?php echo $row['Number'] ?></th>
-                <td><?php echo $row['Type'] ?></td>
+                <th><?php echo $row['RoomNumber'] ?></th>
+                <td><?php echo $row['RoomType'] ?></td>
                 <td><?php echo $row['Rate'] ?></td>
-                <td><?php echo $row['Status'] ?></td>
-                <td> <a href="hotel.php?Id=<?php echo $row['RoomId'] ?>"><?php echo $row['Name'] ?></a></td>
+                <td><?php echo $row['RoomStatus'] ?></td>
+                <td> <a href="hotel.php?Id=<?php echo $row['Id'] ?>"><?php echo $row['FirstName'] ?></a></td>
                 </tr> 
             <?php
             }

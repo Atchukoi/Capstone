@@ -19,16 +19,17 @@ include 'config.php';
             </thead>
             <tbody>
                 <?php 
-                $sql = "SELECT CONCAT(tblguest.FirstName,' ', tblguest.LastName) AS Name, tblguest.Phone, tblhoteltransaction.Departure 
-                FROM tblhoteltransaction
-                LEFT JOIN tblguest ON tblhoteltransaction.GuestId = tblguest.Id";
+                $sql = "SELECT CONCAT(u.FirstName,' ',u.LastName) AS GuestName, u.Contact, t.DepartureDateTime
+                FROM transactionhistory t
+                LEFT JOIN user u ON u.Id = t.UserId
+                ";
                 $result = mysqli_query($conn,$sql);
                 while($row = mysqli_fetch_assoc($result)) {
                 ?>    
                 <tr>
-                    <td style="width:600px"><?php echo $row['Name'] ?></td>
-                    <td style="width:200px"><?php echo $row['Phone'] ?></td>
-                    <td style="width:200px"><?php echo $row['Departure'] ?></td>
+                    <td style="width:600px"><?php echo $row['GuestName'] ?></td>
+                    <td style="width:200px"><?php echo $row['Contact'] ?></td>
+                    <td style="width:200px"><?php echo $row['DepartureDateTime'] ?></td>
                 </tr>
                 
             <?php } ?>

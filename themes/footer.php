@@ -77,6 +77,37 @@
                 },
             },
         });
+
+        $(document).ready(function() {
+    displayData();
+  });
+
+  //display function
+  function displayData() {
+    var displayData = "true";
+    $.ajax({
+      url: "showroom.php",
+      type: 'POST',
+      data: {
+        displaySend: displayData
+      },
+      success: function(data, status) {
+        $('#displayrooms').html(data);
+      }
+    })
+  } 
+
+   // Date Limitation
+   var Arrival = new Date();
+    Arrival = new Date(Arrival.setDate(Arrival.getDate() + 1)).toISOString().split('T')[0];
+    document.getElementsByName("roomcheckin")[0].setAttribute('min', Arrival);
+
+    var Departure = new Date();
+    Departure = new Date(Departure.setDate(Departure.getDate() + 2)).toISOString().split('T')[0];
+    document.getElementsByName("roomcheckout")[0].setAttribute('min', Departure);
+
+    
+
     </script>
 </body>
 

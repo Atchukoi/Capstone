@@ -26,26 +26,45 @@ if (isset($_GET['msg'])) {
 ?>
 
 <div class="card-body">
+
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link active bg-primary " aria-current="page" href="accepted.php">Accepted</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="#">Pending</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="#">Expired</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link disabled">Deleted</a>
+  </li>
+</ul>
+
+
   <table id="datatablesSimple" class="table-striped ">
-    <thead class="bg-info ">
+    <thead class="">
       <tr>
         <th scope="col">ID.</th>
-        <th scope="col">Room Number</th>
+        <th scope="col">Room Type</th>
         <th scope="col">Arrival</th>
         <th scope="col">Departure</th>
         <th scope="col">Name</th>
         <th scope="col">Contact</th>
         <th scope="col">Status</th>
         <th scope="col">Reservation Code</th>
+        <th scope="col">PaymentType</th>
+        <th scope="col">Transaction Code</th>
         <th scope="col">Action</th>
       </tr>
     </thead>
     <tbody>
       <?php
-      $sql = "SELECT tblreservation.Id, tblreservation.Code, tblreservation.RoomId, tblreservation.Arrival, tblreservation.Departure, tblguest.FirstName, tblguest.LastName, tblguest.Phone, tblreservation.Total, tblreservation.Status, tblroom.Number, tblreservation.GuestId
-        FROM tblreservation
-        LEFT JOIN tblguest ON tblreservation.GuestId = tblguest.Id
-        LEFT JOIN tblroom ON tblroom.Id =  tblreservation.RoomId;";
+      $sql = "SELECT rr.Id, rr.Code, rr.RoomCategoryId, rr.Arrival, rr.Departure,u.Id AS GuestId, CONCAT(u.FirstName,' ', u.LastName) AS Name, u.Contact, rr.Status, rc.Title
+      FROM roomreservation rr
+      LEFT JOIN user u ON rr.GuestId = u.Id
+      LEFT JOIN roomcategory rc ON rc.Id = rr.RoomCategoryId;";
       $result = mysqli_query($conn, $sql);
       $number = 1;
 
@@ -53,20 +72,20 @@ if (isset($_GET['msg'])) {
       ?>
         <tr class="text-center">
           <th><?php echo $number ?></th>
-          <td style="width: 100px;"><?php echo $row['Number'] ?></td>
+          <td style="width: 100px;"><?php echo $row['Title'] ?></td>
           <td><?php echo $row['Arrival'] ?></td>
           <td><?php echo $row['Departure'] ?></td>
-          <td><?php echo $row['FirstName'] . ' ' . $row['LastName']  ?></td>
-          <td><?php echo $row['Phone'] ?></td>
+          <td><?php echo $row['Name']?></td>
+          <td><?php echo $row['Contact'] ?></td>
           <td><?php echo $row['Status'] ?></td>
           <td><?php echo $row['Code'] ?></td>
           <td class="text-center ">
             <?php if ($row['Status'] == "Pending") {
             ?>
-              <!-- <a href="function/room_reservation/accept.php?Id=<?php echo $row['Id'] ?>" class="btn btn-success mb-1">
+              <a href="function/room_reservation/accept.php?Id=<?php echo $row['Id'] ?>" class="btn btn-success mb-1">
                 <i class="fa-solid fa-square-check"></i>
                 Accept
-              </a> -->
+              </a>
 
               <a href="../sendlink.php?Id=<?php echo $row['Id'] ?>" class="btn btn-primary mb-1">
                 <i class="fa-solid fa-circle-info"></i>
@@ -78,7 +97,7 @@ if (isset($_GET['msg'])) {
                 View
               </a>
 
-              <a href="function/room_reservation/delete.php?Id=<?php echo $row['Id'] ?> & FirstName=<?php echo $row['FirstName'] ?> & LastName=<?php echo $row['LastName'] ?>" class="btn btn-danger mb-1"><i class="fa-solid fa-trash "></i>
+              <a href="function/room_reservation/delete.php?Id=<?php echo $row['Id'] ?>" class="btn btn-danger mb-1"><i class="fa-solid fa-trash "></i>
                 Delete
               </a>
 
@@ -90,7 +109,7 @@ if (isset($_GET['msg'])) {
                 View
               </a>
 
-              <a href="function/room_reservation/delete.php?Id=<?php echo $row['Id'] ?>&FirstName=<?php echo $row['FirstName'] ?>&LastName=<?php echo $row['LastName'] ?>" class="btn btn-danger mb-1"><i class="fa-solid fa-trash "></i>
+              <a href="function/room_reservation/delete.php?Id=<?php echo $row['Id'] ?>&FirstName=<?php echo $row['Name'] ?>" class="btn btn-danger mb-1"><i class="fa-solid fa-trash "></i>
                 Delete
               </a>
             <?php } ?>

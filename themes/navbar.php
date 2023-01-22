@@ -29,7 +29,7 @@ error_reporting(0);
         <div class="container">
             <nav class="nav">
                 <a href="index.php" class="logo">
-                    <img src="./images/top_icon.png" alt="">
+                    <img src="./images/RedLogo.png" alt="">
                 </a>
                 <div class="hamburger-menu">
                     <i class="fas fa-bars"></i>
@@ -40,13 +40,13 @@ error_reporting(0);
                         <a href="index.php" class="nav-link">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a href="aboutus.php" class="nav-link">About Us</a>
-                    </li>
-                    <li class="nav-item">
                         <a href="rooms.php" class="nav-link">Rooms</a>
                     </li>
                     <li class="nav-item">
                         <a href="halls.php" class="nav-link">Halls</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="aboutus.php" class="nav-link">About Us</a>
                     </li>
                     <!--
                     <li class="nav-item">

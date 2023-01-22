@@ -5,24 +5,23 @@ error_reporting(0);
 session_start();
 
 if (isset($_POST['submit'])) {
-  $username = $_POST['username'];
-  $password = $_POST['password'];
+    $username = $_POST['username'];
+    $password = md5($_POST['password']);
 
-  $sql = "SELECT * FROM tbluser WHERE Username='$username' AND Password='$password'";
-  $result = mysqli_query($conn, $sql);
-  if ($result->num_rows > 0) {
-    echo "<script>alert('Welcome! Succesfuly Logged In.')</script>";
-    $row = mysqli_fetch_assoc($result);
-    $_SESSION['adminid'] = $row['Id'];
-    $_SESSION['role'] = $row['Role'];
-    $_SESSION['admin'] = $row['FirstName'];
-    
-    
-    header("Location: dashboard.php");
-    
-  } else {
-    echo "<script>alert('Ooops! Username or Password is incorrect.')</script>";
-  }
+    $sql = "SELECT * FROM user WHERE Username='$username' AND Password='$password'";
+    $result = mysqli_query($conn, $sql);
+    if ($result->num_rows > 0) {
+        echo "<script>alert('Welcome! Succesfuly Logged In.')</script>";
+        $row = mysqli_fetch_assoc($result);
+        $_SESSION['adminid'] = $row['Id'];
+        $_SESSION['role'] = $row['RoleId'];
+        $_SESSION['admin'] = $row['FirstName'];
+
+
+        header("Location: dashboard.php");
+    } else {
+        echo "<script>alert('Ooops! Username or Password is incorrect.')</script>";
+    }
 }
 ?>
 
@@ -42,10 +41,17 @@ if (isset($_POST['submit'])) {
         .cl {
             outline: 1px solid blue;
         }
+
+        .bg {
+            background-image: url(assets/img/backgroundpage0.jpg);
+            width: 100%;
+            height: 100vh;
+            background-size: cover;
+        }
     </style>
 </head>
 
-<body class="bg-secondary">
+<body class="bg">
     <div id="layoutAuthentication">
         <div id="layoutAuthentication_content">
             <main>
@@ -56,20 +62,20 @@ if (isset($_POST['submit'])) {
                     <div class="row-lg-5 text-center mt-1" style="height: 200px ;">
                         <img src="./assets/img/Logo1.png" class="rounded mx-auto d-block" style="height: 250px ;">
                     </div>
-                    <p class="text-fluid text-center text-white mt-5" style="border-bottom: 2px solid white; margin-top: 10px;">La Perfecta Version 1.0</p>
+                    <p class="text-fluid text-center text-danger mt-5" style="border-bottom: 2px solid white; margin-top: 10px;">La Perfecta Version 1.0</p>
                     <div class="row justify-content-center">
                         <div class="col-lg-5">
                             <div class="card shadow-lg border-0 rounded-lg">
                                 <div class="card-header">
-                                    <h3 class="text-center font-weight-light my-4">Login</h3>
+                                    <h3 class="text-center font-weight-light my-4">Admin Login</h3>
                                 </div>
                                 <div class="card-body">
                                     <form method="POST" action="#">
                                         <div class="form-floating mb-3">
-                                            
+
                                             <input class="form-control" name="username" type="text" placeholder="name@example.com" required />
                                             <label for="inputEmail">Username</label>
-                                            
+
                                         </div>
                                         <div class="form-floating mb-3">
                                             <input class="form-control" name="password" type="password" placeholder="Password" required />
@@ -95,8 +101,11 @@ if (isset($_POST['submit'])) {
                     <div class="d-flex align-items-center justify-content-between small">
                         <div class="text-muted">Copyright &copy; LaPerfecta.online 2022</div>
                         <div>
-                            <?php 
-                            echo "Today is " . date("d-m-Y"). " ". date("h:i:sa") ;
+                            <?php
+                            $time = date("g:i:s a");
+                            $date = date("m/d/Y");
+                            echo "Today's date is: " . $date . " and the time is: " . $time;
+                            date_default_timezone_set("UTC");
                             ?>
                         </div>
                     </div>

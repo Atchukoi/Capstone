@@ -28,25 +28,27 @@ include 'config.php';
             </thead>
             <tbody class="text-center">
             <?php 
-                $sql = "SELECT *, CONCAT(tblguest.FirstName,' ', tblguest.LastName) AS Name, tblroom.Number
-                FROM tblhoteltransaction
-                LEFT JOIN tblguest ON tblhoteltransaction.GuestId = tblguest.Id
-                LEFT JOIN tblroom ON tblhoteltransaction.RoomId = tblRoom.Id";
+                $sql = "SELECT CONCAT(u.FirstName,' ',u.LastName) AS GuestName,r.Title,  th.ArrivalDateTime, th.DepartureDateTime, p.AmountTender, th.Total, th.Discount, p.AmountChange, p.PaymentTerms
+                FROM transactionhistory th
+                LEFT JOIN user u ON u.Id = th.UserId
+                LEFT JOIN room r ON r.Id = th.RoomId
+                LEFT JOIN payments p ON p.TransactionId = th.TransactionId
+                WHERE r.RoomTypeId = 1";
                 $result = mysqli_query($conn,$sql);
                 $number = 1;
                 while($row = mysqli_fetch_assoc($result)) {
                 ?>    
                 <tr>
                     <th style="width:50px"><?php echo $number ?></th>
-                    <td style="width:100px"><?php echo $row['Name'] ?></td>
-                    <td style="width:50px"><?php echo $row['Number'] ?></td>
-                    <td style="width:100px"><?php echo $row['Arrival'] ?></td>
-                    <td style="width:100px"><?php echo $row['Departure'] ?></td>
-                    <td style="width:100px"><?php echo $row['Tender'] ?></td>
-                    <td style="width:100px"><?php echo $row['TotalDues'] ?></td>
+                    <td style="width:100px"><?php echo $row['GuestName'] ?></td>
+                    <td style="width:50px"><?php echo $row['Title'] ?></td>
+                    <td style="width:100px"><?php echo $row['ArrivalDateTime'] ?></td>
+                    <td style="width:100px"><?php echo $row['DepartureDateTime'] ?></td>
+                    <td style="width:100px"><?php echo $row['AmountTender'] ?></td>
+                    <td style="width:100px"><?php echo $row['Total'] ?></td>
                     <td style="width:100px"><?php echo $row['Discount'] ?></td>
-                    <td style="width:100px"><?php echo $row['Changes'] ?></td>
-                    <td style="width:100px"><?php echo $row['PaymentType'] ?></td>
+                    <td style="width:100px"><?php echo $row['AmountChange'] ?></td>
+                    <td style="width:100px"><?php echo $row['PaymentTerms'] ?></td>
                     <td style="width:100px">
                         
                         <button type="button" class="btn btn-danger"><i class="fa-solid fa-print"></i></button>

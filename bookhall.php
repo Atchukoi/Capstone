@@ -1,5 +1,5 @@
 <?php
-include 'config.php';
+include 'testconfig.php';
 $Id = $_GET['Id'];
 error_reporting(0);
 session_start();

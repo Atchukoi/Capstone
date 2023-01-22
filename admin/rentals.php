@@ -4,8 +4,8 @@ include 'config.php';
 ?>
 <div class="card mb-4">
     <div class="card-header text-primary">
-      <h4> <i class="fa-solid fa-money-bill-transfer"></i>
-        Rentals </h4>
+        <h4> <i class="fa-solid fa-money-bill-transfer"></i>
+            Rentals </h4>
     </div>
 </div>
 <?php
@@ -22,16 +22,16 @@ if (isset($_GET['msg'])) {
 
 ?>
 
-<?php 
+<?php
 if (isset($_POST['submit'])) {
     $Name = $_POST['Name'];
     $Description = $_POST['Description'];
     $Price = $_POST['Price'];
-    
 
 
-    $sql = "INSERT INTO `tblrentals`
-    (`Name`, `Description`, `Price`) 
+
+    $sql = "INSERT INTO `roomextra`
+    (`Title`, `Description`, `Cost`) 
     VALUES 
     ('$Name','$Description','$Price')";
 
@@ -56,6 +56,7 @@ if (isset($_POST['submit'])) {
             <table id="datatablesSimple" class="table-striped">
                 <thead class="bg-info ">
                     <tr>
+                        <th>No.</th>
                         <th>Name</th>
                         <th>Description</th>
                         <th>Price</th>
@@ -64,35 +65,38 @@ if (isset($_POST['submit'])) {
                 </thead>
                 <tbody>
                     <?php
-                    $sql = "SELECT * FROM tblrentals";
-
+                    $sql = "SELECT * FROM `roomextra` WHERE ExtraCategoryId = 2";
+                    
                     $result = mysqli_query($conn, $sql);
+                    $number = 1;
 
                     while ($row = mysqli_fetch_assoc($result)) {
                     ?>
                         <tr>
-                            <th style="width: 300px;"><?php echo $row['Name'] ?></th>
-                            <td style="width: 500px;"><?php echo $row['Description'] ?></td>
-                            <td style="width: 100px;">₱ <?php echo $row['Price'] ?></td>
+                            <th><?php echo $number ?></th>
+                            <th><?php echo $row['Title'] ?></th>
+                            <td><?php echo $row['Description'] ?></td>
+                            <td>₱ <?php echo $row['Cost'] ?></td>
 
-                            <td style="width: 100px;">
+                            <td>
                                 <a href="function/fhmanage/rentaledit.php?id=<?php echo $row['Id'] ?>" class="btn btn-secondary ">
                                     <i class="fa-solid fa-pen-to-square"></i>
                                     Update
                                 </a>
-                                <!-- <a href="function/fhmanage/rentaldelete.php?id=<?php echo $row['Id'] ?>&name=<?php echo $row['Name'] ?>" class="btn btn-danger">
+                                <a href="function/fhmanage/rentaldelete.php?id=<?php echo $row['Id'] ?>" class="btn btn-danger">
                                     <i class="fa-solid fa-pen-to-square"></i>
                                     Delete
-                                </a> -->
+                                </a>
                             </td>
                         </tr>
                     <?php
+                        $number++;
                     }
                     ?>
                 </tbody>
             </table>
         </div>
-        <!-- <div class="col-lg-5" style="border-left: solid black 5px;">
+         <div class="col-lg-5" style="border-left: solid black 5px;">
             <form method="POST">
                 <div class="row mb-2">
                     <div class="col">
@@ -121,7 +125,7 @@ if (isset($_POST['submit'])) {
                     </div>
                 </div>
             </form>
-        </div> -->
+        </div>
     </div>
 
 </div>

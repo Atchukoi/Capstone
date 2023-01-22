@@ -1,7 +1,9 @@
-<?php 
+<?php
 
 session_start();
-// error_reporting();
+error_reporting();
+include 'config.php';
+$roleid = $_SESSION['role'];
 ?>
 
 <!DOCTYPE html>
@@ -17,7 +19,7 @@ session_start();
   <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" />
   <link href="css/styles.css" rel="stylesheet" />
   <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
-   
+
   <!--JS Query CDN-->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js" integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
@@ -28,7 +30,7 @@ session_start();
     <!-- Navbar Brand-->
     <a class="navbar-brand ps-3" href="dashboard.php">La Perfecta</a>
     <!-- Sidebar Toggle-->
-    <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
+    <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#"><i class="fas fa-bars"></i></button>
     <!-- Navbar Search-->
     <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
       <div class="input-group">
@@ -60,11 +62,11 @@ session_start();
                       Hotels
           ====================================================================== -->
 
-          
+
 
           <div class="nav">
 
-          <div class="sb-sidenav-menu-heading text-primary"> Hotel Rooms</div>
+            <div class="sb-sidenav-menu-heading text-primary"> Hotel Rooms</div>
 
             <a class="nav-link" href="dashboard.php">
               <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
@@ -79,7 +81,7 @@ session_start();
             <div class="collapse" id="collapseLayoutsReservations" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
               <nav class="sb-sidenav-menu-nested nav">
                 <a class="nav-link" href="addreservation.php">Add Reservation</a>
-                <a class="nav-link" href="reservationlist.php">Reservation Lists</a>
+                <a class="nav-link" href="hrraccepted.php">Reservation Lists</a>
               </nav>
             </div>
 
@@ -117,7 +119,7 @@ session_start();
 
             <a class="nav-link" href="reports.php">
               <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
-             Hotel Reports
+              Hotel Reports
             </a>
 
 
@@ -138,7 +140,7 @@ session_start();
               Hall Dashboard
             </a>
 
-            
+
 
             <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayoutsHallReservations" aria-expanded="false" aria-controls="collapseLayouts">
               <div class="sb-nav-link-icon"><i class="fa-solid fa-calendar-days"></i></div>
@@ -148,7 +150,7 @@ session_start();
             <div class="collapse" id="collapseLayoutsHallReservations" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
               <nav class="sb-sidenav-menu-nested nav">
                 <a class="nav-link" href="halladd.php">Add Reservation</a>
-                <a class="nav-link" href="hallreservationlist.php">Reservation Lists</a>
+                <a class="nav-link" href="fhrraccepted.php">Reservation Lists</a>
               </nav>
             </div>
 
@@ -185,11 +187,11 @@ session_start();
             </a>
             <div class="collapse" id="collapseLayoutsHallManage" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
               <nav class="sb-sidenav-menu-nested nav">
-                <a class="nav-link" href="halldetails.php">Hall Details</a>
+                <!-- <a class="nav-link" href="halldetails.php">Hall Details</a> -->
                 <a class="nav-link" href="hallpackage.php">Hall Package</a>
                 <a class="nav-link" href="rentals.php">Rental</a>
                 <a class="nav-link" href="foodpackage.php">Food Package</a>
-                <a class="nav-link" href="">Additional</a>
+                <a class="nav-link" href="additional.php">Additional</a>
               </nav>
             </div>
 
@@ -209,9 +211,10 @@ session_start();
           </div>
         </div>
         <div class="sb-sidenav-footer">
-          <div class="small">Logged in as: <?php echo $_SESSION['role'] ?></div>
+          <div class="small">Logged in as: <?php $rresult=mysqli_query($conn,"SELECT * FROM role WHERE id = $roleid"); $rrow = mysqli_fetch_assoc($rresult);
+          echo $rrow['Title'];  ?></div>
           <?php echo $_SESSION['admin'] ?>
-          
+
         </div>
       </nav>
     </div>

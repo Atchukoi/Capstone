@@ -178,12 +178,6 @@ if (isset($_POST['ballroom'])) {
           <div class="room-info-wrap">
             <span class="room-price">3 Main Courses </span>
             <p class="paragraph">
-            <ul style="font-size: 1.5rem;">
-              <li><span>&#9989;</span> ₱ 320 / pax (50 pax minimum)</li>
-              <li><span>&#9989;</span> ₱ 300 / pax (80 pax)</li>
-              <li><span>&#9989;</span> ₱ 280 / pax (100 pax or more)</li>
-            </ul>
-            <p style="font-size: 1.5rem;">
               Pork or Beef, Chicken, Vegetables, Rice, Dessert (Buko Pandan salad) & Iced Tea
             </p>
 
@@ -198,12 +192,6 @@ if (isset($_POST['ballroom'])) {
           <div class="room-info-wrap">
             <span class="room-price">4 Main Courses</span>
             <p class="paragraph">
-            <ul style="font-size: 1.5rem;">
-              <li><span>&#9989;</span> ₱ 340 / pax (50 pax minimum)</li>
-              <li><span>&#9989;</span> ₱ 320 / pax (80 pax)</li>
-              <li><span>&#9989;</span> ₱ 300 / pax (100 pax or more)</li>
-            </ul>
-            <p style="font-size: 1.5rem;">
               Pork, Beef, Chicken, Vegetables, Rice, Dessert (Buko Pandan salad) & Iced Tea
             </p>
 
@@ -218,12 +206,6 @@ if (isset($_POST['ballroom'])) {
           <div class="room-info-wrap">
             <span class="room-price">5 Main Courses</span>
             <p class="paragraph">
-            <ul style="font-size: 1.5rem;">
-              <li><span>&#9989;</span> ₱ 320 / pax (50 pax minimum)</li>
-              <li><span>&#9989;</span> ₱ 300 / pax (80 pax)</li>
-              <li><span>&#9989;</span> ₱ 280 / pax (100 pax or more)</li>
-            </ul>
-            <p style="font-size: 1.5rem;">
               Seafood, Pork, Beef, Chicken, Vegetables, Rice, Dessert (Buko Pandan salad) & Iced Tea
             </p>
 

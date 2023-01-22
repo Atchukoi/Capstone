@@ -7,11 +7,11 @@ if (isset($_POST['submit'])) {
    
 
 
-    $sql = "UPDATE `tblrentals` SET 
+    $sql = "UPDATE `roomextra` SET 
     
-    `Name`='$Name',
+    `Title`='$Name',
     `Description`='$Description',
-    `Price`='$Price'
+    `Cost`='$Price'
     
     
     WHERE Id= $id";
@@ -45,7 +45,7 @@ if (isset($_POST['submit'])) {
 <body style="background-color: rgba(237, 195, 238, 0.8);">
     <?php
 
-    $sql = "SELECT * FROM `tblrentals` WHERE Id= $id LIMIT 1";
+    $sql = "SELECT * FROM `roomextra` WHERE Id= $id LIMIT 1";
     $result = mysqli_query($conn, $sql);
     $row = mysqli_fetch_assoc($result);
 
@@ -66,14 +66,14 @@ if (isset($_POST['submit'])) {
             <div class="row mb-3">
                 <div class="col">
                     <label for="Name" class="form-label">Name :</label>
-                    <input type="text" name="Name" class="form-control" value="<?php echo $row['Name'] ?>">
+                    <input type="text" name="Name" class="form-control" value="<?php echo $row['Title'] ?>">
                 </div>
 
                 <div class="col">
                     <label for="Price" class="form-label">Price :</label>
                     <div class="input-group">
                         <div class="input-group-text">₱</div>
-                    <input type="text" name="Price" class="form-control" value="<?php echo $row['Price'] ?>">
+                    <input type="text" name="Price" class="form-control" value="<?php echo $row['Cost'] ?>">
                 </div>
                 </div>
             </div>

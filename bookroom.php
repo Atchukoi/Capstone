@@ -2,25 +2,28 @@
 session_start();
 include 'config.php';
 $Id = $_GET['Id'];
-$rId = $_GET['rId'];
+$In = $_GET['i'];
+$Out = $_GET['o'];
+$GuestId = $_SESSION['GuestId'];
 
 if (isset($_POST['submit'])) {
 
     if (isset($_SESSION['Guest']) && !empty($_SESSION['Guest'])) {
         $Code = mt_rand('100', '1000000000');
-        $RoomTypeId = $rId;
+        $RoomTypeId = $Id;
         $Arrival = $_POST['arrival'];
         $Departure = $_POST['departure'];
         $Total = $_POST['total'];
         $GuestId = $_SESSION['GuestId'];
         $Remarks = $_POST['remarks'];
 
-        $sql = "INSERT INTO `tblreservation`
-        (`Code`, `RoomId`, `Arrival`, `Departure`, `Total`, `GuestId`, `Status`, `Remarks`)
-         VALUES 
-         ('$Code','$RoomTypeId','$Arrival','$Departure','$Total','$GuestId','Pending','$Remarks')";
+        $sql = "INSERT INTO `roomreservation`
+        (`Code`,`RoomRateId`, `Arrival`, `Departure`, `Total`, `GuestId`, `Status`, `Notes`,`UserId`) 
+        VALUES 
+        ('$Code','$RoomTypeId','$Arrival','$Departure','$Total','$GuestId','Pending','$Remarks','$_SESSION[adminid]')";
         $result = mysqli_query($conn, $sql);
         echo "<script>alert('Reservation Successfully Send! Check your booking list on your Profile.')</script>";
+        header("Location: bookinglist.php?Id=$GuestId");
     } else {
         echo "<script>alert('Please Login before you can book a reservation')</script>";
     }
@@ -45,7 +48,11 @@ if (isset($_POST['submit'])) {
 <body style="background-color: #94AABB;">
     <?php
 
-    $result = mysqli_query($conn, "SELECT * FROM tblroomType WHERE Id = $Id");
+    $result = mysqli_query($conn, "SELECT rr.Title, rrpt.Rate, rc.Description, rr.Description AS Inclusion
+    FROM roomrate rr
+    JOIN roomratepricetrail rrpt ON rrpt.id = rr.RoomPriceTrailId
+    JOIN roomcategory rc ON rc.Id = rr.RoomCategoryId
+    WHERE rr.RoomTypeID = 1 and rc.Id = $Id");
     $row = mysqli_fetch_assoc($result);
     ?>
 
@@ -63,7 +70,7 @@ if (isset($_POST['submit'])) {
                 <div class="container">
                     <div class="row">
                         <div class="col text-center">
-                            <h4> You have selected a Room of <span class="text-danger fs-2"><i><?php echo $row['Type'] ?></i></span> with a rate of<span class="text-danger fs-2"><i> ₱ <?php echo $row['Rate'] ?></i></span> Per Night </h4>
+                            <h4> You have selected a Room of <span class="text-danger fs-2"><i><?php echo $row['Title'] ?></i></span> with a rate of<span class="text-danger fs-2"><i> ₱ <?php echo $row['Rate'] ?></i></span> Per Night </h4>
                         </div>
                         <div class="row text-center">
                             <div class="col">
@@ -78,24 +85,24 @@ if (isset($_POST['submit'])) {
                                 <input type="hidden" id="price" value="<?php echo $row['Rate'] ?>">
                                 <input type="hidden" id="datedifference">
                                 <label class="form-label">Arrival : </label>
-                                <input type="datetime-local" class="form-control" name="arrival" id="arrival" onchange="getDays()" required>
+                                <input type="date" class="form-control" name="arrival" id="arrival" value="<?php echo $In ?>" style="background-color: rgb(235,235,228)" readonly >
                             </div>
                             <div class="col-lg-4">
                                 <label class="form-label">Departure : </label>
-                                <input type="datetime-local" class="form-control" name="departure" id="departure" onchange="getDays()" required>
+                                <input type="date" class="form-control" name="departure" id="departure" value="<?php echo $Out ?>" style="background-color: rgb(235,235,228)" readonly>
                             </div>
                             <div class="col-md-4">
                                 <label for="" class="form-label">Total</label>
                                 <div class="input-group">
 
                                     <div class="input-group-text">₱</div>
-                                    <input type="number" class="form-control" name="total" id="total" required readonly>
+                                    <input type="number" class="form-control" name="total" id="total"  style="background-color: rgb(235,235,228)" readonly>
                                 </div>
                             </div>
                         </div>
                         <div class="row mt-3">
                             <div class="col">
-                                <label for="" class="form-label">Remarks :</label>
+                                <label for="" class="form-label">Notes for the reservation :</label>
                                 <input type="text" class="form-control" name="remarks"></input>
                             </div>
                         </div>
@@ -127,9 +134,14 @@ if (isset($_POST['submit'])) {
 
 
 <script>
-    function getDays() {
+
+$(document).ready(function() {
+        displayData();
+    });
+
+    function displayData() {
         var start_date = new Date(document.getElementById('arrival').value);
-        var end_date = new Date(document.getElementById('departure').value);
+        var end_date =  new Date(document.getElementById('departure').value);
         //Here we will use getTime() function to get the time difference
         var time_difference = end_date.getTime() - start_date.getTime();
         //Here we will divide the above time difference by the no of miliseconds in a day

@@ -19,8 +19,8 @@ if (isset($_POST['submit'])) {
     $Remarks = $_POST['Remarks'];
     $Deposit = $_POST['Deposit'];
 
-    $sql = "INSERT INTO `tblreservation`
-    (`Code`, `RoomId`, `Arrival`, `Departure`, `Total`, `Deposit`, `GuestId`, `Status`, `Remarks`,`UserId`)
+    $sql = "INSERT INTO `roomreservation`
+    (`Code`, `RoomRateId`, `Arrival`, `Departure`, `Total`, `Deposit`, `GuestId`, `Status`, `Notes`,`UserId`)
      VALUES 
      ('$Code', '$RoomId','$Arrival','$Departure','$Total','$Deposit','$GuestId','Accepted','$Remarks','$userid')";
 
@@ -30,7 +30,7 @@ if (isset($_POST['submit'])) {
 
     ' . $Name . ' reservation has been added successfuly!
     
-    <a  href="reservationlist.php" >View</a>
+    <a  href="hrraccepted.php" >View</a>
   </div>';
     } else {
         echo "<script>'Failed to Create Reservation. Try Again!'</script>";
@@ -39,137 +39,135 @@ if (isset($_POST['submit'])) {
 
 if (isset($_POST['cancel'])) {
     $GuestId = $_POST['LastId'];
-    $sql = "DELETE FROM `tblguest` WHERE Id= $GuestId";
+    $sql = "DELETE FROM `user` WHERE Id= $GuestId";
     $result = mysqli_query($conn, $sql);
 }
-
-
 ?>
 
 
+<div>
+
+    <section class="bg-secondary">
+        <div class="card mb-4">
+            <div class="card-header text-primary">
+                <h4> <i class="fa-solid fa-file-circle-plus"></i>Add Reservation</h4>
+            </div>
+            <div class="card-header text-info">
 
 
-
-<div >
-
-    <section>
-    <div class="card mb-4">
-    <div class="card-header text-primary">
-    <h4> <i class="fa-solid fa-file-circle-plus"></i>Add Reservation</h4>
-    </div>
-        <div class="card-header text-info">
-            
-            
-
-        </div>
-
-
-        <?php
-        if (isset($_POST['next'])) {
-            $FirstName = $_POST['FirstName'];
-            $LastName = $_POST['LastName'];
-            $Address = $_POST['Address'];
-            $Phone = $_POST['Phone'];
-
-            $sql = "INSERT INTO `tblguest`
-            (`FirstName`, `LastName`, `Address`, `Phone`)
-             VALUES 
-            ('$FirstName','$LastName','$Address','$Phone')";
-
-            $result = mysqli_query($conn, $sql);
-
-            if ($result) {
-                $LastId = mysqli_insert_id($conn);
-            }
-        ?>
-
-            <?php
-            $sql =
-                "SELECT tblroom.Id AS roomId, tblroom.Number, tblroomtype.Type, tblroomtype.Rate
-            FROM tblroom
-            JOIN tblroomtype ON tblroom.RoomTypeId = tblroomtype.Id";
-            $result = mysqli_query($conn, $sql);
-
-            ?>
-            <div class="container">
-                <div class="card mt-5">
-                    <div class="card-header bg-success text-white ">
-                        Reservation Details
-                    </div>
-                    <form method="POST">
-                        <div class="card-body">
-
-
-                            <div class="row">
-                                <input type="hidden" name="Price" id="Price" class="form-control">
-                                <input type="hidden" name="DateDifference" id="DateDifference" class="form-control">
-                                <input type="hidden" name="LastId" class="form-control" value="<?php echo $LastId ?>">
-                                <input type="hidden" name="Name" class="form-control" value="<?php echo $FirstName . " " . $LastName ?>">
-                                <div class="col-md-4 mt-2">
-                                    <label class="form-label">Room Number :</label>
-                                    <select class="form-select form-select-md  mb-3" name="RoomId" id="RoomId" aria-label=".form-select-lg example" onchange="fetchroom()" required>
-                                        <option selected value="">Select Room </option>
-                                        <?php
-                                        while ($row = mysqli_fetch_array($result)) {
-                                            $roomid = $row['roomId'];
-                                            $roomnumber = $row['Number'];
-                                            $roomtype = $row['Type'];
-                                            $roomprice = $row['Rate'];
-
-                                            echo ' <option value= "' . $roomid . '">' . $roomnumber . ' ' . $roomtype . ' @ ' . $roomprice . ' </option>   ';
-                                        }
-
-                                        ?>
-                                    </select>
-
-                                </div>
-                                <div class="col-md-3 mt-2">
-                                    <label class="form-label">Arrival :</label>
-                                    <input type="datetime-local" name="Arrival" id="Arrival" class="form-control" required>
-                                </div>
-                                <div class="col-md-3 mt-2">
-                                    <label class="form-label">Departure :</label>
-                                    <input type="datetime-local" name="Departure" id="Departure" class="form-control" onchange="getDays()" required>
-                                </div>
-                                <div class="col-md-2 mt-2">
-                                    <label class="form-label">Total:</label>
-                                    <div class="input-group">
-                                        <div class="input-group-text">₱</div>
-                                        <input type="number" name="Total" id="Total" class="form-control" required style="background-color: rgb(235,235,228)" readonly>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-lg-8">
-                                    <label class="form-label">Remarks :</label>
-                                    <input type="text" name="Remarks" class="form-control">
-                                </div>
-                                <div class="col-sm-2">
-                                    <label class="form-label">Deposit :</label>
-                                    <input type="number" name="Deposit" class="form-control" required>
-                                </div>
-                                <div class="col-sm-2 mt-4">
-                                    <button type="submit" name="submit" class="btn btn-success " style="width:100% ;">
-                                        <i class="fa-solid fa-floppy-disk"></i>
-                                        Reserve</button>
-                                </div>
-                    </form>
-                    <form method="POST" class="d-flex justify-content-end">
-                        <input type="hidden" name="LastId" class="form-control" value="<?php echo $LastId ?>">
-                        <div class="col-sm-2 mt-4">
-                            <button type="cancel" name="cancel" class="btn btn-danger " style="width:100% ;">
-
-                                Cancel</button>
-                        </div>
-                    </form>
-                </div>
 
             </div>
 
 
+            <?php
+            if (isset($_POST['next'])) {
+                $FirstName = $_POST['FirstName'];
+                $LastName = $_POST['LastName'];
+                $Address = $_POST['Address'];
+                $Phone = $_POST['Phone'];
 
-</div>
+                $sql = "INSERT INTO `user`
+            (`FirstName`, `LastName`,`RoleId`, `Address`, `Contact`)
+             VALUES 
+            ('$FirstName','$LastName','3','$Address','$Phone')";
+
+                $result = mysqli_query($conn, $sql);
+
+                if ($result) {
+                    $LastId = mysqli_insert_id($conn);
+                }
+            ?>
+
+                <?php
+                $sql =
+                    "SELECT  rr.Title, rrpt.Rate, rr.RoomCategoryId AS Id
+                    FROM roomrate rr
+                    LEFT JOIN roomratepricetrail rrpt ON rrpt.Id = rr.RoomPriceTrailId
+                    WHERE rr.RoomTypeId = 1;";
+                $result = mysqli_query($conn, $sql);
+                
+
+                ?>
+
+                
+                <div class="container">
+                    <div class="card mt-5">
+                        <div class="card-header bg-success text-white ">
+                            Reservation Details
+                        </div>
+                        <form method="POST">
+                            <div class="card-body">
+
+
+                                <div class="row">
+                                    <input type="hidden" name="Price" id="Price" class="form-control">
+                                    <input type="hidden" name="DateDifference" id="DateDifference" class="form-control">
+                                    <input type="hidden" name="LastId" class="form-control" value="<?php echo $LastId ?>">
+                                    <input type="hidden" name="Name" class="form-control" value="<?php echo $FirstName . " " . $LastName ?>">
+                                    <div class="col-md-4 mt-2">
+                                        <label class="form-label">Room Type :</label>
+                                        <select class="form-select form-select-md  mb-3" name="RoomId" id="RoomId" aria-label=".form-select-lg example" onchange="fetchroom()"  required>
+                                            <option selected value="">Select Room Type </option>
+                                            <?php
+                                            while ($row = mysqli_fetch_array($result)) {
+                                                $roomid = $row['Id'];
+                                                $roomtype = $row['Title'];
+                                                $roomprice = $row['Rate'];
+
+                                                echo ' <option value= "' . $roomid . '">' . $roomtype . ' @ ' . $roomprice . ' </option>   ';
+                                            }
+
+                                            ?>
+                                        </select>
+
+                                    </div>
+                                    <div class="col-md-3 mt-2">
+                                        <label class="form-label">Arrival :</label>
+                                        <input type="date" name="Arrival" id="Arrival" class="form-control" required>
+                                    </div>
+                                    <div class="col-md-3 mt-2">
+                                        <label class="form-label">Departure :</label>
+                                        <input type="date" name="Departure" id="Departure" class="form-control" onchange="getDays()" required>
+                                    </div>
+                                    <div class="col-md-2 mt-2">
+                                        <label class="form-label">Total:</label>
+                                        <div class="input-group">
+                                            <div class="input-group-text">₱</div>
+                                            <input type="number" name="Total" id="Total" class="form-control" required style="background-color: rgb(235,235,228)" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-8">
+                                        <label class="form-label">Notes :</label>
+                                        <input type="text" name="Remarks" class="form-control">
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <label class="form-label">Deposit :</label>
+                                        <input type="number" name="Deposit" class="form-control" required>
+                                    </div>
+                                    <div class="col-sm-2 mt-4">
+                                        <button type="submit" name="submit" class="btn btn-success " style="width:100% ;">
+                                            <i class="fa-solid fa-floppy-disk"></i>
+                                            Reserve</button>
+                                    </div>
+                        </form>
+                        <form method="POST" class="d-flex justify-content-end">
+                            <input type="hidden" name="LastId" class="form-control" value="<?php echo $LastId ?>">
+                            <div class="col-sm-2 mt-4">
+                                <button type="cancel" name="cancel" class="btn btn-danger " style="width:100% ;">
+
+                                    Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+
+
+
+        </div>
 </div>
 
 
@@ -179,10 +177,10 @@ if (isset($_POST['cancel'])) {
 
 
 <?php
-        } else {
+            } else {
 ?>
-    <div class="container">
-        <div class="card mt-5">
+    <div class="container-fluid bg-secondary" style="height: 100vh;">
+        <div class="card my-5">
             <div class="card-header bg-success text-white">
                 Guest Details
             </div>
@@ -191,18 +189,18 @@ if (isset($_POST['cancel'])) {
                     <div class="row mt-3 ">
                         <div class="col-md-6 ">
                             <label class="form-label">First Name :</label>
-                            <input type="text" name="FirstName" class="form-control" placeholder="e.g. Juan" required>
+                            <input type="text" name="FirstName" onkeydown="return /[a-z]/i.test(event.key)" class="form-control" placeholder="e.g. Juan" required>
                         </div>
                         <div class="col-md-6 ">
                             <label class="form-label">Last Name :</label>
-                            <input type="text" name="LastName" class="form-control" placeholder="e.g. Dela Cruz" required>
+                            <input type="text" name="LastName" onkeydown="return /[a-z]/i.test(event.key)" class="form-control" placeholder="e.g. Dela Cruz" required>
                         </div>
 
                     </div>
                     <div class="row mt-3 ">
                         <div class="col-md-6 ">
                             <label class="form-label">Phone :</label>
-                            <input type="number" name="Phone" class="form-control" placeholder="e.g. 0912-654-9845" required>
+                            <input type="tel" name="Phone" class="form-control" placeholder="e.g. 09126549845" minlength="11" maxlength="11" required>
                         </div>
 
                         <div class="col-md-6 ">
@@ -226,7 +224,33 @@ if (isset($_POST['cancel'])) {
 </div>
 </div>
 
+
+</secti>
+
+
+
+
+
+
+
+
+
+
+
+
 <script>
+    // Date Limitation
+    var Arrival = new Date();
+    Arrival = new Date(Arrival.setDate(Arrival.getDate() + 2)).toISOString().split('T')[0];
+    document.getElementsByName("Arrival")[0].setAttribute('min', Arrival);
+
+    var Departure = new Date();
+    Departure = new Date(Departure.setDate(Departure.getDate() + 3)).toISOString().split('T')[0];
+    document.getElementsByName("Departure")[0].setAttribute('min', Departure);
+
+
+
+
     // Calculate Date Difference
     function getDays() {
 
