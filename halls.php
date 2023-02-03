@@ -2,12 +2,13 @@
 include 'themes/navbar.php';
 include 'config.php';
 session_start();
+$Userid = $_SESSION['GuestId'];
 
 if (isset($_POST['functionhall'])) {
 
 
   if (isset($_SESSION['Guest']) && !empty($_SESSION['Guest'])) {
-    header("Location: bookhall.php?Id=1");
+    header("Location: functionhallcalendar/index.php?Id=$Userid");
   } else {
     echo "<script>alert('Please Login before you can book a reservation.')</script>";
   } 
@@ -17,11 +18,13 @@ if (isset($_POST['ballroom'])) {
 
 
   if (isset($_SESSION['Guest']) && !empty($_SESSION['Guest'])) {
-    header("Location: bookhall.php?Id=3");
+    header("Location: ballroomhallcalendar/index.php?Id=$Userid");
   } else {
     echo "<script>alert('Please Login before you can book a reservation.')</script>";
   } 
 }
+
+
 
 
 
@@ -41,7 +44,7 @@ if (isset($_POST['ballroom'])) {
       <div class="grid hall-grid">
         <div class="grid-item featured-rooms">
           <div class="image-wrap">
-            <img class="room-image" src="./images/convention_center.jpg" alt="">
+            <img class="room-image" src="./images/functionhall.png" alt="">
             <h5 class="hall-name">Function Hall</h5>
           </div>
           <div class="room-info-wrap">
@@ -60,10 +63,10 @@ if (isset($_POST['ballroom'])) {
             <h5 class="hall-name">Ballroom Hall</h5>
           </div>
           <div class="room-info-wrap">
-            <span class="hall-price">Fully Air-Conditioned <div></div> <span class="per-hour">₱ 8,000 (4) Four Hours Only</span></span>
+            <span class="hall-price">Fully Air-Conditioned <div></div> <span class="per-hour">₱ 10,000 (4) Four Hours Only</span></span>
             <p class="paragraph">Additional ₱ 1,000 per exceeding hours.</p>
             <form method="POST">
-            <button type="submit" name="ballroom" href="bookhall.php?Id=3" class="btn rooms-btn">Book now &rrarr;</button>
+            <button type="submit" name="ballroom"  class="btn rooms-btn">Book now &rrarr;</button>
             </form>
           </div>
         </div>
@@ -74,14 +77,14 @@ if (isset($_POST['ballroom'])) {
     </div>
   </section>
 
-  <section class="booking">
+  <!-- <section class="booking">
     <div class="container">
-      <form action="#" class="book-form">
+      <form method="POST" class="book-form">
         <div class="input-group">
           <label for="destination" class="input-label">Type of Hall </label>
           <select class="options" id="hall">
-            <option value="1">Function Hall</option>
-            <option value="2">Ballroom Hall</option>
+            <option value="5">Function Hall</option>
+            <option value="6">Ballroom Hall</option>
           </select>
         </div>
         <div class="input-group">
@@ -89,13 +92,13 @@ if (isset($_POST['ballroom'])) {
           <input type="date" class="input" id="check-in">
         </div>
 
-        <button type="submit" class="btn form-btn btn-purple">Search
+        <button type="submit" class="btn form-btn btn-purple" name="submit">Search
           <span class="dots"><i class="fas fa-ellipsis-h"></i></span>
           </span>
         </button>
       </form>
     </div>
-  </section>
+  </section> -->
 
   <!-- table for price
         <table>

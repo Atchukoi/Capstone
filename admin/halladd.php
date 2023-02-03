@@ -19,9 +19,9 @@ if (isset($_POST['submit'])) {
     $HallPackage = $_POST['HallPackage'];
     $HallTotal = $_POST['HallTotal'];
 
-    
 
-   
+
+
     $RentTotal = $_POST['RentTotal'];
 
     $FoodName = $_POST['FoodName'];
@@ -45,9 +45,10 @@ if (isset($_POST['submit'])) {
     $RRLastId = mysqli_insert_id($conn);
 
 
-    for ($x = 0; $x < COUNT($_POST['R']); $x++){
-        if($_POST['R'][$x] != ""){
+    for ($x = 0; $x < COUNT($_POST['R']); $x++) {
+        if ($_POST['R'][$x] != "") {
 
+            $Rental = $_POST['Rental'];
             $Quantity = $_POST['R'][$x];
             $RentalId = $_POST['RID'][$x];
 
@@ -56,25 +57,33 @@ if (isset($_POST['submit'])) {
             VALUES 
             ('$RRLastId','$RentalId','$Quantity')";
             $bresult = mysqli_query($conn, $bsql);
+
+            $csql = "INSERT INTO 
+            `roomreservationextra`(`RoomReservationId`, `RoomExtraId`, `Quantity`) 
+            VALUES 
+            ('$RRLastId','$Rental',1)";
+            $cresult = mysqli_query($conn, $csql);
+
            
-        
-        } 
-      }
-   
+        }
+    }
+
+    $xsql = "INSERT INTO `foodreservation`
+    (`RoomReservationId`, `FoodPackageId`, `Quantity`)
+       VALUES 
+    ('$RRLastId','$FoodName','$FoodPax')";
+    $xresult = mysqli_query($conn, $xsql);
+
     if ($aresult) {
         echo '<div class="alert alert-warning alert-dismissible fade show" role="alert">
 
     ' . $Name . ' Hall Reservation has been added successfuly!
     
-    <a  href="hallreservationlist.php" >View</a>
+    <a  href="fhrraccepted.php" >View</a>
   </div>';
     } else {
         echo "<script>'Failed to Create Reservation. Try Again!'</script>";
     }
-
-
-
-
 }
 
 if (isset($_POST['cancel'])) {
@@ -116,7 +125,7 @@ if (isset($_POST['next'])) {
 
 ?>
     <div class="container-fluid bg-secondary" style="height: 100vh;">
-        <form method="POST" >
+        <form method="POST">
             <input type="hidden" name="FirstName" class="form-control" value="<?php echo $FirstName ?>">
             <input type="hidden" name="LastName" class="form-control" value="<?php echo $LastName ?>">
             <input type="hidden" name="Contact" class="form-control" value="<?php echo $Phone ?>">
@@ -568,39 +577,39 @@ if (isset($_POST['next'])) {
 
     // add rental per pc
     function computedata(rentalid) {
-        
-        
-       
-        if (rentalid != 0 ) {
+
+
+
+        if (rentalid != 0) {
             var inputdata = document.getElementById(rentalid).value;
 
             if (inputdata.trim() == "") {
-            document.getElementById("rental-id-"+rentalid).value = "";
-        } else {
-            document.getElementById("rental-id-"+rentalid).value = rentalid;
-        }
+                document.getElementById("rental-id-" + rentalid).value = "";
+            } else {
+                document.getElementById("rental-id-" + rentalid).value = rentalid;
+            }
 
         }
 
-        
-        
+
+
         var totalamount = 0;
-        
+
         $('.rentals').each(function(index, obj) {
             if (this.checked === true) {
                 // var id = ;
                 var id = this.id;
                 console.log();
-                totalamount += parseFloat($("input[data-rental-check='" + id +"']").val());
+                totalamount += parseFloat($("input[data-rental-check='" + id + "']").val());
             }
-        }); 
+        });
 
         $('.rentals-input').each(function(index, obj) {
             if (this.value != "") {
                 var id = this.getAttribute("id");
-                var compute = parseFloat($("input[data-rental='rental-" + id +"']").val()) * parseFloat(document.getElementById("rental-"+id).value);
+                var compute = parseFloat($("input[data-rental='rental-" + id + "']").val()) * parseFloat(document.getElementById("rental-" + id).value);
                 totalamount += parseFloat(compute);
-               
+
             }
         });
 
@@ -622,9 +631,9 @@ if (isset($_POST['next'])) {
                 document.getElementById("FoodMenu").value = data.Menu;
                 document.getElementById("FoodCost").value = data.Cost;
                 var foodpax = document.getElementById("FoodPax");
-                foodpax.setAttribute("min",data.Minimum);
-                foodpax.setAttribute("max",data.Maximum);
-                
+                foodpax.setAttribute("min", data.Minimum);
+                foodpax.setAttribute("max", data.Maximum);
+
 
             }
         })
@@ -634,33 +643,33 @@ if (isset($_POST['next'])) {
     function computefood() {
         var pax = Number($("#FoodPax").val());
         var price = Number($("#FoodCost").val());
-        var NewTotal = pax * price; 
+        var NewTotal = pax * price;
         $("#FoodTotal").val(NewTotal);
     }
 
     //Compute Food Additional
     function additional(rentalid) {
 
-        
-        if (rentalid != 0 ) {
+
+        if (rentalid != 0) {
             var inputdata = document.getElementById(rentalid).value;
 
             if (inputdata.trim() == "") {
-            document.getElementById("rental-id-"+rentalid).value = "";
-        } else {
-            document.getElementById("rental-id-"+rentalid).value = rentalid;
-        }
+                document.getElementById("rental-id-" + rentalid).value = "";
+            } else {
+                document.getElementById("rental-id-" + rentalid).value = rentalid;
+            }
 
         }
-        
+
         var totalamount = 0;
 
         $('.additional-input').each(function(index, obj) {
             if (this.value != "") {
                 var id = this.getAttribute("id");
-                var compute = parseFloat($("input[data-rental='rental-" + id +"']").val()) * parseFloat(document.getElementById("rental-"+id).value);
+                var compute = parseFloat($("input[data-rental='rental-" + id + "']").val()) * parseFloat(document.getElementById("rental-" + id).value);
                 totalamount += parseFloat(compute);
-               
+
             }
         });
         $("#AdditionalTotal").val(totalamount);
@@ -668,26 +677,26 @@ if (isset($_POST['next'])) {
 
     //Compute Corckage
     function corckage(rentalid) {
-        
-        if (rentalid != 0 ) {
+
+        if (rentalid != 0) {
             var inputdata = document.getElementById(rentalid).value;
 
             if (inputdata.trim() == "") {
-            document.getElementById("rental-id-"+rentalid).value = "";
-        } else {
-            document.getElementById("rental-id-"+rentalid).value = rentalid;
-        }
+                document.getElementById("rental-id-" + rentalid).value = "";
+            } else {
+                document.getElementById("rental-id-" + rentalid).value = rentalid;
+            }
 
         }
-        
+
         var totalamount = 0;
 
         $('.corckage-input').each(function(index, obj) {
             if (this.value != "") {
                 var id = this.getAttribute("id");
-                var compute = parseFloat($("input[data-rental='rental-" + id +"']").val()) * parseFloat(document.getElementById("rental-"+id).value);
+                var compute = parseFloat($("input[data-rental='rental-" + id + "']").val()) * parseFloat(document.getElementById("rental-" + id).value);
                 totalamount += parseFloat(compute);
-               
+
             }
         });
         $("#CorkageTotal").val(totalamount);

@@ -8,7 +8,7 @@ if (isset($_POST['displaySend'])) {
     FROM roomrate rr
     LEFT JOIN roomcategory rc ON rc.Id = rr.RoomCategoryId
     LEFT JOIN roomratepricetrail rrpt ON rrpt.Id = rr.RoomPriceTrailId
-    WHERE rr.RoomTypeId = 2;";
+    WHERE rr.RoomTypeId = 2";
     $result = mysqli_query($conn, $sql);
 
 

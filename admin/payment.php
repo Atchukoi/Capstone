@@ -1,13 +1,16 @@
 <?php
 include 'config.php';
-$Id = $_GET['Id'];
+$Id = $_GET['TId'];
 $Days = $_GET['d'];
 
 
 if (isset($_POST['submit'])) {
 
+    $PaymentId = $_POST['PaymentId'];
+
     $jresult = mysqli_query($conn, "SELECT * FROM transaction WHERE Id = $Id ");
     $jrow = mysqli_fetch_assoc($jresult);
+
 
     $Id = $jrow['Id'];
     $RoomId = $jrow['RoomId'];
@@ -29,8 +32,10 @@ if (isset($_POST['submit'])) {
     VALUES 
     ('$Id','$RoomId','$ArrivalDateTime','$DepartureDateTime','$UserId','$Notes','$RoomPriceTrailId','$RoomChargesTotal','$ExtraChargesTotal','$SubTotal','$Deposit','$Discount','$Total')";
     $eresult = mysqli_query($conn, $esql);
-
     $last_id = mysqli_insert_id($conn);
+
+    $msql = "UPDATE `payments` SET `TransactionId`='$last_id' WHERE Id = $PaymentId  ";
+    $mresult = mysqli_query($conn, $msql);
 
     $fsql = "UPDATE `transaction` SET `ArrivalDateTime`='0',`DepartureDateTime`='0',`UserId`='0',`Notes`='0',`RoomPriceTrailId`='0',`RoomChargesTotal`='0',`ExtraChargesTotal`='0',`SubTotal`='0',`Deposit`='0',`Discount`='0',`Total`='0' WHERE Id = $Id";
     $fresult = mysqli_query($conn, $fsql);
@@ -39,7 +44,7 @@ if (isset($_POST['submit'])) {
     $hresult = mysqli_query($conn, $hsql);
 
     $ksql = "UPDATE `transactionextra` SET `IsActive`='0' WHERE TransactionId = $Id AND UserId = $UserId";
-    $kresult = mysqli_query($conn,$ksql);
+    $kresult = mysqli_query($conn, $ksql);
     header("Location: print.php?Id=$last_id");
 }
 ?>
@@ -140,6 +145,10 @@ if (isset($_POST['submit'])) {
 
 
         <?php
+        $jresult = mysqli_query($conn, "SELECT * FROM transaction WHERE Id = $Id ");
+        $jrow = mysqli_fetch_assoc($jresult);
+        $UserId = $jrow['UserId'];
+
 
         if (isset($_POST['proceed'])) {
 
@@ -151,47 +160,50 @@ if (isset($_POST['submit'])) {
             $Change = $_POST['Change'];
 
             $usql = "INSERT INTO `payments`
-    (`TransactionId`, `PaymentTerms`, `AmountTender`, `AmountChange`) 
+    (`PaymentTerms`,`UserId`, `AmountTender`, `AmountChange`) 
     VALUES 
-    ('$Id','$PaymentType','$Tender','$Change')";
+    ('$PaymentType','$UserId','$Tender','$Change')";
             $uresult = mysqli_query($conn, $usql);
-            if ($uresult) {
-                $LastId = mysqli_insert_id($conn);
-            }
+            $PLastId = mysqli_insert_id($conn);
+
+
+
 
             $tsql = "UPDATE `transaction` SET `Discount`='$Discount' WHERE Id = $Id ";
             $tresult = mysqli_query($conn, $tsql);
 
+            $cresult = mysqli_query($conn, "SELECT * FROM payments WHERE Id = $PLastId");
+            $crow = mysqli_fetch_assoc($cresult);
+
+
         ?>
 
-            
+
             <div class="container ">
                 <div class="col-lg-6 my-4" style="margin: auto;">
                     <div class="card text-center">
 
                         <?php
-                        $cresult = mysqli_query($conn, "SELECT * FROM payments WHERE Id = $LastId");
-                        $crow = mysqli_fetch_assoc($cresult);
 
-                        $dresult = mysqli_query($conn, "SELECT t.Total, p.AmountTender, t.Discount , p.AmountChange
+                        $dresult = mysqli_query($conn, "SELECT t.Total, t.Discount 
                         FROM transaction t
-                        LEFT JOIN payments p ON p.TransactionId = t.Id
                         WHERE t.Id = $Id");
                         $drow = mysqli_fetch_assoc($dresult);
 
                         ?>
 
                         <div class="card-header">
-                            Total Due : <b>₱ <?php echo $drow['Total'] ?></b> | Tendered <b>₱ <?php echo $drow['AmountTender'] ?></b> | Discount <b>₱ <?php echo $drow['Discount'] ?></b>
+                            Total Due : <b>₱ <?php echo $drow['Total'] ?></b> | Tendered <b>₱ <?php echo $crow['AmountTender'] ?></b> | Discount <b>₱ <?php echo $drow['Discount'] ?></b>
                         </div>
                         <div class="card-body">
                             <h5 class="card-title"><i class="fa-regular fa-money-bill-1"></i> Change Due / Payment Reference ID</h5>
-                            <p class="card-text fs-2"> <?php echo $drow['AmountChange'] ?></p>
+                            <p class="card-text fs-2"> <?php echo $crow['AmountChange'] ?></p>
 
 
 
                             <form method="POST">
-                                <button name="submit" type="submit" class="btn btn-primary mb-2" >Done</button>
+                                <input type="hidden" name="PaymentId" class="form-control" value="<?php echo $PLastId ?>">
+                                <button name="submit" type="submit" class="btn btn-primary mb-2">Done</button>
                             </form>
                             <p>Click to back to Hotel Dashboard</p>
                         </div>

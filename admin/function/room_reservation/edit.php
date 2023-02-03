@@ -4,6 +4,7 @@ $id = $_GET['Id'];
 
 if (isset($_POST['submit'])) {
 
+    $Name = $_POST['Name'];
     $Notes = $_POST['Notes'];
     $Deposit = $_POST['Deposit'];
     $PaymentType = $_POST['PaymentType'];
@@ -86,31 +87,31 @@ WHERE rr.Id = $id";
             ?>
 
             <div class="container">
-
+            <form action="" method="POST">
                 <div class="row mb-3">
                     <div class="col-lg-4 ">
                         <label for="update_confirmation" class="form-label">Confirmation Code :</label>
-                        <input type="text" class="form-control" value="<?php echo $row['Code'] ?>" style="background-color: rgb(235,235,228)" readonly>
+                        <input type="text" class="form-control"  value="<?php echo $row['Code'] ?>" style="background-color: rgb(235,235,228)" readonly>
                     </div>
                     <div class="col-lg-4">
                         <label for="update_name" class="form-label">Guest Name :</label>
-                        <input type="text" class="form-control" value="<?php echo $row['Name'] ?>" style="background-color: rgb(235,235,228)" readonly>
+                        <input type="text" class="form-control" name="Name" value="<?php echo $row['Name'] ?>" style="background-color: rgb(235,235,228)" readonly>
                     </div>
                     <div class="col-lg-4">
                         <label for="update_contact" class="form-label">Contact :</label>
                         <input type="text" class="form-control" value="<?php echo $row['Contact'] ?>" style="background-color: rgb(235,235,228)" readonly>
                     </div>
                 </div>
-                <form action="" method="POST">
+               
                     <div class="row mb-3">
 
                         <div class="col-lg-4">
                             <label for="update_arrival" class="form-label">Arrival :</label>
-                            <input type="datetime" class="form-control" value="<?php echo $row['Arrival'] ?>" style="background-color: rgb(235,235,228)" readonly>
+                            <input type="datetime-local" class="form-control" value="<?php echo $row['Arrival'] ?>" >
                         </div>
                         <div class="col-lg-4">
                             <label for="update_departure" class="form-label">Departure :</label>
-                            <input type="datetime" class="form-control" value="<?php echo $row['Departure'] ?>" style="background-color: rgb(235,235,228)" readonly>
+                            <input type="datetime-local" class="form-control" value="<?php echo $row['Departure'] ?>" >
                             <input type="hidden" name="DateDifference" id="DateDifference" class="form-control">
                         </div>
 
@@ -152,7 +153,7 @@ WHERE rr.Id = $id";
                         <div class="col-lg-3">
                             <label for="update_deposit" class="form-label">Transaction Code :</label>
                             <div class="input-group">
-                                <input type="text" name="PaymentLink" class="form-control" value="<?php echo $row['Deposit'] ?>">
+                                <input type="text" name="PaymentLink" class="form-control" value="<?php echo $row['PaymentLink'] ?>">
                             </div>
                         </div>
                     </div>
@@ -178,7 +179,7 @@ WHERE rr.Id = $id";
                             <button type="submit" class="btn btn-primary me-3" style="margin:auto; width:100%;" name="submit">Update</button>
                         </div>
                         <div class="col-lg-2 mt-4">
-                            <a type="button" class="btn btn-danger" style="margin:auto; width:100%;" href="../../hrraccepted.php">Cancel</a>
+                            <a type="button" class="btn btn-danger" style="margin:auto; width:100%;" href="../../hrrpending.php">Cancel</a>
                         </div>
 
                     </div>

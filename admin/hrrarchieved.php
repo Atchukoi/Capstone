@@ -43,7 +43,7 @@ if (isset($_GET['msg'])) {
     </ul>
 
 
-    <table id="datatablesSimple" class="table-striped">
+    <table id="datatablesSimple" class="table table-striped">
         <thead class="bg-info ">
             <tr>
                 <th scope="col">ID.</th>
@@ -82,7 +82,7 @@ if (isset($_GET['msg'])) {
                     <td class="text-center ">
 
 
-                        <a href="function/room_reservation/edit.php?Id=<?php echo $row['Id'] ?>" class="btn btn-secondary mb-1">
+                        <a href="function/room_reservation/view.php?Id=<?php echo $row['Id'] ?>" class="btn btn-secondary mb-1">
                             <i class="fa-solid fa-circle-info"></i>
                             View
                         </a>

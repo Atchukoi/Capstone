@@ -10,7 +10,7 @@ if (isset($_POST['submit'])) {
     $Contact = $_POST['Contact'];
     $Address = $_POST['Address'];
     $Username = $_POST['Username'];
-    $Password = ($_POST['Password']);
+    $Password = md5($_POST['Password']);
 
 
     $sql = "UPDATE `user` SET 
@@ -78,7 +78,7 @@ if (isset($_POST['submit'])) {
                     <div class="row mb-3 mt-2">
                         <div class="col-md-3 ">
                             <label for="Role" class="form-label">Role :</label>
-                            <select class="custom-select" name="Role" style="width: 100%;">
+                            <select class="custom-select" name="Role" style="width: 100%;" required>
                                 <?php
                                 echo "<option value=" . $role. "> " . $role . "</option>";
                                 ?>

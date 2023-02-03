@@ -43,7 +43,7 @@ if (isset($_GET['msg'])) {
 </ul>
 
 
-  <table id="datatablesSimple" class="table-striped ">
+  <table id="datatablesSimple" class="table table-striped ">
     <thead class="bg-info ">
       <tr>
         <th scope="col">ID.</th>
@@ -100,7 +100,7 @@ if (isset($_GET['msg'])) {
                 View
               </a>
 
-              <a href="function/room_reservation/delete.php?Id=<?php echo $row['Id'] ?>" class="btn btn-danger mb-1"><i class="fa-solid fa-trash "></i>
+              <a href="function/room_reservation/delete.php?Id=<?php echo $row['Id'] ?>&name=<?php echo $row['Name'] ?>" class="btn btn-danger mb-1"><i class="fa-solid fa-trash "></i>
                 Delete
               </a>
 

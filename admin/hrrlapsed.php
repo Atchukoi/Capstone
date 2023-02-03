@@ -43,7 +43,7 @@ if (isset($_GET['msg'])) {
     </ul>
 
 
-    <table id="datatablesSimple" class="table-striped">
+    <table id="datatablesSimple" class="table table-striped">
         <thead class="bg-info ">
             <tr>
                 <th scope="col">ID.</th>

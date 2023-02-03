@@ -2,15 +2,13 @@
 include 'config.php';
 
 $Id = $_GET['Id'];
-$FirstName = $_GET['FirstName'];
-$LastName = $_GET['LastName'];
+$name = $_GET['name'];
 
-$sql = "UPDATE `roomreservation` SET 
-`Status`='Lapsed";
+$sql = "DELETE FROM `roomreservation` WHERE Id = $Id";
 $result = mysqli_query($conn,$sql);
 
 if($result) {
-    header("Location: ../../hrraccepted.php?msg=$FirstName $LastName  reservation has been deleted.");
+    header("Location: ../../hrrpending.php?msg=$name  reservation has been deleted.");
 } else {
     echo "Failed: " . mysqli_connect_error($conn);
 }

@@ -10,10 +10,10 @@ if (isset($_POST['submit'])) {
 
 
 
-    $sql = "UPDATE `tblextra` SET 
+    $sql = "UPDATE `roomextra` SET 
     
-    `Name`='$Name',
-    `Quantity`='$Quantity',
+    `Title`='$Name',
+    `Description`='$Quantity',
     `Cost`='$Cost' 
     WHERE Id=$id";
 
@@ -52,7 +52,7 @@ if (isset($_POST['submit'])) {
         </div>
         <?php
 
-        $sql = "SELECT * FROM `tblextra` WHERE Id= $id LIMIT 1";
+        $sql = "SELECT * FROM `roomextra` WHERE Id= $id LIMIT 1";
         $result = mysqli_query($conn, $sql);
         $row = mysqli_fetch_assoc($result);
 
@@ -64,20 +64,19 @@ if (isset($_POST['submit'])) {
                 <div class="row mb-3">
                     <div class="col-lg-4">
                         <label for="Name" class="form-label">Name :</label>
-                        <input type="text" name="Name" class="form-control" value="<?php echo $row['Name'] ?>">
+                        <input type="text" name="Name" class="form-control" value="<?php echo $row['Title'] ?>" required>
                     </div>
                     <div class="col-lg-4">
-                        <label for="Quantity" class="form-label">Quantity :</label>
+                        <label for="Quantity" class="form-label">Description :</label>
                         <div class="input-group">
-                                <div class="input-group-text">Pc</div>
-                        <input type="text" name="Quantity" class="form-control" value="<?php echo $row['Quantity'] ?>">
+                        <input type="text" name="Description" class="form-control" value="<?php echo $row['Description'] ?>" required>
                         </div>
                     </div>
                     <div class="col-lg-4">
                         <label for="Cost" class="form-label">Cost :</label>
                         <div class="input-group">
                                 <div class="input-group-text">₱</div>
-                        <input type="text" name="Cost" class="form-control" value="<?php echo $row['Cost'] ?>">
+                        <input type="number" name="Cost" class="form-control" min="1" value="<?php echo $row['Cost'] ?>" required>
                         </div>
                     </div>
                 </div>

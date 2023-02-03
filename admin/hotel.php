@@ -1,10 +1,7 @@
 <?php
 
 include 'config.php';
-$Id = $_GET['Id'];
-
-
-
+$Id = $_GET['RId'];
 
 $asql = "SELECT r.Title AS RoomNumber, rc.Title AS RoomType, u.Id AS UserId, CONCAT(u.FirstName,' ',u.LastName) AS GuestName, rrpt.Rate, t.ArrivalDateTime, t.DepartureDateTime, t.RoomChargesTotal, t.Deposit, t.Total  
 FROM transaction t
@@ -22,7 +19,7 @@ $UserId = $arow['UserId'];
 if (isset($_POST['addextra'])) {
     $ExtraID = $_POST['ExtraId'];
     $ExtraQuantity = $_POST['ExtraQuantity'];
-    $Id = $_GET['Id'];
+    $Id = $_GET['RId'];
 
     $dresult = mysqli_query($conn, "SELECT Cost
     FROM  roomextra
@@ -63,8 +60,10 @@ if (isset($_POST['checkout'])) {
     `Total`='$TotalDues'
      WHERE Id = $Id";
     $jresult = mysqli_query($conn, $jsql);
-    header("Location: payment.php?Id=$Id&d=$Days");
+    header("Location: payment.php?TId=$Id&d=$Days");
 }
+
+
 
 
 
@@ -198,6 +197,9 @@ if (isset($_POST['checkout'])) {
                                     <label for="" class="form-label"><i class="fa-regular fa-calendar-days"></i><strong>Check-Out : </strong><?php echo $arow['DepartureDateTime'] ?> </label>
                                 </div>
                             </div>
+                            
+
+
                             <div class="row">
                                 <label for="" class="form-label fs-4"><i class="fa-solid fa-basket-shopping"></i> LIST OF EXTRA'S</label>
                                 <div class="tableWrap">
@@ -384,34 +386,98 @@ if (isset($_POST['checkout'])) {
                         </div>
                     </div>
 <?php
-if (isset($_POST['upgrade'])) {
+if (isset($_POST['change'])) {
 
-    $roomselect = $_POST['roomselect'];
+    $roomselect = $_POST['upgrade'];
 
     $jresult = mysqli_query($conn, "SELECT * FROM transaction WHERE Id = $Id");
     $jrow = mysqli_fetch_assoc($jresult);
 
+
+    $aRoomId = $jrow['RoomId']; 
+    $aRoomReservationId = $jrow['RoomReservationId']; 
+    $aArrivalDateTime = $jrow['ArrivalDateTime']; 
+    $aDepartureDateTime = $jrow['DepartureDateTime']; 
+    $aUserId = $jrow['UserId']; 
+    $aNotes = $jrow['Notes']; 
+    $aRoomPriceTrailId = $jrow['RoomPriceTrailId']; 
+    $aRoomChargesTotal = $jrow['RoomChargesTotal']; 
+    $aExtraChargesTotal = $jrow['ExtraChargesTotal']; 
+    $aSubTotal = $jrow['SubTotal']; 
+    $aDeposit = $jrow['Deposit']; 
+    $aDiscount = $jrow['Discount']; 
+    $aTotal = $jrow['Total']; 
     
-  
-    $UserId = $jrow['UserId'];
-   
 
-    $ksql = "UPDATE `transaction` SET `RoomId`='$roomselect' WHERE Id = $Id ";
-    $kresult = mysqli_query($conn,$ksql);
+    $kresult = mysqli_query($conn, "SELECT * FROM transaction WHERE Id = $roomselect");
+    $krow = mysqli_fetch_assoc($kresult);
 
-    $isql = "UPDATE `transaction` SET `RoomId`='$Id' WHERE Id = $roomselect";
-    $iresult = mysqli_query($conn, $isql);
+    $bRoomId = $krow['RoomId']; 
+    $bRoomReservationId = $krow['RoomReservationId']; 
+    $bArrivalDateTime = $krow['ArrivalDateTime']; 
+    $bDepartureDateTime = $krow['DepartureDateTime']; 
+    $bUserId = $krow['UserId']; 
+    $bNotes = $krow['Notes']; 
+    $bRoomPriceTrailId = $krow['RoomPriceTrailId']; 
+    $bRoomChargesTotal = $krow['RoomChargesTotal']; 
+    $bExtraChargesTotal = $krow['ExtraChargesTotal']; 
+    $bSubTotal = $krow['SubTotal']; 
+    $bDeposit = $krow['Deposit']; 
+    $bDiscount = $krow['Discount']; 
+    $bTotal = $krow['Total']; 
+    
 
-    $hsql = "UPDATE `room` SET `RoomStatusId`='4' WHERE Id = $Id";
-    $hresult = mysqli_query($conn, $hsql);
 
-    $ysql = "UPDATE `room` SET `RoomStatusId`='1' WHERE Id = $roomselect";
-    $yresult = mysqli_query($conn, $ysql);
+ $lsql = "UPDATE `transaction` SET 
+ 
+ `RoomReservationId`='$aRoomReservationId',
+ `ArrivalDateTime`='$aArrivalDateTime',
+ `DepartureDateTime`='$aDepartureDateTime',
+ `UserId`='$aUserId',
+ `Notes`='$aNotes',
+ `RoomPriceTrailId`='$aRoomPriceTrailId',
+ `RoomChargesTotal`='$aRoomChargesTotal',
+ `ExtraChargesTotal`='$aExtraChargesTotal',
+ `SubTotal`='$aSubTotal',
+ `Deposit`='$aDeposit',
+ `Discount`='$aDiscount',
+ `Total`='$aTotal'
+  WHERE Id =  $roomselect";
+$lresult= mysqli_query($conn,$lsql);
 
-    $lsql = "UPDATE `transactionextra` SET `TransactionId`='$roomselect',`UserId`='$UserId' WHERE TransactionId = $Id  ";
-    $lresult = mysqli_query($conn,$lsql);
+$nsql = "UPDATE `room` SET `RoomStatusId`='1' WHERE Id = $roomselect";
+$nresult = mysqli_query($conn,$nsql);
+
+$psql = "UPDATE `transactionextra` SET `TransactionId`='$roomselect' WHERE TransactionId = $Id AND IsActive = 1";
+$presult = mysqli_query($conn,$psql);
 
 
+
+
+ $msql = "UPDATE `transaction` SET 
+ 
+ `RoomReservationId`='$bRoomReservationId',
+ `ArrivalDateTime`='$bArrivalDateTime',
+ `DepartureDateTime`='$bDepartureDateTime',
+ `UserId`='$bUserId',
+ `Notes`='$bNotes',
+ `RoomPriceTrailId`='$bRoomPriceTrailId',
+ `RoomChargesTotal`='$bRoomChargesTotal',
+ `ExtraChargesTotal`='$bExtraChargesTotal',
+ `SubTotal`='$bSubTotal',
+ `Deposit`='$bDeposit',
+ `Discount`='$bDiscount',
+ `Total`='$bTotal'
+  WHERE Id = $Id";
+  $mresult= mysqli_query($conn,$msql);
+
+$osql = "UPDATE `room` SET `RoomStatusId`='2' WHERE Id = $Id";
+$oresult = mysqli_query($conn,$osql);
+
+echo '<script language="JavaScript" type="text/javascript">history.back(3)</script>';
+echo '<script language="javascript">';
+echo 'alert("Successfully Changed Room, go back to Dashboard")';
+echo '</script>';
   
     
 
@@ -420,7 +486,7 @@ if (isset($_POST['upgrade'])) {
 }
 ?>
 
-                    <form method="post">
+                    <form method="POST">
                         <div class="row">
 
                             <div class="col">
@@ -438,11 +504,47 @@ if (isset($_POST['upgrade'])) {
                             </div>
 
                         </div>
+                        <div class="row">
+
+                            <div class="col">
+                                <label for="" class="form-label"><i class="fa-solid fa-cart-flatbed-suitcase"></i> <strong>CHANGE ROOM </strong> </label>
+
+                            </div>
+                        </div>
+                        
 
                         
 
                     </form>
 
+                    <form method="POST">
+                    <div class="row mb-3">
+                            <div class="col-md-8">
+                            <select class="form-select form-select-md  mb-3" name="upgrade" aria-label=".form-select-lg example" required>
+                                <option selected value="">Please Select a Room </option>
+                                <?php
+                                $asql = "SELECT r.Id, r.Title 
+                FROM room r
+                WHERE r.RoomStatusId = 2 AND r.RoomTypeId = 1";
+                                $aresult = mysqli_query($conn, $asql);
+                                while ($arow = mysqli_fetch_array($aresult)) {
+                                    $RoomId = $arow['Id'];
+                                    $RoomTitle = $arow['Title'];
+
+                                    echo ' <option value= "' . $RoomId . '">' . $RoomTitle . '</option> ';
+                                }
+                                ?>
+
+                            </select>
+
+                            </div>
+                            <div class="col-md-4">
+                                <button class="btn btn-success mb-3"  type="submit" name="change" style="float: right; width:100%"><i class="fa-sharp fa-solid fa-floppy-disk"></i> Change</button>
+                            </div>
+
+                        </div>  
+
+                    </form>
 
 
 

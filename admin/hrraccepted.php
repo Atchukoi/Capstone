@@ -87,7 +87,7 @@ if (isset($_GET['msg'])) {
 
               
 
-              <a href="function/room_reservation/delete.php?Id=<?php echo $row['Id'] ?>&FirstName=<?php echo $row['Name'] ?>" class="btn btn-danger mb-1"><i class="fa-regular fa-hourglass-half"></i>
+              <a href="function/room_reservation/lapsed.php?Id=<?php echo $row['Id'] ?>&name=<?php echo $row['Name'] ?>" class="btn btn-danger mb-1"><i class="fa-regular fa-hourglass-half"></i>
                 Lapsed
               </a>
           

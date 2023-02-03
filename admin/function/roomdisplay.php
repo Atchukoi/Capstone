@@ -28,7 +28,7 @@ if (isset($_POST['displaySend'])) {
         if ($row['RoomStatusId'] == 2) {
           $RoomStatusId = "bg-success";
           $link = "walkin.php";
-          $linkname = '<i class="fa-solid fa-book-medical"></i> Check-in a Guess ';
+          $linkname = '<i class="fa-solid fa-book-medical"></i> Check-in a Guest ';
         } 
         if ($row['RoomStatusId'] == 3) {
           $RoomStatusId = "bg-warning";
@@ -46,7 +46,8 @@ if (isset($_POST['displaySend'])) {
         <div class="col-lg-2 p-2 mb-2">
                 <div class="card text-center">
                   <div class="card-header text-dark fs-6  '.$RoomStatusId.'">
-                    ' . $Number . ' - ' . $Name . '
+                    ' . $Number . ' 
+                    <div>  ' . $Name . '</div>
                   </div>
                   <div class="card-body">
                   <div class="container-fluid">
@@ -64,7 +65,7 @@ if (isset($_POST['displaySend'])) {
                     
                   </div>
                   <div class="card-footer text-muted">
-                  <a href="' . $link . '?Id='.$Id.'" class="btn btn-primary" style="width:90%;">' . $linkname . '</a>
+                  <a href="' . $link . '?RId='.$Id.'" class="btn btn-primary" style="width:90%;">' . $linkname . '</a>
                   </div>
                 </div>
               </div>

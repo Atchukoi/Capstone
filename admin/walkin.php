@@ -1,6 +1,6 @@
 <?php
 include 'config.php';
-$Id =  $_GET['Id'];
+$Id =  $_GET['RId'];
 
 if(isset($_POST['submit'])) {
     $arrival = date('Y-m-d h:i:s');

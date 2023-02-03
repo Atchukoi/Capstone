@@ -60,7 +60,7 @@ error_reporting(0);
 
                             <div class="dropdown-content">
                                 
-                                <a href="#">Messages</a>
+                                
                                 <a href="bookinglist.php?Id=<?php echo $_SESSION['GuestId'] ?>">Booking</a>
                                 <a href="logout.php">Logout</a>
                             </div>

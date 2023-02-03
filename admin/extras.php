@@ -51,7 +51,7 @@ include 'config.php';
     <div class="container-fluid">
         <div class="row mt-2">
             <div class="col-lg-8">
-                <table id="datatablesSimple" class="table-striped">
+                <table id="datatablesSimple" class="table table-striped">
                     <thead class="bg-info">
                         <tr>
                             <th>No.</th>

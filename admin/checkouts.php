@@ -10,7 +10,7 @@ include 'config.php'; ?>
         Upcoming Checkouts</h4>
     </div>
     <div class="card-body">
-        <table id="datatablesSimple">
+        <table id="datatablesSimple" class="table table-striped">
             <thead class="bg-info">
                 <tr class="text-light">
                     <th>Name</th>
@@ -24,7 +24,8 @@ include 'config.php'; ?>
             $sql = "SELECT CONCAT(u.FirstName, ' ', u.LastName) AS Name, r.Title, t.ArrivalDateTime, t.DepartureDateTime
             FROM transaction t
             JOIN user u ON u.Id = t.UserId
-            JOIN room r ON r.Id = t.RoomId;";
+            JOIN room r ON r.Id = t.RoomId
+            WHERE r.RoomTypeId = 1;";
             $result = mysqli_query($conn,$sql);
             while ($row = mysqli_fetch_assoc($result)) {
             ?>

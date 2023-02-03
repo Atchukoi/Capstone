@@ -2,34 +2,36 @@
 include 'themes/navbar.php';
 include 'config.php';
 
-if (isset($_POST['submit'])) {
+// if (isset($_POST['submit'])) {
 
-    $roomcheckintime = strtotime($_POST['roomcheckin']);
-    $roomcheckin = date('Y-m-d', $roomcheckintime);
+//     $roomcheckintime = strtotime($_POST['roomcheckin']);
+//     $roomcheckin = date('Y-m-d', $roomcheckintime);
 
-    $roomcheckouttime = strtotime($_POST['roomcheckout']);
-    $roomcheckout = date('Y-m-d', $roomcheckouttime);
+//     $roomcheckouttime = strtotime($_POST['roomcheckout']);
+//     $roomcheckout = date('Y-m-d', $roomcheckouttime);
     
-    $roomtype = $_POST['roomtype'];
+//     $roomtype = $_POST['roomtype'];
 
-    $aresult = mysqli_query($conn, "SELECT COUNT(r.RoomCategoryId) AS Available FROM room r WHERE r.RoomCategoryId = $roomtype");
-    $arow = mysqli_fetch_assoc($aresult);
+//     $aresult = mysqli_query($conn, "SELECT COUNT(r.RoomCategoryId) AS Available FROM room r WHERE r.RoomCategoryId = $roomtype");
+//     $arow = mysqli_fetch_assoc($aresult);
 
-    $Available = $arow['Available'];
+//     $Available = $arow['Available'];
 
-    $bresult = mysqli_query($conn, "SELECT SUM(rr.Arrival) AS Reserved
-    FROM roomreservation rr
-    WHERE rr.Arrival = '$roomcheckin'");
-    $brow = mysqli_fetch_assoc($bresult);
-    $Reserved = $brow['Reserved'];
+//     $bresult = mysqli_query($conn, "SELECT SUM(rr.Arrival) AS Reserved
+//     FROM roomreservation rr
+//     WHERE rr.Arrival = '$roomcheckin'");
+//     $brow = mysqli_fetch_assoc($bresult);
+//     $Reserved = $brow['Reserved'];
     
 
-    if ($Reserved >= $Available) {
-        echo "<script>alert('Room Not Available')</script>";
-    } else {
-        header("Location: bookroom.php?Id=$roomtype&i=$roomcheckin&o=$roomcheckout");
-    }
-}
+//     if ($Reserved >= $Available) {
+//         echo "<script>alert('Room Not Available')</script>";
+//     } else {
+//         header("Location: bookroom.php?Id=$roomtype&i=$roomcheckin&o=$roomcheckout");
+//     }
+// }
+
+$UserId = $_SESSION['GuestId'];
 
 ?>
 
@@ -37,7 +39,7 @@ if (isset($_POST['submit'])) {
 
 
 
-    <section class="booking" style="margin-top: 100px">
+    <!-- <section class="booking" style="margin-top: 100px">
         <div class="container">
             <form method="post" class="book-form">
 
@@ -84,12 +86,12 @@ if (isset($_POST['submit'])) {
                 </button>
             </form>
         </div>
-    </section>
+    </section> -->
 
 
 
 
-    <section class="rooms">
+    <!-- <section class="rooms">
         <div class="container">
             <h5 class="section-head">
                 <span class="heading">Luxurious</span>
@@ -98,7 +100,80 @@ if (isset($_POST['submit'])) {
 
             <div id="displayrooms"></div>
         </div>
-    </section>
+    </section> -->
+
+    <section class="rooms">
+            <div class="container">
+                <h5 class="section-head">
+                    <span class="heading">Luxurious</span>
+                    <span class="sub-heading">Affordable Rooms</span>
+                </h5>
+                <div class="grid room-grid">
+                    <div class="grid-item featured-room">
+                        <div class="image-wrap">
+                            <img class="room-image" src="./images/Presidential.png" alt="">
+                            <h5 class="room-name">Presidential Villa </h5>
+                        </div>
+                        <div class="room-info-wrap">
+                            <span class="room-price">
+                            P 3,500 <span class="pernight">Per Night</span>
+                            <i class="fa-sharp fa-solid fa-person" style="color:red;"></i>
+                            <i class="fa-sharp fa-solid fa-person" style="color:red;"></i></span>
+                            <p class="paragraph">Fully Airconditioned room with a Queen Size Bed</p>
+                            <p class="paragraph">Breakfast Meal Included</p>
+                            <a href="presidentialcalendar/index.php?Id=<?php echo $UserId ?>" class="btn rooms-btn">Book now &rrarr;</a>
+                        </div>
+                    </div>
+
+                    <div class="grid-item featured-room">
+                        <div class="image-wrap">
+                            <img class="room-image" src="./images/SuiteVilla.png" alt="">
+                            <h5 class="room-name">Suite Villa</h5>
+                        </div>
+                        <div class="room-info-wrap">
+                            <span class="room-price">P 3,200 <span class="pernight">Per Night</span>
+                            <i class="fa-sharp fa-solid fa-person" style="color:red;"></i>
+                            <i class="fa-sharp fa-solid fa-person" style="color:red;"></i></span>
+                            <p class="paragraph">Fully Airconditioned room with a King Size Bed</p>
+                            <p class="paragraph">Breakfast Meal Included</p>
+                            <a href="suittecalendar/index.php?Id=<?php echo $UserId ?>" class="btn rooms-btn">Book now &rrarr;</a>
+                        </div>
+                    </div>
+
+                    <div class="grid-item featured-room">
+                        <div class="image-wrap">
+                            <img class="room-image" src="./images/DormRoom.png" alt="">
+                            <h5 class="room-name">Mini Dorm</h5>
+                        </div>
+                        <div class="room-info-wrap">
+                            <span class="room-price">P 3,000 <span class="pernight">Per Night</span>
+                            <i class="fa-sharp fa-solid fa-person" style="color:red;"></i>
+                            <i class="fa-sharp fa-solid fa-person" style="color:red;"></i>
+                            <i class="fa-sharp fa-solid fa-person" style="color:red;"></i>
+                            <i class="fa-sharp fa-solid fa-person" style="color:red;"></i></span>
+                            <p class="paragraph">Fully Airconditioned room with 2 Bunk Beds</p>
+                            <p class="paragraph">Breakfast Meal Included</p>
+                            <a href="dormcalendar/index.php?Id=<?php echo $UserId ?>" class="btn rooms-btn">Book now &rrarr;</a>
+                        </div>
+                    </div>
+
+                    <div class="grid-item featured-room">
+                        <div class="image-wrap">
+                            <img class="room-image" src="./images/Standard.png" alt="">
+                            <h5 class="room-name">Standard</h5>
+                        </div>
+                        <div class="room-info-wrap">
+                            <span class="room-price">P 2,500 <span class="pernight">Per Night</span>
+                            <i class="fa-sharp fa-solid fa-person" style="color:red;"></i>
+                            <i class="fa-sharp fa-solid fa-person" style="color:red;"></i></span>
+                            <p class="paragraph">Fully Airconditioned room with 2 Single Beds</p>
+                            <p class="paragraph">Breakfast Meal Included</p>
+                            <a href="standardcalendar/index.php?Id=<?php echo $UserId ?>" class="btn rooms-btn">Book now &rrarr;</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
 
 

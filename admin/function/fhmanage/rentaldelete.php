@@ -2,7 +2,7 @@
 include 'config.php';
 $id = $_GET['id'];
 $name = $_GET['name'];
-$sql = "DELETE FROM `tblrentals` WHERE Id = $id";
+$sql = "DELETE FROM `roomextra` WHERE Id = $id";
 $result = mysqli_query($conn,$sql);
 if($result) {
     header("Location: ../../rentals.php?msg=$name has been deleted Succesfully!");

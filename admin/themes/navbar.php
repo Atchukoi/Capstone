@@ -4,6 +4,12 @@ session_start();
 error_reporting();
 include 'config.php';
 $roleid = $_SESSION['role'];
+
+if ($roleid == empty($roleid)) {
+  header('Location: index.php');
+}
+
+
 ?>
 
 <!DOCTYPE html>
@@ -166,8 +172,8 @@ $roleid = $_SESSION['role'];
           ====================================================================== -->
             <div class="sb-sidenav-menu-heading text-primary">Admin</div>
 
-            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayoutsHotelManage" aria-expanded="false" aria-controls="collapseLayouts">
-              <div class="sb-nav-link-icon"><i class="fa-solid fa-gears"></i></div>
+            <a class="nav-link collapsed <?php if($roleid == 2) echo 'pe-none text-danger'; ?>" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayoutsHotelManage" aria-expanded="false" aria-controls="collapseLayouts">
+              <div class="sb-nav-link-icon" <?php if($roleid == 2) echo 'disabled'; ?>><i class="fa-solid fa-gears"></i></div>
               Hotel Manage
               <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
             </a>
@@ -180,29 +186,29 @@ $roleid = $_SESSION['role'];
               </nav>
             </div>
 
-            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayoutsHallManage" aria-expanded="false" aria-controls="collapseLayouts">
-              <div class="sb-nav-link-icon"><i class="fa-solid fa-gears"></i></div>
+            <a class="nav-link collapsed <?php if($roleid == 2) echo 'pe-none text-danger'; ?>" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayoutsHallManage" aria-expanded="false" aria-controls="collapseLayouts" >
+              <div class="sb-nav-link-icon" ><i class="fa-solid fa-gears"></i></div>
               Hall Manage
               <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
             </a>
-            <div class="collapse" id="collapseLayoutsHallManage" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+            <div class="collapse disabled" id="collapseLayoutsHallManage" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion" >
               <nav class="sb-sidenav-menu-nested nav">
                 <!-- <a class="nav-link" href="halldetails.php">Hall Details</a> -->
-                <a class="nav-link" href="hallpackage.php">Hall Package</a>
+                <a class="nav-link " href="hallpackage.php">Hall Package</a>
                 <a class="nav-link" href="rentals.php">Rental</a>
                 <a class="nav-link" href="foodpackage.php">Food Package</a>
-                <a class="nav-link" href="additional.php">Additional</a>
+                <!-- <a class="nav-link" href="additional.php">Additional</a> -->
               </nav>
             </div>
 
-            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayoutsSystem" aria-expanded="false" aria-controls="collapseLayouts">
-              <div class="sb-nav-link-icon"><i class="fa-solid fa-screwdriver-wrench"></i></div>
+            <a class="nav-link collapsed <?php if($roleid == 2) echo 'pe-none text-danger'; ?>" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayoutsSystem" aria-expanded="false" aria-controls="collapseLayouts" >
+              <div class="sb-nav-link-icon"  ><i class="fa-solid fa-screwdriver-wrench"></i></div>
               System Config
               <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
             </a>
             <div class="collapse" id="collapseLayoutsSystem" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
               <nav class="sb-sidenav-menu-nested nav">
-                <a class="nav-link" href="#">Back-up Database</a>
+                <a class="nav-link" href="backup.php">Back-up Database</a>
                 <a class="nav-link" href="settings.php">Web Page Settings</a>
               </nav>
             </div>

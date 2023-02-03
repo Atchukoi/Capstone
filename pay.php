@@ -43,6 +43,12 @@ if (isset($_POST['submit'])) {
         <div class="row text-center">
             <div class="container">
                 <div class="row">
+                    <div class="col-md-1 offset-md-11">
+                    <a href="javascript:history.go(-1)" class="btn btn-danger">X</a>
+                    </div>
+                    
+                </div>
+                <div class="row">
                     <i class="fa-solid fa-circle-info"> Payment Instructions</i>
                     <p>Select a Mode of Payment </p>
                     <ul>

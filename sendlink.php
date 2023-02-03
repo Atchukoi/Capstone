@@ -87,7 +87,7 @@ If there is anything you want to add, Please let us know so that we can make the
 
 
                             <div class="col-sm-2">
-                                <a href="reservationlist.php"  class="btn btn-danger" style="width: 100%;">Cancel</a>
+                                <a href="admin/hrrpending.php"  class="btn btn-danger" style="width: 100%;">Cancel</a>
                             </div>
                             <div class="col-sm-2">
                                 <button type="submit" name="submit" class="btn btn-success" style="width: 100%;">Send Email</button>

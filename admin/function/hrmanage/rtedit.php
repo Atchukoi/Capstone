@@ -66,19 +66,19 @@ if (isset($_POST['submit'])) {
             <div class="row mb-3">
                 <div class="col-lg-4">
                     <label for="Type" class="form-label">Room Type :</label>
-                    <input type="text" name="Type" class="form-control" value="<?php echo $row['Title'] ?>">
+                    <input type="text" name="Type" class="form-control" value="<?php echo $row['Title'] ?>" required>
                 </div>
                 
                 <div class="col-lg-4">
                     <label for="Person" class="form-label">Number of Person :</label>
-                    <input type="text" name="Person" class="form-control" value="<?php echo $row['PersonCount'] ?>">
+                    <input type="number" name="Person" class="form-control" min="1" value="<?php echo $row['PersonCount'] ?>" required>
                 </div>
             </div>
 
             <div class="row mb-3">
                 <div class="col">
                     <label for="Description" class="form-label">Room Description :</label>
-                    <input type="text" name="Description" class="form-control" value="<?php echo $row['Description'] ?>">
+                    <input type="text" name="Description" class="form-control" value="<?php echo $row['Description'] ?>" required>
                 </div>
             </div>
 

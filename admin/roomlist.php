@@ -9,10 +9,11 @@ include 'config.php';
     </div>
 </div>
 <div class="card-body">
-    <table id="datatablesSimple" class="table-striped">
+    <table id="datatablesSimple" class="table table-striped">
         <thead class="bg-info">
             <tr>
-                <th style="width:90px">Number</th>
+                <th style="width:90px">No.</th>
+                <th style="width:90px">Name</th>
                 <th style="width:200px">Room Type</th>
                 <th style="width:200px">Rate Per/Night</th>
                 <th style="width:200px">Status</th>
@@ -34,17 +35,19 @@ include 'config.php';
             
 
             $result = $conn->query($sql);
+            $number = 1;
 
             while ($row = mysqli_fetch_assoc($result)) {
                ?>
                 <tr>
+                <th><?php echo $number ?></th>
                 <th><?php echo $row['RoomNumber'] ?></th>
                 <td><?php echo $row['RoomType'] ?></td>
                 <td><?php echo $row['Rate'] ?></td>
                 <td><?php echo $row['RoomStatus'] ?></td>
                 <td> <a href="hotel.php?Id=<?php echo $row['Id'] ?>"><?php echo $row['FirstName'] ?></a></td>
                 </tr> 
-            <?php
+            <?php $number++;
             }
             ?>
 

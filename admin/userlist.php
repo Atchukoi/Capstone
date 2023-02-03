@@ -27,9 +27,9 @@ if (isset($_POST['submit'])) {
 
     if (!$result->num_rows > 0) {
         $sql = "INSERT INTO user
-        (RoleId, FirstName, LastName, Email, Contact, Address, Username, Password)
+        (RoleId, FirstName, LastName, Email, Contact, Address, Username, Password, IsVerified)
         VALUES
-        ('$Role', '$FirstName', '$LastName', '$Email', '$Contact', '$Address', '$Username', '$Password')";
+        ('$Role', '$FirstName', '$LastName', '$Email', '$Contact', '$Address', '$Username', '$Password', '1')";
         $result = mysqli_query($conn, $sql);
         if ($result) {
             echo '<div class="alert alert-warning alert-dismissible fade show" role="alert">
@@ -73,7 +73,7 @@ if (isset($_POST['submit'])) {
             <div class="row mb-3 mt-2">
                 <div class="col-md-3 ">
                     <label for="Role" class="form-label">Role :</label>
-                    <select class="custom-select" name="Role" style="width: 100%;" required>
+                    <select class="form-select" name="Role" style="width: 100%;" required>
                         <option selected value="">Select User Role</option>
                         <option value="2">Receptionist</option>
                         <option value="2">Administrator</option>
@@ -127,7 +127,7 @@ if (isset($_POST['submit'])) {
     <div class="row">
         <div class="col">
             <div class="card-body">
-                <table id="datatablesSimple" class="table-striped table-responsive">
+                <table id="datatablesSimple" class="table table-striped table-responsive">
                     <thead class="bg-info">
                         <tr>
                             <th>ID</th>

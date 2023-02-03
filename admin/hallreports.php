@@ -28,11 +28,11 @@ include 'config.php';
             </thead>
             <tbody class="text-center">
             <?php 
-                $sql = "SELECT CONCAT(u.FirstName,' ',u.LastName) AS GuestName,r.Title,  th.ArrivalDateTime, th.DepartureDateTime, p.AmountTender, th.Total, th.Discount, p.AmountChange, p.PaymentTerms
+                $sql = "SELECT th.Id, CONCAT(u.FirstName,' ',u.LastName) AS GuestName,r.Title,  th.ArrivalDateTime, th.DepartureDateTime, p.AmountTender, th.Total, th.Discount, p.AmountChange, p.PaymentTerms
                 FROM transactionhistory th
                 LEFT JOIN user u ON u.Id = th.UserId
                 LEFT JOIN room r ON r.Id = th.RoomId
-                LEFT JOIN payments p ON p.TransactionId = th.TransactionId
+                LEFT JOIN payments p ON p.TransactionId = th.Id
                 WHERE r.RoomTypeId = 2";
                 $result = mysqli_query($conn,$sql);
                 $number = 1;
@@ -51,7 +51,7 @@ include 'config.php';
                     <td style="width:100px"><?php echo $row['PaymentTerms'] ?></td>
                     <td style="width:100px">
                         
-                        <button type="button" class="btn btn-danger"><i class="fa-solid fa-print"></i></button>
+                    <a href="print.php?Id=<?php echo $row['Id']  ?>" type="button" class="btn btn-danger"><i class="fa-solid fa-print"></i></a>
                     </td>
                 </tr>
                 <?php

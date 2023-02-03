@@ -88,7 +88,7 @@ if (isset($_GET['msg'])) {
                                     </a>
                                 </div>
                                 <div>
-                                    <a href="function/fhmanage/fpdelete.php?id=<?php echo $row['Id'] ?>" class="btn btn-danger">
+                                    <a href="function/fhmanage/fpdelete.php?id=<?php echo $row['Id'] ?>&name=<?php echo $row['Title'] ?>" class="btn btn-danger">
                                         <i class="fa-solid fa-pen-to-square"></i> Delete
                                     </a>
                                 </div>

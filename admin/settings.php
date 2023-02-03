@@ -11,7 +11,7 @@ if (isset($_POST['submit'])) {
     $Facebook = $_POST['Facebook'];
     $Instagram = $_POST['Instagram'];
 
-    $sql = "UPDATE `tblsettings` SET 
+    $sql = "UPDATE `settings` SET 
     
     `Address`='$Address',
     `Phone`='$Phone',

@@ -6,7 +6,7 @@ if (isset($_POST['submit'])) {
     $RoomNumber = $_POST['bookroom'];
     $id = $_GET['Id'];
 
-    $bsql = "SELECT  rr.Arrival, rr.Departure, rr.GuestId, rr.Notes,  rrpt.Id AS PriceTrail, rr.Total, rr.Deposit, CONCAT(u.FirstName,' ', u.LastName) AS Name
+    $bsql = "SELECT  rr.Id, rr.Arrival, rr.Departure, rr.GuestId, rr.Notes,  rrpt.Id AS PriceTrail, rr.Total, rr.Deposit, CONCAT(u.FirstName,' ', u.LastName) AS Name
 FROM roomreservation rr
 LEFT JOIN roomrate ON roomrate.Id = rr.RoomRateId
 LEFT JOIN roomratepricetrail rrpt ON rrpt.Id = roomrate.RoomPriceTrailId
@@ -15,6 +15,7 @@ WHERE rr.Id = $id";
     $bresult = mysqli_query($conn, $bsql);
     $brow = mysqli_fetch_assoc($bresult);
 
+    
     $Name = $brow['Name'];
     $Arrival = $brow['Arrival'];
     $Departure = $brow['Departure'];
@@ -37,12 +38,13 @@ $fresult = mysqli_query($conn,$fsql);
 
 `ArrivalDateTime`='$Arrival',
 `DepartureDateTime`='$Departure',
+`RoomReservationId`='$id',
 `UserId`='$GuestId',
 `Notes`='$Notes',
 `RoomChargesTotal`='$RoomChargesTotal',
 `RoomPriceTrailId`='$PriceTrail',
 `Deposit`='$Deposit',
-`Total`='$Total' 
+`SubTotal`='$Total' 
 WHERE RoomId = $RoomNumber";
 
     $dresult = mysqli_query($conn, $dsql);

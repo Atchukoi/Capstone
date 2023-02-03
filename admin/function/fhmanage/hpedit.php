@@ -1,5 +1,6 @@
 <?php include 'config.php';
 $id = $_GET['id'];
+$pid = $_GET['pid'];
 
 
 ?>
@@ -7,29 +8,35 @@ $id = $_GET['id'];
 if (isset($_POST['submit'])) {
     $Name = $_POST['Name'];
     $Description = $_POST['Description'];
-    $Pax = $_POST['Pax'];
+    $HallType = $_POST['HallType'];
+   
     $Time = $_POST['Time'];
     $Cost = $_POST['Cost'];
     $Exceeding = $_POST['Exceeding'];
-    $Inclusion = $_POST['Inclusion'];
 
 
 
-    $sql = "UPDATE `tblhallpackage` SET 
-    
-    `Name`='$Name',
-    `Description`='$Description',
-    `Pax`='$Pax',
-    `Time`='$Time',
-    `Cost`='$Cost',
-    `Exceeding`='$Exceeding',
-    `Inclusion`='$Inclusion'
-    
-    WHERE Id= $id";
-
+    $sql = "UPDATE `roomratepricetrail` SET `IsActive`= 0 WHERE Id = $pid";
     $result = mysqli_query($conn, $sql);
+   
 
-    if ($result) {
+   
+    
+    $csql = "INSERT INTO `roomratepricetrail`
+    (`RoomRateId`, `Rate`, `InitialTime`, `ExceedingRatePerHour`, `IsActive`) 
+    VALUES 
+    ('$id','$Cost','$Time','$Exceeding','1')";
+    $cresult = mysqli_query($conn, $csql);
+    $RRPTLastId = mysqli_insert_id($conn);
+
+    $bsql = "UPDATE `roomrate` SET 
+    `Title`='$Name',
+    `Description`='$Description',
+    `RoomCategoryId`='$HallType',
+    `RoomPriceTrailId`='$RRPTLastId' WHERE Id = $id";
+    $bresult = mysqli_query($conn, $bsql);
+
+    if ($bresult) {
         header("Location: ../../hallpackage.php?msg=$Name has been Updated succesfully!");
     } else {
         echo "Failed: " . mysqli_connect_error($conn);
@@ -57,11 +64,10 @@ if (isset($_POST['submit'])) {
 <body style="background-color: rgba(237, 195, 238, 0.8);">
     <?php
 
-    $sql = "SELECT rr.Title, rr.Description AS Inclusion, rrpt.InitialTime,rrpt.Rate,rrpt.ExceedingRatePerHour, rc.Description
+    $sql = "SELECT rr.Id, rr.Title,rc.Id as RoomCategoryId, rc.Title AS RcTitle, rc.Description, rrpt.InitialTime, rrpt.Rate, rrpt.ExceedingRatePerHour, rr.Description AS Inclusion
     FROM roomrate rr
+    LEFT JOIN roomcategory rc ON rc.Id = rr.RoomCategoryId
     LEFT JOIN roomratepricetrail rrpt ON rrpt.Id = rr.RoomPriceTrailId
-    LEFT JOIN room r ON r.RoomTypeId = rr.RoomTypeID
-    LEFT JOIN roomcategory rc ON rc.Id = r.RoomCategoryId
     WHERE rr.Id = $id";
     $result = mysqli_query($conn, $sql);
     $row = mysqli_fetch_assoc($result);
@@ -78,44 +84,72 @@ if (isset($_POST['submit'])) {
         <div class="row text-center my-5">
             <h1>Edit Hall Packages</h1>
         </div>
+        <?php
+$typesql = "SELECT * FROM roomcategory WHERE RoomTypeId = 2 ";
+$typeresult = mysqli_query($conn, $typesql);
 
-        <form method="Post">
+
+?>
+
+<form method="Post">
             <div class="row mb-3">
                 <div class="col-md-6">
                     <label for="Name" class="form-label">Name :</label>
-                    <input type="text" name="Name" class="form-control" value="<?php echo $row['Title'] ?>">
+                    <input type="text" name="Name" class="form-control" autofill="off" value="<?php echo $row['Title'] ?>" placeholder="e.g. 80 Pax - Function Hall Package B">
                 </div>
                 <div class="col-md-6">
                     <label for="Description" class="form-label">Description :</label>
-                    <input type="text" name="Description" class="form-control" value="<?php echo $row['Description'] ?>">
+                    <input type="text" name="Description" class="form-control" value="<?php echo $row['Inclusion'] ?>" placeholder="e.g. High-Quality Sound with Full Lights Par Led Lights Tables with Cloth & Tiffany Chairs With Foam">
                 </div>
             </div>
             <div class="row mb-3">
                 
                 <div class="col-md-3">
-                    <label for="Time" class="form-label">Time :</label>
-                    <input type="text" name="Time" class="form-control" value="<?php echo $row['InitialTime'] ?>">
+                    <label for="Pax" class="form-label">Hall Category:</label>
+                    <select class="form-select" name="HallType" aria-label="Default select example"  required> 
+                    <option selected value="<?php echo $row['RoomCategoryId'] ?>"><?php echo $row['RcTitle'] ?></option>
+                        <?php
+                        while ($trow = mysqli_fetch_assoc($typeresult)) {
+                            $roomtypeid = $trow['Id'];
+                            $roomtype = $trow['Title'];
+
+                            echo ' <option value= "' . $roomtypeid . '"> ' . $roomtype . ' </option> ';
+                        }
+                        ?>
+
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label for="Time" class="form-label">Initial Time :</label>
+                    <div class="input-group">
+
+                        <input type="number" name="Time" min="1" class="form-control" value="<?php echo $row['InitialTime'] ?>"  placeholder="e.g. 4">
+                        <div class="input-group-text">hours</div>
+                    </div>
                 </div>
                 <div class="col-md-3">
-                    <label for="Cost" class="form-label">Cost :</label>
-                    <input type="text" name="Cost" class="form-control" value="<?php echo $row['Rate'] ?>">
+                    <label for="Cost" class="form-label">Rate :</label>
+                    <div class="input-group">
+                        <div class="input-group-text">₱</div>
+                        <input type="number" name="Cost" min="1" class="form-control" value="<?php echo $row['Rate'] ?>"  placeholder="e.g. 10000">
+                    </div>
                 </div>
                 <div class="col-md-3">
-                    <label for="Exceeding" class="form-label">Exceeding :</label>
-                    <input type="text" name="Exceeding" class="form-control" value="<?php echo $row['ExceedingRatePerHour'] ?>">
+                    <label for="Exceeding" class="form-label">Rate per Extra hour :</label>
+                    <div class="input-group">
+                        <div class="input-group-text">₱</div>
+                        <input type="number" name="Exceeding" min="1" class="form-control" value="<?php echo $row['ExceedingRatePerHour'] ?>"  placeholder="e.g. 1000">
+                    </div>
                 </div>
+
             </div>
             <div class="row mb-3">
-                <div class="col-lg-8">
-                    <label for="Inclusion" class="form-label">Inclusion :</label>
-                    <input type="text" name="Inclusion" class="form-control" value="<?php echo $row['Inclusion'] ?>">
+                <div class="col-lg-6 mt-4">
+                    <button type="submit" class="btn btn-success me-3" style="margin:auto; width:100%;" name="submit">Update</button>
                 </div>
-                <div class="col-md-2">
-                    <button name="submit" class="btn btn-success mt-4" style="width: 100%;">Update</button>
-                </div>
-                <div class="col-md-2 mt-4">
+                <div class="col-lg-6 mt-4">
                     <a type="button" class="btn btn-danger" style="margin:auto; width:100%;" href="../../hallpackage.php">Cancel</a>
-
                 </div>
             </div>
         </form>

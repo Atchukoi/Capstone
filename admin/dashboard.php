@@ -76,7 +76,7 @@ include 'config.php'
 
                   </tr>
                   <tr>
-                    <th>Occupied</th>
+                    <th>Not Available</th>
                     <td>
                       <?php
                       $aresult = mysqli_query($conn, "SELECT COUNT(RoomStatusId) AS Occupied FROM room WHERE RoomStatusId = '1'");
@@ -87,7 +87,7 @@ include 'config.php'
 
                   </tr>
                   <tr>
-                    <th>Available</th>
+                    <th>Available </th>
                     <td>
                       <?php
                       $bresult = mysqli_query($conn, "SELECT COUNT(RoomStatusId) AS Available FROM room WHERE RoomStatusId = '2'");
@@ -104,7 +104,7 @@ include 'config.php'
         <div class="col-lg-3">
           <div class="card border-dark my-2" style="height: 350px;">
             <div class="card-header text-center bg-info">
-              <i class="fa-solid fa-bed "></i><strong> Available</strong>
+              <i class="fa-solid fa-bed "></i><strong> Available Room Types </strong>
             </div>
             <div class="card-body-fluid">
               <table class="table table-striped">
@@ -148,7 +148,7 @@ include 'config.php'
             FROM roomreservation rr
             LEFT JOIN user u ON u.Id = rr.GuestId
             LEFT JOIN roomrate ON roomrate.Id = rr.RoomRateId 
-            WHERE rr.Status = 'Accepted'");
+            WHERE rr.Status = 'Accepted' AND roomrate.RoomTypeId = 1");
 
                 while ($row = mysqli_fetch_assoc($result)) {
                   echo ' 

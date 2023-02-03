@@ -29,7 +29,10 @@ $Id = $_GET['Id'];
 <body style="background-color:lightgray ;">
     <div class="container-fluid">
         <div class="row mt-5 ">
-            <div class="col-sm-3 offset-md-9">
+            <div class="col-sm-3">
+                <a href="index.php" class="btn btn-warning" style="width:100%"><i class="fa-solid fa-share"></i> View History</a>
+            </div>
+            <div class="col-sm-3 offset-md-6">
                 <a href="index.php" class="btn btn-danger" style="width:100%"><i class="fa-solid fa-share"></i> Go Back</a>
             </div>
         </div>
@@ -108,11 +111,12 @@ $Id = $_GET['Id'];
                                 <th>Event</th>
                                 <th>Status</th>
                                 <th>Reservation Code</th>
+                                <th>Total</th>
                                 <th>Action</th>
                             </thead>
                             <tbody>
                                 <?php
-                                $sql = "SELECT rr.Id, roomrate.Title, rr.Arrival, rr.Departure, rr.Status, rr.Code
+                                $sql = "SELECT rr.Id, roomrate.Title, rr.Arrival,rr.Event, rr.Departure, rr.Status, rr.Code,rr.Total
                                 FROM roomreservation rr
                                 LEFT JOIN roomrate ON roomrate.Id = rr.RoomRateId 
                                 WHERE rr.GuestId = $Id AND (rr.Status ='Accepted' OR rr.Status = 'Pending') AND roomrate.RoomTypeId = 2";
@@ -124,17 +128,23 @@ $Id = $_GET['Id'];
                                 ?>
                                     <tr>
                                         <th><?php echo $number ?></th>
-                                        <td><?php echo $row['Name'] ?></td>
+                                        <td><?php echo $row['Title'] ?></td>
                                         <td><?php echo $row['Arrival'] ?></td>
                                         <td><?php echo $row['Event'] ?></td>
                                         <td><?php echo $row['Status'] ?></td>
                                         <td><?php echo $row['Code'] ?></td>
+                                        <td><?php echo $row['Total'] ?></td>
                                         <td>
                                             <?php
                                             if ($row['Status'] == 'Accepted') {
                                             ?>
                                                 <a type="button" class="btn btn-secondary" href=""><i class="fa-solid fa-magnifying-glass"></i> View</a>
                                             <?php } else { ?>
+                                                <a href="admin/function/hallreservation/edit.php?id=<?php echo $row['Id'] ?>" class="btn btn-secondary mb-1">
+                <i class="fa-solid fa-circle-info"></i>
+                View
+              </a>
+                                                <a href="pay.php?Id=<?php echo $row['Id'] ?>" type="button" class="btn btn-success" href=""><i class="fa-solid fa-hand-holding-dollar"></i> Pay</a>
                                                 <a href="deleterr.php?Id=<?php echo $row['Id'] ?>" class="btn btn-danger" href=""><i class="fa-solid fa-trash"></i> Cancel</a>
                                         </td>
                                     </tr>

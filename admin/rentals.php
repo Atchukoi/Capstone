@@ -5,7 +5,7 @@ include 'config.php';
 <div class="card mb-4">
     <div class="card-header text-primary">
         <h4> <i class="fa-solid fa-money-bill-transfer"></i>
-            Rentals </h4>
+            Rentals and Extras </h4>
     </div>
 </div>
 <?php
@@ -31,9 +31,9 @@ if (isset($_POST['submit'])) {
 
 
     $sql = "INSERT INTO `roomextra`
-    (`Title`, `Description`, `Cost`) 
-    VALUES 
-    ('$Name','$Description','$Price')";
+    (`Title`, `Description`, `Cost`, `ExtraCategoryId`, `RoomTypeID`)
+     VALUES 
+     ('$Name','$Description','$Price',2,2)";
 
     $result = mysqli_query($conn, $sql);
 
@@ -53,7 +53,7 @@ if (isset($_POST['submit'])) {
 <div class="container-fluid">
     <div class="row">
         <div class="col">
-            <table id="datatablesSimple" class="table-striped">
+            <table id="datatablesSimple" class="table table-striped">
                 <thead class="bg-info ">
                     <tr>
                         <th>No.</th>
@@ -65,7 +65,7 @@ if (isset($_POST['submit'])) {
                 </thead>
                 <tbody>
                     <?php
-                    $sql = "SELECT * FROM `roomextra` WHERE ExtraCategoryId = 2";
+                    $sql = "SELECT * FROM `roomextra` WHERE ExtraCategoryId = 2 OR ExtraCategoryId = 4 OR ExtraCategoryId = 5";
                     
                     $result = mysqli_query($conn, $sql);
                     $number = 1;
@@ -83,7 +83,7 @@ if (isset($_POST['submit'])) {
                                     <i class="fa-solid fa-pen-to-square"></i>
                                     Update
                                 </a>
-                                <a href="function/fhmanage/rentaldelete.php?id=<?php echo $row['Id'] ?>" class="btn btn-danger">
+                                <a href="function/fhmanage/rentaldelete.php?id=<?php echo $row['Id'] ?>&name=<?php echo $row['Title'] ?>" class="btn btn-danger">
                                     <i class="fa-solid fa-pen-to-square"></i>
                                     Delete
                                 </a>

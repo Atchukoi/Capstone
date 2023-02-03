@@ -73,25 +73,14 @@ include 'config.php';
             <td><?php echo $row['Code'] ?></td>
             <td class="text-center ">
 
-            <a href="function/hallreservation/accept.php?Id=<?php echo $row['Id'] ?>" class="btn btn-success mb-1">
-                <i class="fa-solid fa-square-check"></i>
-                Accept
-              </a>
-
-              <a href="../sendlink.php?Id=<?php echo $row['Id'] ?>" class="btn btn-primary mb-1">
-                <i class="fa-solid fa-circle-info"></i>
-                Send Payment
-              </a>
+            
 
               <a href="function/hallreservation/edit.php?Id=<?php echo $row['Id'] ?>" class="btn btn-secondary mb-1">
                 <i class="fa-solid fa-circle-info"></i>
                 View
               </a>
 
-              <a href="function/hallreservation/delete.php?Id=<?php echo $row['Id'] ?>" class="btn btn-danger mb-1"><i class="fa-solid fa-trash "></i>
-                Delete
-              </a>
-
+             
               
 
             </td>

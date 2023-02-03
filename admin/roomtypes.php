@@ -24,7 +24,7 @@ include 'config.php';
         <div class="row">
             <div class="col-8">
                 <div class="card-body">
-                    <table id="datatablesSimple" class="table-striped">
+                    <table id="datatablesSimple" class="table table-striped">
                         <thead class="bg-info">
                             <tr>
                                 <th>No.</th>
@@ -51,7 +51,7 @@ include 'config.php';
                                     <td><i class="fa-solid fa-person"></i> <?php echo $row['PersonCount'] ?></td>
                                     <td class="text-center">
                                         <a href="function/hrmanage/rtedit.php?id=<?php echo $row['Id'] ?>" class="btn btn-secondary mb-1"><i class="far fa-pen-to-square"></i> Update</a>
-                                        <a href="function/hrmanage/rtdelete.php?id=<?php echo $row['Id'] ?>" class="btn btn-danger mb-1"><i class="far fa-trash-alt"></i> Delete</a>
+                                        <a href="function/hrmanage/rtdelete.php?id=<?php echo $row['Id'] ?>&name=<?php echo $row['Title'] ?>" class="btn btn-danger mb-1"><i class="far fa-trash-alt"></i> Delete</a>
                                     </td>
                                 </tr>
                             <?php
@@ -110,7 +110,7 @@ include 'config.php';
                             <label for="Person" class="form-label">Person :</label>
                             <div class="input-group">
                                 <div class="input-group-text"><i class="fa-solid fa-person"></i></div>
-                                <input type="text" name="Person" class="form-control" placeholder="e.g. 2" required>
+                                <input type="number"  name="Person" class="form-control" min="1" placeholder="e.g. 2" required>
                             </div>
                         </div>
                     </div>

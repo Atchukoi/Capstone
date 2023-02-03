@@ -83,7 +83,7 @@ include 'config.php';
                 Send Payment
               </a>
 
-              <a href="function/hallreservation/edit.php?Id=<?php echo $row['Id'] ?>" class="btn btn-secondary mb-1">
+              <a href="function/hallreservation/edit.php?id=<?php echo $row['Id'] ?>" class="btn btn-secondary mb-1">
                 <i class="fa-solid fa-circle-info"></i>
                 View
               </a>
