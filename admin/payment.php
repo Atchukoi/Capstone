@@ -274,7 +274,7 @@ if (isset($_POST['submit'])) {
                                                         </select>
                                                 </div>
                                                 <div class="mt-2">
-                                                    <label for="" class="form-label"> Cash Amount or Transaction ID :</label>
+                                                    <label for="" class="form-label"> Cash Amount or Transaction # :</label>
                                                     <input type="text" name="Tender" id="Tender" class="form-control fs-3">
                                                 </div>
 

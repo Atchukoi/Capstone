@@ -38,7 +38,7 @@ if (isset($_GET['msg'])) {
             <a class="nav-link active bg-primary text-white" href="hrrlapsed.php">Lapsed</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link " aria-current="page" href="hrrarchieved.php">Archieve</a>
+            <a class="nav-link " aria-current="page" href="hrrarchieved.php">Archive</a>
         </li>
     </ul>
 

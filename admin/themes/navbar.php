@@ -99,7 +99,7 @@ if ($roleid == empty($roleid)) {
             <div class="collapse" id="collapseLayoutsGuests" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
               <nav class="sb-sidenav-menu-nested nav">
                 <a class="nav-link" href="activeguestlist.php">Active Guests</a>
-                <a class="nav-link" href="archievedguest.php">Archieved Guests</a>
+                <a class="nav-link" href="archievedguest.php">Archived Guests</a>
               </nav>
             </div>
 

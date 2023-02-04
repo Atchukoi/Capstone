@@ -5,7 +5,7 @@ include 'config.php';
 <div class="card mb-4">
     <div class="card-header text-primary">
         <h4><i class="fa-solid fa-box-archive"></i>
-        Archieved Guest List </h4>
+        Archived Guest List </h4>
     </div>
     <div class="card-body">
         <table id="datatablesSimple" class="table-striped ">
